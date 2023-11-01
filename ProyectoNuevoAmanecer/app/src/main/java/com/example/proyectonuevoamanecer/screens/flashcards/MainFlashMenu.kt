@@ -6,7 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -53,21 +56,15 @@ class MainFlashMenu  : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun FlashcardMenu( onDeckCheckClick:() -> Unit = {}, onBackClick: () -> Unit = {}){
+    Text(text="Tarjetas Educativas",
+        style = TextStyle(fontSize=24.sp,fontWeight = FontWeight.Bold),
+        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        textAlign= TextAlign.Center)
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         content = {
-            Text(text="Tarjetas Educativas",
-                style = TextStyle(fontSize=24.sp,fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(16.dp))
-            Button(
-                onClick = { onBackClick() },
-                modifier = Modifier.padding(16.dp)
-            ) {
-                // Contenido del botón "Regresar"
-                Text("Regresar")
-            }
 
             Button(
                 onClick = { onDeckCheckClick() },
@@ -75,6 +72,13 @@ fun FlashcardMenu( onDeckCheckClick:() -> Unit = {}, onBackClick: () -> Unit = {
             ) {
                 // Contenido del botón "Verificar Mazos"
                 Text("Ver Mazos")
+            }
+            Button(
+                onClick = { onBackClick() },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                // Contenido del botón "Regresar"
+                Text("Regresar")
             }
         }
     )
