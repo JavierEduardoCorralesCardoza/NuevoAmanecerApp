@@ -8,17 +8,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.clases.CartasMemorama
@@ -26,24 +21,20 @@ import com.example.proyectonuevoamanecer.screens.AppRoutes
 
 @Composable
 fun MemoramaScreen(navController: NavController){
-    BodyContent(navController)
+    val viewModel: MemoramaViewModel = viewModel()
+    viewModel.ListaDeImagenes(3)
+    viewModel.GenerarCartas(3)
+    BodyContent(navController, viewModel)
 }
 
 @Composable
-fun BodyContent(navController: NavController){
-
-    val cartas = listOf<CartasMemorama>(
-        CartasMemorama(imagen = R.drawable.frente_carta, volteada = false),
-        CartasMemorama(imagen = R.drawable.frente_carta, volteada = false))
-
-    val cartas_volteadas = mutableMapOf<Int, Int>(R.drawable.frente_carta to 0, R.drawable.as_de_picas to 0)
-
+fun BodyContent(navController: NavController, viewModel: MemoramaViewModel){
     Column {
         Text(text = "Hola")
         Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route) }) {
             Text(text = "Inicio")
         }
-        ListOfCards(cartas = cartas, cartas_volteadas = cartas_volteadas)
+        ListOfCards(cartas = viewModel.cartas, cartas_volteadas = viewModel.cartas_volteadas)
     }
 }
 
