@@ -4,11 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,9 +53,13 @@ class FlashcardDecks  : ComponentActivity() {
 @Composable
 fun DecksFlashcards(){
     var selectedDeck by remember { mutableStateOf<String?>(null) }
+    var expanded by remember { mutableStateOf(false)}
+    val options = listOf("Borrar Mazo", "Agregar Tarjetas", "Cambiar Nombre")
     Text(text="Mazos",
         style = TextStyle(fontSize=24.sp,fontWeight = FontWeight.Bold),
-        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
         textAlign= TextAlign.Center)
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -70,7 +80,32 @@ fun DecksFlashcards(){
         ) {
             Text("Mazo 2")
         }
-
+        Box{
+            Button(
+                onClick={expanded=true},
+                modifier = Modifier.padding(16.dp)
+            ){
+                Icon(imageVector= Icons.Default.MoreVert,contentDescription = null)
+            }
+            MyDropdownMenu(
+                expanded = expanded,
+                options = options,
+                onOptionSelected = { option ->
+                    when (option) {
+                        "Borrar Mazo" -> {
+                            // Lógica para "Borrar Mazo"
+                        }
+                        "Agregar Tarjetas" -> {
+                            // Lógica para "Agregar Tarjetas"
+                        }
+                        "Cambiar Nombre" -> {
+                            // Lógica para "Cambiar Nombre"
+                        }
+                    }
+                    expanded = false
+                }
+            )
+        }
         // Otros botones de mazos aquí...
 
         if (selectedDeck != null) {
@@ -78,3 +113,27 @@ fun DecksFlashcards(){
         }
     }
 }
+
+@Composable
+fun MyDropdownMenu(
+    expanded: Boolean,
+    options: List<String>,
+    onOptionSelected: (String) -> Unit
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { /* No cambia el estado de 'expanded' aquí */ }
+    ) {
+        options.forEach { option ->
+            DropdownMenuItem(onClick = {
+                onOptionSelected(option)
+            }) {
+                Text(text = option)
+            }
+        }
+    }
+}
+
+
+
+
