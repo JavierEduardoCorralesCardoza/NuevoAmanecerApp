@@ -16,9 +16,12 @@ fun HomeScreen(navController: NavController){
 @Composable
 fun BodyContent(navController: NavController){
     Column {
-        Text(text = "Hola")
+        Text(text = "Luminaria")
         Button(onClick = { navController.navigate(route = AppRoutes.MemoramaScreen.route) }) {
-            Text(text = "Memorama")
+            Text(text = "FlashCards")
+        }
+        Button(onClick = { navController.navigate(route = AppRoutes.MemoramaScreen.route) }) {
+            Text(text = "Minijuegos")
         }
     }
 }
