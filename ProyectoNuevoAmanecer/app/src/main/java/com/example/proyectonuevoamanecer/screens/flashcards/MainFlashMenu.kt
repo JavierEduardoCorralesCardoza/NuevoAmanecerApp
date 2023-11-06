@@ -24,41 +24,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
-
-class MainFlashMenu  : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ProyectoNuevoAmanecerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val onDeckCheckClick = {
-                        val intent = Intent(this, FlashcardDecks::class.java)
-                        startActivity(intent)
-                    }
-
-                    val onBackClick = {
-                        val intent = Intent(this, PantallaVacia::class.java)
-                        startActivity(intent)
-                    }
-
-                    FlashcardMenu(onDeckCheckClick,onBackClick)
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
 @Composable
-fun FlashcardMenu( onDeckCheckClick:() -> Unit = {}, onBackClick: () -> Unit = {}){
+fun MainFlashMenu(navController: NavController){
+    BodyContent(navController)
+}
+@Composable
+fun BodyContent(navController: NavController){
     Text(text="Tarjetas Educativas",
         style = TextStyle(fontSize=24.sp,fontWeight = FontWeight.Bold),
-        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
         textAlign= TextAlign.Center)
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -67,14 +46,14 @@ fun FlashcardMenu( onDeckCheckClick:() -> Unit = {}, onBackClick: () -> Unit = {
         content = {
 
             Button(
-                onClick = { onDeckCheckClick() },
+                onClick = { navController.navigate(AppRoutes.FlashcardDecks.route) },
                 modifier = Modifier.padding(16.dp)
             ) {
                 // Contenido del botón "Verificar Mazos"
                 Text("Ver Mazos")
             }
             Button(
-                onClick = { onBackClick() },
+                onClick = {navController.navigate(AppRoutes.HomeScreen.route) },
                 modifier = Modifier.padding(16.dp)
             ) {
                 // Contenido del botón "Regresar"

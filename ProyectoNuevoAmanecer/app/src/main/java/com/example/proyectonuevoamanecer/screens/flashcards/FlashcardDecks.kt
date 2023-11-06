@@ -34,59 +34,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
 
-class FlashcardDecks  : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ProyectoNuevoAmanecerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ){
-                        items(
-                            listOf<String>(
-                                "Facundo",
-                                "Facundo",
-                                "Facundo",
-                                "Facundo",
-                                "Facundo",
-                            )
-                        ){name ->
-                            PersonItem(
-                                personName = name,
-                                dropDownItems = listOf(
-                                    DropDownItem("Item1"),
-                                    DropDownItem("Item2"),
-                                    DropDownItem("Item3"),
-                                )
-                            ) {
-                                Toast.makeText(
-                                    applicationContext,
-                                    it.text,
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-
-
-                        }
-                    }
-
-                }
-            }
-        }
-    }
+@Composable
+fun FlashcardDecks(navController: NavController)
+{
+    BodyContentDecks(navController)
 }
+
 data class DropDownItem(
     val text: String
 )
@@ -94,14 +56,14 @@ data class DropDownItem(
 @Composable
 fun PersonItem(
     personName: String,
-    dropDownItems:List<DropDownItem>,
+    dropDownItems: List<DropDownItem>,
     modifier: Modifier = Modifier,
     onItemClick: (DropDownItem) -> Unit,
-){
-    var isContextMenuVisible by rememberSaveable{
+) {
+    var isContextMenuVisible by rememberSaveable {
         mutableStateOf(false)
     }
-    var pressOffset by remember{
+    var pressOffset by remember {
         mutableStateOf(DpOffset.Zero)
     }
     var itemHeight by remember {
@@ -112,16 +74,21 @@ fun PersonItem(
     }
     val density = LocalDensity.current
     Card(
+
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = modifier
             .onSizeChanged {
-                itemHeight = with(density){it.height.toDp()}
+                itemHeight = with(density) { it.height.toDp() }
             }
-    ){
+    ) {
         Box(
+
             modifier = Modifier
                 .fillMaxWidth()
-                .indication(interactionSource = remember {MutableInteractionSource()},indication = LocalIndication.current)
+                .indication(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = LocalIndication.current
+                )
                 .pointerInput(true) {
                     detectTapGestures(
                         onLongPress = {
@@ -137,7 +104,7 @@ fun PersonItem(
                     )
                 }
                 .padding(16.dp)
-        ){
+        ) {
             Text(text = personName)
         }
         DropdownMenu(
@@ -145,22 +112,55 @@ fun PersonItem(
             onDismissRequest = {
                 isContextMenuVisible = false
             },
-            offset= pressOffset.copy(
+            offset = pressOffset.copy(
                 y = pressOffset.y - itemHeight
             )
-        ){
-            dropDownItems.forEach {item ->
+        ) {
+            dropDownItems.forEach { item ->
                 DropdownMenuItem(
                     onClick = {
                         onItemClick(item)
                         isContextMenuVisible = false
-                }, text = {Text(text=item.text)})
+                    }, text = { Text(text = item.text) })
 
             }
         }
     }
 }
 
+@Composable
+fun BodyContentDecks(navController: NavController) {
+    LazyColumn(
+
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(
+            listOf<String>(
+                "Facundo",
+                "Facundo",
+                "Facundo",
+                "Facundo",
+                "Facundo",
+            )
+        ) { name ->
+            PersonItem(
+                personName = name,
+                dropDownItems = listOf(
+                    DropDownItem("Item1"),
+                    DropDownItem("Item2"),
+                    DropDownItem("Item3"),
+                )
+            ) {
+
+
+            }
+
+
+
+        }
+    }
+}
 
 
 

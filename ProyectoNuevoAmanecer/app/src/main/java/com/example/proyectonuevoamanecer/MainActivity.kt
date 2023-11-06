@@ -11,8 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.proyectonuevoamanecer.screens.Navegacion
 import com.example.proyectonuevoamanecer.screens.home.HomeScreen
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme

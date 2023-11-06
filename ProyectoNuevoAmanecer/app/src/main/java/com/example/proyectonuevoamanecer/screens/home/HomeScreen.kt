@@ -20,5 +20,8 @@ fun BodyContent(navController: NavController){
         Button(onClick = { navController.navigate(route = AppRoutes.MemoramaScreen.route) }) {
             Text(text = "Memorama")
         }
+        Button(onClick = {navController.navigate(AppRoutes.MainFlashMenu.route)}){
+
+        }
     }
 }
