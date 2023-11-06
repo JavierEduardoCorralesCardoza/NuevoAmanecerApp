@@ -47,6 +47,9 @@ import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
 fun FlashcardDecks(navController: NavController)
 {
     BodyContentDecks(navController)
+    Button(onClick={navController.navigate(AppRoutes.FlashcardGame.route)}){
+
+    }
 }
 
 data class DropDownItem(
@@ -130,6 +133,7 @@ fun PersonItem(
 
 @Composable
 fun BodyContentDecks(navController: NavController) {
+
     LazyColumn(
 
         modifier = Modifier.fillMaxSize(),
@@ -158,9 +162,13 @@ fun BodyContentDecks(navController: NavController) {
 
 
 
+
         }
     }
 }
+
+
+
 
 
 
