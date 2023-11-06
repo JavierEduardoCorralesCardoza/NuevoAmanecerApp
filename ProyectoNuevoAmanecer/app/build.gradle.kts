@@ -56,6 +56,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation ("androidx.navigation:navigation-compose:2.4.0-alpha10")
     implementation ("androidx.cardview:cardview:1.0.0")
+    implementation ("com.google.accompanist:accompanist-flowlayout:0.20.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
