@@ -44,7 +44,7 @@ class MemoramaViewModel(application: Application) : AndroidViewModel(application
     fun voltearCartasConRetraso(cartas: List<CartasMemorama>, indexCartasVolteadas: MutableList<Int>) {
         viewModelScope.launch {
             retrasoEnEjecucion.value = true
-            delay(1000)  // Retraso de 1 segundo
+            delay(500)  // Retraso de 1 segundo
             cartas[indexCartasVolteadas[0]].volteada = false
             cartas[indexCartasVolteadas[1]].volteada = false
             indexCartasVolteadas.clear()
