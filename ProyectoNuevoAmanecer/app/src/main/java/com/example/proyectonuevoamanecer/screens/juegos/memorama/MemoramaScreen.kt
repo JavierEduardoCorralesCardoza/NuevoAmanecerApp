@@ -29,10 +29,19 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 @Composable
-fun MemoramaScreen(navController: NavController){
+fun MemoramaScreen(navController: NavController, nivel: Int){
     val viewModel: MemoramaViewModel = viewModel()
-    viewModel.ListaDeImagenes(6)
-    viewModel.GenerarCartas(6)
+
+    val numCartas: Int = when (nivel){
+        1 -> 3
+        2 -> 6
+        3 -> 10
+        else -> {
+            0
+        }
+    }
+    viewModel.ListaDeImagenes(numCartas)
+    viewModel.GenerarCartas(numCartas)
     BodyContent(navController, viewModel)
 }
 
