@@ -17,14 +17,11 @@ fun HomeScreen(navController: NavController){
 fun BodyContent(navController: NavController){
     Column {
         Text(text = "Luminaria")
-        Button(onClick = { navController.navigate(route = AppRoutes.MemoramaScreen.route) }) {
+        Button(onClick = { navController.navigate(route = AppRoutes.MainFlashMenu.route) }) {
             Text(text = "FlashCards")
         }
-        Button(onClick = { navController.navigate(route = AppRoutes.MemoramaScreen.route) }) {
+        Button(onClick = { navController.navigate(route = AppRoutes.JuegosScreen.route) }) {
             Text(text = "Minijuegos")
-        }
-        Button(onClick = {navController.navigate(AppRoutes.MainFlashMenu.route)}){
-
         }
     }
 }

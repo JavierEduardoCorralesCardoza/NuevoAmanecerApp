@@ -6,6 +6,6 @@ sealed class AppRoutes(val route: String){
     object MainFlashMenu: AppRoutes("Flashcards")
     object FlashcardDecks: AppRoutes("FlashcardDeck")
     object FlashcardGame: AppRoutes("FlashcardGames")
-
-
+    object JuegosScreen: AppRoutes("JuegosScreen")
+    object NivelesMemorama: AppRoutes("NivelesMemorama")
 }
