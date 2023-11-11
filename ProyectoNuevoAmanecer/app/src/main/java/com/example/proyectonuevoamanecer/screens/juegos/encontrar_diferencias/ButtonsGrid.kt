@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import java.io.Console
 
 @Composable
-fun GridOfButtons(activeBoxNumbers: MutableList<Int>) {
+fun GridOfButtons(activeBoxNumbers: MutableList<Int>, bigNumber: MutableList<Int>) {
     var isBoxClicked by remember { mutableStateOf(false)}
 
     LazyVerticalGrid(
@@ -36,14 +36,21 @@ fun GridOfButtons(activeBoxNumbers: MutableList<Int>) {
                 modifier = Modifier
                     .size(30.dp, 35.dp)
                     .clickable {
-                       if(activeBoxNumbers.contains(it)) {
+                        if (activeBoxNumbers.contains(it)) {
                             activeBoxNumbers.remove(it)
+                            if(bigNumber.contains(it)){
+
+                            }
                             isBoxClicked = !isBoxClicked
                         }
 
                         println("Box $it clicked!")
                     }
-                    .background(if (isBoxClicked) Color.Red.copy(alpha = 0.2f) else Color.LightGray.copy(alpha = 0.2f))
+                    .background(
+                        if (isBoxClicked) Color.Red.copy(alpha = 0.2f) else Color.LightGray.copy(
+                            alpha = 0.0f
+                        )
+                    )
             ) {
                 Text(text = "$it")
             }
@@ -58,7 +65,8 @@ fun GridOfButtons(activeBoxNumbers: MutableList<Int>) {
 @Preview
 @Composable
 fun PreviewGridOfButtons() {
+    var bigNumber by remember { mutableStateOf(mutableListOf<Int>(5, 10, 15)) }
     var activeBoxNumbers by remember { mutableStateOf(mutableListOf<Int>(5, 10, 15)) }
-    GridOfButtons(activeBoxNumbers)
+    GridOfButtons(activeBoxNumbers, bigNumber)
 }
 
