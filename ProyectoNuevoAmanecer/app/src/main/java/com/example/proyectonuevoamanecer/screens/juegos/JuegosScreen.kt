@@ -17,7 +17,7 @@ fun JuegosScreen(navController: NavController){
 fun BodyContentJuegos(navController: NavController){
     Column {
         Text(text = "Minijuegos")
-        Button(onClick = { navController.navigate(AppRoutes.NivelesMemorama.route) }) {
+        Button(onClick = { navController.navigate("${AppRoutes.NivelesJuegos.route}/${AppRoutes.MemoramaScreen.route}") }) {
             Text(text = "Memorama")
         }
         Button(onClick = { }) {
