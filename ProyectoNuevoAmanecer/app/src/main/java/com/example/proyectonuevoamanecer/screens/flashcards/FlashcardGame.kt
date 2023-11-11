@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,46 +48,76 @@ import com.example.proyectonuevoamanecer.clases.CartaFlash
 import com.example.proyectonuevoamanecer.clases.Mazos
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
-/*
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun PreviewFlashcardGame() {
     val navController = rememberNavController()
     FlashcardGame(navController)
 
 }
+*/
 
- */
 
 @Composable
-fun FlashcardGame(navController: NavController, deck : String){
+fun FlashcardGame(navController: NavController, mazo : String){
+
+    val mazo = remember { mutableStateOf(generateDeck()) }
+    BodyGameContent(navController, mazo)
+}
+fun generateDeck(): Mazos {
     val cardList = mutableListOf<CartaFlash>(
-        CartaFlash(R.drawable.imagen_memorama1,"Ass","As","Rey"),
+        CartaFlash(R.drawable.imagen_memorama1,"As","As","Rey"),
         CartaFlash(R.drawable.imagen_memorama2,"Magic","Rey","Magic"),
         CartaFlash(R.drawable.imagen_memorama3,"Uno","Uno","Dos"),
         CartaFlash(R.drawable.imagen_memorama4,"Nibbles", "Nipples","Nibbles")
-    )
-    val mazo = Mazos("Cartas",cardList)
-    BodyGameContent(navController, mazo)
+    ).apply { shuffle() }
+    return Mazos("Cartas", cardList)
 }
 
+
 @Composable
-fun BodyGameContent(navController: NavController, deck: Mazos) {
+fun BodyGameContent(navController: NavController, mazo:MutableState<Mazos>) {
 
     Text(
-        text = deck.titulo,
+        text = mazo.value.titulo,
         style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
         textAlign = TextAlign.Center
     )
+    val (isAnswerSelected, setAnswerSelected) = remember { mutableStateOf(false) }
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val (currentIndex, setCurrentIndex) = remember { mutableStateOf(0) }
-    val currentCard = deck.flashcardList[currentIndex]
+    val currentCard = mazo.value.flashcardList[currentIndex]
     val correctAnswer = currentCard.texto
     val (isFlipped, setFlipped) = remember { mutableStateOf(false) }
     val (selectedAnswer, onAnswerSelected)= remember {
         mutableStateOf("")
+    }
+    if (showDialog){
+        AlertDialog(
+            onDismissRequest ={setShowDialog(false)} ,
+            title = {Text("¡Ya acabaste el mazo!")},
+            confirmButton = {
+                Button(onClick = {
+                    setCurrentIndex(0)
+                    setFlipped(false)
+                    onAnswerSelected("")
+                    mazo.value= generateDeck()
+                    setShowDialog(false)
+                }) {
+                    Text("Volver a iniciar")
+                }
+            },
+            dismissButton = {
+                Button(onClick = {
+                    setShowDialog(false)
+                    navController.navigate(AppRoutes.FlashcardDecks.route)
+                }) {
+                    Text("Regresar")
+                }
+            })
     }
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -100,7 +132,9 @@ fun BodyGameContent(navController: NavController, deck: Mazos) {
                 .size(200.dp)
         ) {
             Box(
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+
             ) {
                 if (!isFlipped) {
                     Image(painterResource(id = currentCard.imagen), contentDescription = null)
@@ -119,6 +153,7 @@ fun BodyGameContent(navController: NavController, deck: Mazos) {
             Button(onClick = {
                 onAnswerSelected(currentCard.resp1)
                 setFlipped(true)
+                setAnswerSelected(true)
             }) {
                 Text(text = currentCard.resp1)
 
@@ -129,6 +164,7 @@ fun BodyGameContent(navController: NavController, deck: Mazos) {
             Button(onClick = {
                 onAnswerSelected(currentCard.resp2)
                 setFlipped(true)
+                setAnswerSelected(true)
             }) {
                 Text(text = currentCard.resp2)
             }
@@ -136,34 +172,28 @@ fun BodyGameContent(navController: NavController, deck: Mazos) {
         Spacer(modifier = Modifier.height(16.dp))
 
         if (selectedAnswer.isNotEmpty()) {
-            Text(text = if (selectedAnswer == correctAnswer) "¡Correcto!"
+            Text(text = if (selectedAnswer == correctAnswer) "¡Correcto! La Respuesta es $correctAnswer"
             else "Incorrecto, la respuesta correcta es $correctAnswer")
         }
+
         Spacer(modifier = Modifier.height(16.dp))
-    Row(modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
         Button(onClick = {
-            if (currentIndex < deck.flashcardList.size -1){
-                setCurrentIndex(currentIndex + 1)
+            if(isAnswerSelected) {
+                if (currentIndex < mazo.value.flashcardList.size - 1) {
+                    setCurrentIndex(currentIndex + 1)
+                } else {
+                    setShowDialog(true)
+                }
+                setFlipped(false)
+                onAnswerSelected("")
+                setAnswerSelected(false)
             }
-            setFlipped(false)
-        }) {
+        }, enabled = isAnswerSelected) {
             Text(text = "Siguiente")
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            setCurrentIndex(0)
-            setFlipped(false)
-            onAnswerSelected("")
-        }) {
-            Text(text = "Volver a Iniciar")
-        }
+
     }
-        Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = { navController.navigate(AppRoutes.FlashcardDecks.route) }) {
-            Text(text = "Regresar")
-        }
-    }
+
 }
+
 

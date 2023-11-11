@@ -31,8 +31,8 @@ fun Navegacion(){
                         defaultValue = "defualt_value"
                     })
         ) { backStackEntry ->
-            val deck = backStackEntry.arguments?.getString("deck")
-            FlashcardGame(navController = navController, deck = deck ?: "") }
+            val mazo = backStackEntry.arguments?.getString("deck")
+            FlashcardGame(navController = navController, mazo = mazo ?: "") }
         composable(AppRoutes.JuegosScreen.route) { JuegosScreen(navController) }
         composable(AppRoutes.NivelesMemorama.route) { NivelesMemorama(navController) }
         composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController)}
