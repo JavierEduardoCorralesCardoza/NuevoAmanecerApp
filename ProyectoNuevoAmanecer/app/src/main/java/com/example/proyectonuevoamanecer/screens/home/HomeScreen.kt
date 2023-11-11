@@ -23,5 +23,9 @@ fun BodyContent(navController: NavController){
         Button(onClick = { navController.navigate(route = AppRoutes.JuegosScreen.route) }) {
             Text(text = "Minijuegos")
         }
+ Facundo-Flashcards
+        Button(onClick = {navController.navigate(AppRoutes.MainFlashMenu.route)}){
+            Text(text="Tarjetas Educativas")
+        }
     }
 }
