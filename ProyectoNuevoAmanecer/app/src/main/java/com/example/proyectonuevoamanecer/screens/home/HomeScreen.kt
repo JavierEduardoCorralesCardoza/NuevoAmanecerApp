@@ -28,8 +28,12 @@ fun BodyContent(navController: NavController){
         Button(onClick = { navController.navigate(route = AppRoutes.JuegosScreen.route) }) {
             Text(text = "Minijuegos")
         }
+
         Button(onClick = { configViewModel.configuracionAbierta.value = true }) {
             Text(text = "Configuracion")
+        }
+        Button(onClick = {navController.navigate(AppRoutes.MainFlashMenu.route)}){
+            Text(text="Tarjetas Educativas")
         }
     }
 
