@@ -7,6 +7,6 @@ sealed class AppRoutes(val route: String){
     object FlashcardDecks: AppRoutes("FlashcardDeck")
     object FlashcardGame: AppRoutes("FlashcardGames")
     object JuegosScreen: AppRoutes("JuegosScreen")
-    object NivelesMemorama: AppRoutes("NivelesMemorama")
+    object NivelesJuegos: AppRoutes("NivelesJuegos")
     object  DiferenciasCard: AppRoutes("Diferencias")
 }
