@@ -42,30 +42,38 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.proyectonuevoamanecer.R
+import com.example.proyectonuevoamanecer.clases.CartaFlash
+import com.example.proyectonuevoamanecer.clases.Mazos
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
+/*
 @Preview(showBackground = true)
 @Composable
 fun PreviewFlashcardGame() {
     val navController = rememberNavController()
     FlashcardGame(navController)
+
 }
 
-@Composable
-fun FlashcardGame(navController: NavController){
-    BodyGameContent(navController)
-}
+ */
 
 @Composable
-fun BodyGameContent(navController: NavController) {
-    val cardImages = listOf(
-        R.drawable.imagen_memorama1, // Imagen 1
-        R.drawable.imagen_memorama2, // Imagen 2
-        // Agrega más imágenes según sea necesario
+fun FlashcardGame(navController: NavController, deck : String){
+    val cardList = mutableListOf<CartaFlash>(
+        CartaFlash(R.drawable.imagen_memorama1,"Ass","As","Rey"),
+        CartaFlash(R.drawable.imagen_memorama2,"Magic","Rey","Magic"),
+        CartaFlash(R.drawable.imagen_memorama3,"Uno","Uno","Dos"),
+        CartaFlash(R.drawable.imagen_memorama4,"Nibbles", "Nipples","Nibbles")
     )
+    val mazo = Mazos("Cartas",cardList)
+    BodyGameContent(navController, mazo)
+}
+
+@Composable
+fun BodyGameContent(navController: NavController, deck: Mazos) {
 
     Text(
-        text = "Mazo X",
+        text = deck.titulo,
         style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
         modifier = Modifier
             .padding(16.dp)
@@ -73,10 +81,12 @@ fun BodyGameContent(navController: NavController) {
         textAlign = TextAlign.Center
     )
     val (currentIndex, setCurrentIndex) = remember { mutableStateOf(0) }
-    val (selectedAnswer, onAnswerSelected) = remember { mutableStateOf("") }
-    val correctAnswer = "Respuesta correcta"
+    val currentCard = deck.flashcardList[currentIndex]
+    val correctAnswer = currentCard.texto
     val (isFlipped, setFlipped) = remember { mutableStateOf(false) }
-
+    val (selectedAnswer, onAnswerSelected)= remember {
+        mutableStateOf("")
+    }
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -85,23 +95,18 @@ fun BodyGameContent(navController: NavController) {
         Card(
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.Gray),
-            modifier = Modifier.padding(32.dp).size(200.dp)
+            modifier = Modifier
+                .padding(32.dp)
+                .size(200.dp)
         ) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
                 if (!isFlipped) {
-                    Image(
-                        painter = painterResource(id = R.drawable.imagen_memorama1),
-                        contentDescription = "Flashcard Image",
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    Image(painterResource(id = currentCard.imagen), contentDescription = null)
+
                 } else {
-                    Text(
-                        text = "Respuesta correcta",
-                        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
-                        textAlign = TextAlign.Center
-                    )
+                    Text(text = currentCard.texto)
                 }
             }
         }
@@ -112,40 +117,46 @@ fun BodyGameContent(navController: NavController) {
         ) {
 
             Button(onClick = {
-                onAnswerSelected("Respuesta 1")
+                onAnswerSelected(currentCard.resp1)
                 setFlipped(true)
             }) {
-                Text(text = "Respuesta 1")
+                Text(text = currentCard.resp1)
 
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(onClick = {
-                onAnswerSelected("Respuesta 2")
+                onAnswerSelected(currentCard.resp2)
                 setFlipped(true)
             }) {
-                Text(text = "Respuesta 2")
+                Text(text = currentCard.resp2)
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
 
         if (selectedAnswer.isNotEmpty()) {
-            Text(text = if (selectedAnswer == correctAnswer) "¡Correcto!" else "Incorrecto, la respuesta correcta es $correctAnswer")
+            Text(text = if (selectedAnswer == correctAnswer) "¡Correcto!"
+            else "Incorrecto, la respuesta correcta es $correctAnswer")
         }
         Spacer(modifier = Modifier.height(16.dp))
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(onClick = {
-            // Avanzar a la siguiente carta
-            setCurrentIndex((currentIndex + 1) % cardImages.size)
-            setFlipped(false) // Restablecer el estado
+            if (currentIndex < deck.flashcardList.size -1){
+                setCurrentIndex(currentIndex + 1)
+            }
+            setFlipped(false)
         }) {
             Text(text = "Siguiente")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { }) {
+        Button(onClick = {
+            setCurrentIndex(0)
+            setFlipped(false)
+            onAnswerSelected("")
+        }) {
             Text(text = "Volver a Iniciar")
         }
     }
