@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,15 +58,24 @@ fun FlashcardGame(navController: NavController){
 
 @Composable
 fun BodyGameContent(navController: NavController) {
-    Text(text="Mazo X",
-        style = TextStyle(fontSize=24.sp,fontWeight = FontWeight.Bold),
+    val cardImages = listOf(
+        R.drawable.imagen_memorama1, // Imagen 1
+        R.drawable.imagen_memorama2, // Imagen 2
+        // Agrega más imágenes según sea necesario
+    )
+
+    Text(
+        text = "Mazo X",
+        style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
-        textAlign= TextAlign.Center)
+        textAlign = TextAlign.Center
+    )
+    val (currentIndex, setCurrentIndex) = remember { mutableStateOf(0) }
     val (selectedAnswer, onAnswerSelected) = remember { mutableStateOf("") }
     val correctAnswer = "Respuesta correcta"
-    val (isFlipped, setFlipped)=remember { mutableStateOf(false)}
+    val (isFlipped, setFlipped) = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -87,41 +97,62 @@ fun BodyGameContent(navController: NavController) {
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
-                    Text(text = "Respuesta correcta",
-                        modifier= Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
-                        textAlign = TextAlign.Center)
+                    Text(
+                        text = "Respuesta correcta",
+                        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }
-            Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
 
             Button(onClick = {
                 onAnswerSelected("Respuesta 1")
-                setFlipped(true)}) {
+                setFlipped(true)
+            }) {
                 Text(text = "Respuesta 1")
 
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Button(onClick = { onAnswerSelected("Respuesta 2")
-                setFlipped(true)}) {
+            Button(onClick = {
+                onAnswerSelected("Respuesta 2")
+                setFlipped(true)
+            }) {
                 Text(text = "Respuesta 2")
             }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (selectedAnswer.isNotEmpty()) {
-                Text(text = if (selectedAnswer == correctAnswer) "¡Correcto!" else "Incorrecto, la respuesta correcta es $correctAnswer")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick={}){
-                Text(text="Siguiente")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { navController.navigate(AppRoutes.FlashcardDecks.route) }) {
-                Text(text = "Regresar")
-            }
+        if (selectedAnswer.isNotEmpty()) {
+            Text(text = if (selectedAnswer == correctAnswer) "¡Correcto!" else "Incorrecto, la respuesta correcta es $correctAnswer")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(onClick = {
+            // Avanzar a la siguiente carta
+            setCurrentIndex((currentIndex + 1) % cardImages.size)
+            setFlipped(false) // Restablecer el estado
+        }) {
+            Text(text = "Siguiente")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { }) {
+            Text(text = "Volver a Iniciar")
         }
     }
+        Spacer(modifier = Modifier.height(32.dp))
+        Button(onClick = { navController.navigate(AppRoutes.FlashcardDecks.route) }) {
+            Text(text = "Regresar")
+        }
+    }
+}
 

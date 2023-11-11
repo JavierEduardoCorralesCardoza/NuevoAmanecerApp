@@ -152,19 +152,19 @@ fun BodyContentDecks(navController: NavController) {
     ) {
         items(
             listOf<String>(
-                "Facundo",
-                "Facundo",
-                "Facundo",
-                "Facundo",
-                "Facundo",
+                "Animales",
+                "Objetos",
+                "Personajes",
+                "Comida",
+                "Bebidas",
             )
         ) { name ->
             PersonItem(
                 personName = name,
                 dropDownItems = listOf(
-                    DropDownItem("Item1"),
-                    DropDownItem("Item2"),
-                    DropDownItem("Item3"),
+                    DropDownItem("Añadir Tarjeta"),
+                    DropDownItem("Renombrar Mazo"),
+                    DropDownItem("Borrar Mazo"),
                 )
             ) {
 

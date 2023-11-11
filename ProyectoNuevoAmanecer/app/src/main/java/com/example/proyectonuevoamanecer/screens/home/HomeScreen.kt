@@ -24,7 +24,7 @@ fun BodyContent(navController: NavController){
             Text(text = "Minijuegos")
         }
         Button(onClick = {navController.navigate(AppRoutes.MainFlashMenu.route)}){
-
+            Text(text="Tarjetas Educativas")
         }
     }
 }

@@ -25,8 +25,15 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
+@Preview(showBackground = true)
+@Composable
+fun PreviewMainFlashMenu() {
+    val navController = rememberNavController()
+    MainFlashMenu(navController)
+}
 @Composable
 fun MainFlashMenu(navController: NavController){
     BodyContent(navController)
