@@ -25,14 +25,17 @@ fun Navegacion(){
         composable(AppRoutes.HomeScreen.route) { HomeScreen(navController) }
         composable(AppRoutes.MainFlashMenu.route) { MainFlashMenu(navController) }
         composable(AppRoutes.FlashcardDecks.route) { FlashcardDecks(navController) }
-        composable(route = AppRoutes.FlashcardGame.route,
-                    arguments = listOf(navArgument("deck"){
+        composable(route = AppRoutes.FlashcardGame.route + "/{mazo}",
+                    arguments = listOf(navArgument("mazo"){
                         type = NavType.StringType
                         defaultValue = "defualt_value"
                     })
         ) { backStackEntry ->
-            val mazo = backStackEntry.arguments?.getString("deck")
-            FlashcardGame(navController = navController, mazo = mazo ?: "") }
+            val mazo = backStackEntry.arguments?.getString("mazo")
+            if (mazo != null) {
+                FlashcardGame(navController, mazo)
+            }
+        }
         composable(AppRoutes.JuegosScreen.route) { JuegosScreen(navController) }
         composable(AppRoutes.NivelesMemorama.route) { NivelesMemorama(navController) }
         composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController)}

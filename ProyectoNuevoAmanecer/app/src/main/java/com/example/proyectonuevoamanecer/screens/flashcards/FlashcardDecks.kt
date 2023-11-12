@@ -114,11 +114,11 @@ fun PersonItem(
                             interactionSource.emit(press)
                             tryAwaitRelease()
                             interactionSource.emit(PressInteraction.Release(press))
+                            navController.navigate(AppRoutes.FlashcardGame.route + "/${personName}")
                         }
                     )
                 }
                 .padding(16.dp)
-                .clickable {navController.navigate(AppRoutes.FlashcardGame.route)}
         ) {
             Text(text = personName)
         }
