@@ -71,7 +71,14 @@ fun generateDeck(): Mazos {
         CartaFlash(R.drawable.imagen_memorama3,"Uno","Uno","Dos"),
         CartaFlash(R.drawable.imagen_memorama4,"Nibbles", "Nipples","Nibbles")
     ).apply { shuffle() }
+    val cardList2 = mutableListOf<CartaFlash>(
+        CartaFlash(R.drawable.imagen_memorama5,"Pokemon", "Libre", "Pokemon"),
+        CartaFlash(R.drawable.imagen_memorama6,"Yugio", "Yugio", "Chainsaw"),
+        CartaFlash(R.drawable.imagen_memorama7,"Española", "Española", "Sueca"),
+        CartaFlash(R.drawable.imagen_memorama8,"Lovers", "Amantes", "Lovers")
+    ).apply{shuffle()}
     return Mazos("Cartas", cardList)
+
 }
 
 
