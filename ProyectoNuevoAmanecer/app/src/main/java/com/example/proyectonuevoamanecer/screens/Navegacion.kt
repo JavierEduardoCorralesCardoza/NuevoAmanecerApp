@@ -27,6 +27,8 @@ fun Navegacion(){
         composable(AppRoutes.FlashcardDecks.route) { FlashcardDecks(navController) }
         composable(AppRoutes.FlashcardGame.route) { FlashcardGame(navController) }
         composable(AppRoutes.JuegosScreen.route) { JuegosScreen(navController) }
+        composable(AppRoutes.NivelesMemorama.route) { NivelesMemorama(navController) }
+        composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, 1)}
         composable(
             route = AppRoutes.NivelesJuegos.route + "/{ruta}",
             arguments = listOf(navArgument("ruta") {
