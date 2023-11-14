@@ -85,7 +85,7 @@ fun generateDeck(mazo: String): Mazos {
         Mazos("Objetos", cardList2)
     }
         else ->{
-            Mazos("Default", mutableListOf())
+            Mazos("Animales", mutableListOf())
 
         }
     }

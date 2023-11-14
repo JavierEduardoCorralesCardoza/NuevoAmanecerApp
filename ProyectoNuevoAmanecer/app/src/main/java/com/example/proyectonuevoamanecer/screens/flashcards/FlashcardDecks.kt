@@ -145,6 +145,7 @@ fun PersonItem(
 
 @Composable
 fun BodyContentDecks(navController: NavController) {
+    var showDialog by remember { mutableStateOf(false)}
 
     LazyColumn(
 
@@ -155,9 +156,9 @@ fun BodyContentDecks(navController: NavController) {
             listOf<String>(
                 "Animales",
                 "Objetos",
-                "Personajes",
-                "Comida",
-                "Bebidas",
+                "Animales",
+                "Animales",
+                "Animales",
             )
         ) { name ->
             PersonItem(
@@ -167,6 +168,7 @@ fun BodyContentDecks(navController: NavController) {
                     DropDownItem("Añadir Tarjeta"),
                     DropDownItem("Renombrar Mazo"),
                     DropDownItem("Borrar Mazo"),
+                    DropDownItem("Editar Mazo"),
                 )
             ) {
 
@@ -177,6 +179,12 @@ fun BodyContentDecks(navController: NavController) {
 
 
         }
+    }
+    Button(onClick = {showDialog = true}){
+        Text("Crear Mazo")
+    }
+    CrearMazoDialog(showDialog = remember{ mutableStateOf(showDialog)} ){
+        mazoNombre ->
     }
 }
 
