@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -46,20 +47,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
-@Preview(showBackground = true)
-@Composable
-fun PreviewFlashcardDecks() {
-    val navController = rememberNavController()
-    FlashcardDecks(navController)
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewFlashcardDecks() {
+//    val navController = rememberNavController()
+//    FlashcardDecks(navController)
+//}
 @Composable
 fun FlashcardDecks(navController: NavController)
 {
     BodyContentDecks(navController)
     Text(text = "Mazos", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
-    Button(onClick={navController.navigate(AppRoutes.FlashcardGame.route)}){
 
-    }
 }
 
 data class DropDownItem(
@@ -70,6 +69,7 @@ data class DropDownItem(
 fun PersonItem(
     personName: String,
     dropDownItems: List<DropDownItem>,
+    navController: NavController,
     modifier: Modifier = Modifier,
     onItemClick: (DropDownItem) -> Unit,
 ) {
@@ -114,6 +114,7 @@ fun PersonItem(
                             interactionSource.emit(press)
                             tryAwaitRelease()
                             interactionSource.emit(PressInteraction.Release(press))
+                            navController.navigate(AppRoutes.FlashcardGame.route + "/${personName}")
                         }
                     )
                 }
@@ -144,6 +145,7 @@ fun PersonItem(
 
 @Composable
 fun BodyContentDecks(navController: NavController) {
+    var showDialog by remember { mutableStateOf(false)}
 
     LazyColumn(
 
@@ -154,17 +156,19 @@ fun BodyContentDecks(navController: NavController) {
             listOf<String>(
                 "Animales",
                 "Objetos",
-                "Personajes",
-                "Comida",
-                "Bebidas",
+                "Animales",
+                "Animales",
+                "Animales",
             )
         ) { name ->
             PersonItem(
                 personName = name,
+                navController= navController,
                 dropDownItems = listOf(
                     DropDownItem("Añadir Tarjeta"),
                     DropDownItem("Renombrar Mazo"),
                     DropDownItem("Borrar Mazo"),
+                    DropDownItem("Editar Mazo"),
                 )
             ) {
 
@@ -175,6 +179,12 @@ fun BodyContentDecks(navController: NavController) {
 
 
         }
+    }
+    Button(onClick = {showDialog = true}){
+        Text("Crear Mazo")
+    }
+    CrearMazoDialog(showDialog = remember{ mutableStateOf(showDialog)} ){
+        mazoNombre ->
     }
 }
 
