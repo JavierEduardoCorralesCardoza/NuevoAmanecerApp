@@ -23,7 +23,7 @@ fun BodyContentJuegos(navController: NavController){
         Button(onClick = { }) {
             Text(text = "Eleccion de imagen")
         }
-        Button(onClick = {navController.navigate(AppRoutes.DiferenciasCard.route)}) {
+        Button(onClick = {navController.navigate("${AppRoutes.NivelesJuegos.route}/${AppRoutes.DiferenciasCard.route}")}) {
             Text(text = "Encontrar diferencias")
         }
         Button(onClick = { }) {
