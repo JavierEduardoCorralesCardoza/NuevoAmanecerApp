@@ -14,6 +14,7 @@ import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardDecks
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardGame
 import com.example.proyectonuevoamanecer.screens.flashcards.MainFlashMenu
 import com.example.proyectonuevoamanecer.screens.home.HomeScreen
+import com.example.proyectonuevoamanecer.screens.home.LoginScreen
 import com.example.proyectonuevoamanecer.screens.juegos.JuegosScreen
 import com.example.proyectonuevoamanecer.screens.juegos.NivelesJuegos
 import com.example.proyectonuevoamanecer.screens.juegos.memorama.MemoramaScreen
@@ -22,7 +23,8 @@ import com.example.proyectonuevoamanecer.screens.juegos.memorama.NivelesMemorama
 @Composable
 fun Navegacion(){
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = AppRoutes.HomeScreen.route){
+    NavHost(navController = navController, startDestination = AppRoutes.LoginScreen.route){
+        composable(AppRoutes.LoginScreen.route) { LoginScreen(navController) }
         composable(AppRoutes.HomeScreen.route) { HomeScreen(navController) }
         composable(AppRoutes.MainFlashMenu.route) { MainFlashMenu(navController) }
         composable(AppRoutes.FlashcardDecks.route) { FlashcardDecks(navController) }
