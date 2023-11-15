@@ -1,6 +1,7 @@
 package com.example.proyectonuevoamanecer.screens
 
 sealed class AppRoutes(val route: String){
+    object LoginScreen: AppRoutes("Login")
     object HomeScreen: AppRoutes("Home")
     object MemoramaScreen: AppRoutes("Memorama")
     object MainFlashMenu: AppRoutes("Flashcards")
