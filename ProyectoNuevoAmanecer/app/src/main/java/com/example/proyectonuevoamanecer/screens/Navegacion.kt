@@ -27,8 +27,8 @@ fun Navegacion(){
         composable(AppRoutes.FlashcardDecks.route) { FlashcardDecks(navController) }
         composable(AppRoutes.FlashcardGame.route) { FlashcardGame(navController) }
         composable(AppRoutes.JuegosScreen.route) { JuegosScreen(navController) }
-        composable(AppRoutes.NivelesMemorama.route) { NivelesMemorama(navController) }
-        composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, 1)}
+        //composable(AppRoutes.NivelesMemorama.route) { NivelesMemorama(navController) }
+        //composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, 1)}
         composable(
             route = AppRoutes.NivelesJuegos.route + "/{ruta}",
             arguments = listOf(navArgument("ruta") {
@@ -39,7 +39,7 @@ fun Navegacion(){
             val ruta = backStackEntry.arguments?.getString("ruta")
             NivelesJuegos(navController, ruta ?: "")
         }
-        composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController)}
+        //composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, )}
         composable(
             route = AppRoutes.MemoramaScreen.route + "/{nivel}",
             arguments = listOf(navArgument("nivel") {
@@ -49,6 +49,17 @@ fun Navegacion(){
         ) { backStackEntry ->
             val nivel = backStackEntry.arguments?.getInt("nivel")
             MemoramaScreen(navController = navController, nivel = nivel ?: 0)
+        }
+
+        composable(
+            route = AppRoutes.DiferenciasCard.route + "/{nivel}",
+            arguments = listOf(navArgument("nivel") {
+                type = NavType.IntType
+                defaultValue = 1
+            })
+        ) { backStackEntry ->
+            val nivel = backStackEntry.arguments?.getInt("nivel")
+            DiferenciasCard(navController = navController, lvl = nivel ?: 0)
         }
     }
 }
