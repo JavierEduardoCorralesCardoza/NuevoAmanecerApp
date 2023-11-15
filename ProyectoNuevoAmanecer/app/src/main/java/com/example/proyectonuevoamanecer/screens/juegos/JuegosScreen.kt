@@ -20,14 +20,11 @@ fun BodyContentJuegos(navController: NavController){
         Button(onClick = { navController.navigate("${AppRoutes.NivelesJuegos.route}/${AppRoutes.MemoramaScreen.route}") }) {
             Text(text = "Memorama")
         }
-        Button(onClick = { }) {
+        Button(onClick = {navController.navigate(AppRoutes.EligirImagen.route) }) {
             Text(text = "Eleccion de imagen")
         }
         Button(onClick = {navController.navigate("${AppRoutes.NivelesJuegos.route}/${AppRoutes.DiferenciasCard.route}")}) {
             Text(text = "Encontrar diferencias")
-        }
-        Button(onClick = { }) {
-            Text(text = "Secuencia de numeros")
         }
         Button(onClick = { }) {
             Text(text = "Rompecabezas")

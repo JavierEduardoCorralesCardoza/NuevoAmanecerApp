@@ -4,6 +4,7 @@ sealed class AppRoutes(val route: String){
     object LoginScreen: AppRoutes("Login")
     object HomeScreen: AppRoutes("Home")
     object MemoramaScreen: AppRoutes("Memorama")
+    object EligirImagen: AppRoutes("EligirImagen")
     object MainFlashMenu: AppRoutes("Flashcards")
     object FlashcardDecks: AppRoutes("FlashcardDeck")
     object FlashcardGame: AppRoutes("FlashcardGames")
