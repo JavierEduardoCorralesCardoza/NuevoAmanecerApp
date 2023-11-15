@@ -17,6 +17,8 @@ import com.example.proyectonuevoamanecer.screens.home.LoginScreen
 import com.example.proyectonuevoamanecer.screens.juegos.JuegosScreen
 import com.example.proyectonuevoamanecer.screens.juegos.NivelesJuegos
 import com.example.proyectonuevoamanecer.screens.juegos.memorama.MemoramaScreen
+import com.example.proyectonuevoamanecer.screens.juegos.rompecabezas.PuzzleBoard
+import com.example.proyectonuevoamanecer.screens.juegos.rompecabezas.Rompecabezas
 
 @Composable
 fun Navegacion(){
@@ -28,6 +30,7 @@ fun Navegacion(){
         composable(AppRoutes.FlashcardDecks.route) { FlashcardDecks(navController) }
         composable(AppRoutes.Numeros.route){ Numeros(navController)}
         composable(AppRoutes.EligirImagen.route){ EligirImagen(navController) }
+        composable(AppRoutes.Rompecabezas.route){ Rompecabezas(navController) }
         composable(route = AppRoutes.FlashcardGame.route + "/{mazo}",
                     arguments = listOf(navArgument("mazo"){
                         type = NavType.StringType
