@@ -1,15 +1,13 @@
 package com.example.proyectonuevoamanecer.screens
 
 import DiferenciasCard
-import ImageCard
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.proyectonuevoamanecer.MainActivity
-import com.example.proyectonuevoamanecer.clases.Mazos
+import com.example.nuevoamanecer_numeros.Numeros.Numeros
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardDecks
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardGame
 import com.example.proyectonuevoamanecer.screens.flashcards.MainFlashMenu
@@ -28,6 +26,7 @@ fun Navegacion(){
         composable(AppRoutes.HomeScreen.route) { HomeScreen(navController) }
         composable(AppRoutes.MainFlashMenu.route) { MainFlashMenu(navController) }
         composable(AppRoutes.FlashcardDecks.route) { FlashcardDecks(navController) }
+        composable(AppRoutes.Numeros.route){ Numeros(navController)}
         composable(route = AppRoutes.FlashcardGame.route + "/{mazo}",
                     arguments = listOf(navArgument("mazo"){
                         type = NavType.StringType
