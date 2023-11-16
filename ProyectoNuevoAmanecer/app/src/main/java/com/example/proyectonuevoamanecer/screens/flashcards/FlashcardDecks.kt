@@ -52,8 +52,9 @@ import com.example.proyectonuevoamanecer.clases.Mazos
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.proyectonuevoamanecer.clases.CartaFlash
 
 @Composable
 fun FlashcardDecks(navController: NavController)
@@ -62,12 +63,16 @@ fun FlashcardDecks(navController: NavController)
     val database = FlashcardDatabase.getInstance(context)
     val viewModel:FlashViewModel= viewModel(factory = FlashViewModelFactory(database))
     val showDialog = remember { mutableStateOf(false)}
-    val mazos by viewModel.allMazos.observeAsState(emptyList())
-    BodyContentDecks(navController,showDialog, mazos)
+    val mazos by viewModel.allMazos.collectAsState(initial = emptyList())
+    val mazosList: MutableList<Mazos> = mazos.map {
+        Mazos(it.titulo, it.flashcardList)
+    }.toMutableList()
+    BodyContentDecks(navController,showDialog, mazosList)
     Text(text = "Mazos", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
     if(showDialog.value){
         CrearMazoDialog(showDialog){mazoTitulo->
-            mazos.add(Mazos(mazoTitulo, mutableListOf()))
+            val newMazo = MazoEntity(0, mazoTitulo, mutableListOf())
+            viewModel.insertMazo(newMazo)
 
         }
     }
@@ -157,7 +162,7 @@ fun PersonItem(
 }
 
 @Composable
-fun BodyContentDecks(navController: NavController,showDialog:MutableState<Boolean>, mazos:MutableList<Mazos>) {
+fun BodyContentDecks(navController: NavController,showDialog:MutableState<Boolean>, mazosList:MutableList<Mazos>) {
 
 
     LazyColumn(
@@ -165,7 +170,7 @@ fun BodyContentDecks(navController: NavController,showDialog:MutableState<Boolea
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(mazos)
+        items(mazosList)
          { mazo ->
             PersonItem(
                 personName = mazo.titulo,
