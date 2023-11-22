@@ -71,7 +71,7 @@ fun generateDeck(mazo: String): Mazos {
             CartaFlash(R.drawable.imagen_memorama1, "As", "As", "Rey"),
             CartaFlash(R.drawable.imagen_memorama2, "Magic", "Rey", "Magic"),
             CartaFlash(R.drawable.imagen_memorama3, "Uno", "Uno", "Dos"),
-            CartaFlash(R.drawable.imagen_memorama4, "Nibbles", "Nipples", "Nibbles")
+            CartaFlash(R.drawable.imagen_memorama4, "Nibbles", "Needles", "Nibbles")
         ).apply { shuffle() }
             Mazos("Animales" ,cardList)
     }

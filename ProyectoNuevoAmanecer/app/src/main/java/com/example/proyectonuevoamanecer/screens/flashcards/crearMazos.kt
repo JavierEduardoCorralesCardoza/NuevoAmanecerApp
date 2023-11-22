@@ -13,13 +13,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrearMazoDialog(showDialog: MutableState<Boolean>, onMazoCreado:
 (String)->Unit){
     if (showDialog. value){
         var mazoNombre by remember {
-            mutableStateOf(TextFieldValue(""))}
+            mutableStateOf("")}
         AlertDialog(
             onDismissRequest = { showDialog.value = false },
             title = {Text("Elija el nombre del mazo")},
@@ -33,7 +34,7 @@ fun CrearMazoDialog(showDialog: MutableState<Boolean>, onMazoCreado:
             confirmButton = {
                 Button(
                     onClick={
-                        onMazoCreado(mazoNombre.text)
+                        onMazoCreado(mazoNombre)
                         showDialog.value = false
                     }
                 ){
