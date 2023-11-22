@@ -21,6 +21,9 @@ class FlashViewModel(private val database: FlashcardDatabase) : ViewModel() {
     fun insertMazo(mazo: MazoEntity) = viewModelScope.launch(Dispatchers.IO) {
         dao.insertMazo(mazo)
     }
+    fun deleteMazo(mazoId: MazoEntity) = viewModelScope.launch(Dispatchers.IO) {
+        dao.deleteMazo(mazoId)
+    }
 
     fun insertCartaFlash(cartaFlash: CartaFlashEntity) = viewModelScope.launch(Dispatchers.IO) {
         dao.insertCartaFlash(cartaFlash)

@@ -1,6 +1,8 @@
 package com.example.proyectonuevoamanecer.clases
 
 import androidx.room.TypeConverter
+import com.example.proyectonuevoamanecer.screens.flashcards.MazoEntity
+import com.example.proyectonuevoamanecer.screens.flashcards.mazosToMazoEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

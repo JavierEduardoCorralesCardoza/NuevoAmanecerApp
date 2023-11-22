@@ -2,6 +2,7 @@ package com.example.proyectonuevoamanecer.screens.flashcards
 
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,10 @@ interface FlashcardDao {
     fun getCartasFlashFromMazo(mazoId: Int): Flow<List<CartaFlashEntity>>
     @Insert
     fun insertMazo(mazo: MazoEntity): Long
+    //@Query("DELETE FROM MazoEntity WHERE id = :mazoId")
+    @Delete
+    fun deleteMazo(mazoId: MazoEntity): Int
+
 
     @Insert
     fun insertCartaFlash(cartaFlash: CartaFlashEntity)

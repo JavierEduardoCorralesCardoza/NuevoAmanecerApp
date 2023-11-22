@@ -73,7 +73,7 @@ fun generateDeck(mazo: String): Mazos {
             CartaFlash(R.drawable.imagen_memorama3, "Uno", "Uno", "Dos"),
             CartaFlash(R.drawable.imagen_memorama4, "Nibbles", "Needles", "Nibbles")
         ).apply { shuffle() }
-            Mazos("Animales" ,cardList)
+            Mazos(0,"Animales" ,cardList)
     }
     "Objetos"-> {
         val cardList2 = mutableListOf<CartaFlash>(
@@ -82,10 +82,10 @@ fun generateDeck(mazo: String): Mazos {
             CartaFlash(R.drawable.imagen_memorama7, "Española", "Española", "Sueca"),
             CartaFlash(R.drawable.imagen_memorama8, "Lovers", "Amantes", "Lovers")
         ).apply { shuffle() }
-        Mazos("Objetos", cardList2)
+        Mazos(0,"Objetos", cardList2)
     }
         else ->{
-            Mazos("Animales", mutableListOf())
+            Mazos(0,"Animales", mutableListOf())
 
         }
     }
