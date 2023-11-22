@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -43,21 +45,37 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.proyectonuevoamanecer.clases.Mazos
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewFlashcardDecks() {
-//    val navController = rememberNavController()
-//    FlashcardDecks(navController)
-//}
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.proyectonuevoamanecer.clases.CartaFlash
+
 @Composable
 fun FlashcardDecks(navController: NavController)
 {
-    BodyContentDecks(navController)
+    val context = LocalContext.current
+    val database = FlashcardDatabase.getInstance(context)
+    val viewModel:FlashViewModel= viewModel(factory = FlashViewModelFactory(database))
+    val showDialog = remember { mutableStateOf(false)}
+    val mazos by viewModel.allMazos.collectAsState(initial = emptyList())
+    val mazosList: MutableList<Mazos> = mazos.map {
+        Mazos(it.titulo, it.flashcardList)
+    }.toMutableList()
+    BodyContentDecks(navController,showDialog, mazosList)
     Text(text = "Mazos", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
+    if(showDialog.value){
+        CrearMazoDialog(showDialog){mazoTitulo->
+            val newMazo = MazoEntity(0, mazoTitulo, mutableListOf())
+            viewModel.insertMazo(newMazo)
+
+        }
+    }
 
 }
 
@@ -144,25 +162,18 @@ fun PersonItem(
 }
 
 @Composable
-fun BodyContentDecks(navController: NavController) {
-    var showDialog by remember { mutableStateOf(false)}
+fun BodyContentDecks(navController: NavController,showDialog:MutableState<Boolean>, mazosList:MutableList<Mazos>) {
+
 
     LazyColumn(
 
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(
-            listOf<String>(
-                "Animales",
-                "Objetos",
-                "Animales",
-                "Animales",
-                "Animales",
-            )
-        ) { name ->
+        items(mazosList)
+         { mazo ->
             PersonItem(
-                personName = name,
+                personName = mazo.titulo,
                 navController= navController,
                 dropDownItems = listOf(
                     DropDownItem("Añadir Tarjeta"),
@@ -180,11 +191,17 @@ fun BodyContentDecks(navController: NavController) {
 
         }
     }
-    Button(onClick = {showDialog = true}){
-        Text("Crear Mazo")
-    }
-    CrearMazoDialog(showDialog = remember{ mutableStateOf(showDialog)} ){
-        mazoNombre ->
+    Box(
+        modifier=Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Button(
+            onClick = { showDialog.value = true },
+            modifier = Modifier.paddingFromBaseline(top = 0.dp, bottom = 32.dp)
+        ) {
+            Text("Crear Mazo")
+        }
+
     }
 }
 
