@@ -43,7 +43,7 @@ fun Navegacion(){
             }
         }
         composable(AppRoutes.JuegosScreen.route) { JuegosScreen(navController) }
-        composable(AppRoutes.NivelesMemorama.route) { NivelesMemorama(navController) }
+        composable(AppRoutes.NivelesJuegos.route) { NivelesJuegos(navController, AppRoutes.NivelesJuegos.route) }
 
         composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, 1)}
 
@@ -60,9 +60,9 @@ fun Navegacion(){
             NivelesJuegos(navController, ruta ?: "")
         }
 
-        composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController)}
+        composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, 1)}
 
-        composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, )}
+        composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, 1)}
 
         composable(
             route = AppRoutes.MemoramaScreen.route + "/{nivel}",
