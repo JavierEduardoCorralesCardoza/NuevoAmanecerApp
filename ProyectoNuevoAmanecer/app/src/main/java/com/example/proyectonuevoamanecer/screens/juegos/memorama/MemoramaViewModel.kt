@@ -18,6 +18,7 @@ class MemoramaViewModel(application: Application) : AndroidViewModel(application
     val indexCartasVolteadas = mutableListOf<Int>()
     val retrasoEnEjecucion = mutableStateOf(false)
     val cuadroDeDialogo = mutableStateOf(false)
+    val score = mutableStateOf(0)
 
     fun ListaDeImagenes(numCartas: Int){
         if(imagenes_carta.isEmpty()) {

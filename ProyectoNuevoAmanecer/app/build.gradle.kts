@@ -62,7 +62,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).configure
 dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.2")
 
     implementation("androidx.compose.runtime:runtime-livedata:1.3.0-rc01")

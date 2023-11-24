@@ -48,6 +48,7 @@ fun MemoramaScreen(navController: NavController, nivel: Int){
 @Composable
 fun BodyContent(navController: NavController, viewModel: MemoramaViewModel){
     Column {
+        Text(text = viewModel.score.value.toString())
         ListOfCards(cartas = viewModel.cartas, indexCartasVolteadas = viewModel.indexCartasVolteadas, viewModel = viewModel)
         WinningMessage(viewModel = viewModel, navController)
     }
@@ -66,7 +67,7 @@ fun WinningMessage(viewModel: MemoramaViewModel, navController: NavController){
         AlertDialog(
             onDismissRequest = {},
             title = { Text("¡Felicidades!") },
-            text = { Text("Haz ganadoooooo") },
+            text = { Text("Haz ganadoooooo. Score: "+viewModel.score.value.toString()) },
             confirmButton = {
                 NavigationButton(navController = navController)
             }
@@ -133,15 +134,19 @@ fun onCardClick(carta: CartasMemorama, cartas: List<CartasMemorama>, indexCartas
         if (indexCartasVolteadas.size == 2) {
             if (cartas[indexCartasVolteadas[0]].imagen == cartas[indexCartasVolteadas[1]].imagen) {
                 indexCartasVolteadas.clear()
+                viewModel.score.value = viewModel.score.value+100
             } else {
                 viewModel.voltearCartasConRetraso(cartas, indexCartasVolteadas)
+                viewModel.score.value = viewModel.score.value-10
             }
         }
     } else if (indexCartasVolteadas.size == 2) {
         if (cartas[indexCartasVolteadas[0]].imagen != cartas[indexCartasVolteadas[1]].imagen) {
             viewModel.voltearCartasConRetraso(cartas, indexCartasVolteadas)
+            viewModel.score.value = viewModel.score.value-10
         } else {
             indexCartasVolteadas.clear()
+            viewModel.score.value = viewModel.score.value+100
         }
     }
 }
