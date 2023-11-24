@@ -102,22 +102,27 @@ fun CardItem(carta: CartasMemorama, cartas: List<CartasMemorama>, indexCartasVol
     val configuration = LocalConfiguration.current
     val cardSize = configuration.screenWidthDp.dp / sqrt(cartas.size.toDouble()).roundToInt()
 
-    Card(modifier = Modifier.clickable(enabled = !viewModel.retrasoEnEjecucion.value) {
-        onCardClick(carta, cartas, indexCartasVolteadas, viewModel)
-    }) {
-        if(!carta.volteada) {
-            Image(
-                painter = painterResource(id = R.drawable.dorsal_carta),
-                contentDescription = "Dorsal de la carta",
-                modifier = Modifier.size(cardSize)
-            )
-        }
-        else {
-            Image(painter = painterResource(id = carta.imagen),
-                contentDescription = "Imagen carta",
-                modifier = Modifier.size(cardSize)
-            )
-        }
+    if(!carta.volteada) {
+        Image(
+            painter = painterResource(id = R.drawable.dorsal_carta),
+            contentDescription = "Dorsal de la carta",
+            modifier = Modifier
+                .size(cardSize)
+                .clickable(enabled = !viewModel.retrasoEnEjecucion.value) {
+                    onCardClick(carta, cartas, indexCartasVolteadas, viewModel)
+                }
+        )
+    }
+    else {
+        Image(
+            painter = painterResource(id = carta.imagen),
+            contentDescription = "Imagen carta",
+            modifier = Modifier
+                .size(cardSize)
+                .clickable(enabled = !viewModel.retrasoEnEjecucion.value) {
+                    onCardClick(carta, cartas, indexCartasVolteadas, viewModel)
+                }
+        )
     }
 }
 
