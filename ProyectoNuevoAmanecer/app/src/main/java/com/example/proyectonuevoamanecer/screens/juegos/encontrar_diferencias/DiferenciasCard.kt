@@ -177,12 +177,12 @@ fun ImageCard(diferenciaImg: Diferencias, navController: NavController, nivel: I
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center) {
                 WinningMess(diferenciasFaltanttes = listSize, navController)
-                Text("Diferencias restantes: $listSize", style = MaterialTheme.typography.bodyMedium)
+                Text("Diferencias restantes: $listSize", style = MaterialTheme.typography.displayMedium)
                 /*var W = (1000f/1002 * anchoImagen) / clickPosition.x
                 var Z = (1000f/596 * largoImagen) / clickPosition.y
                 Text("X: $W Y: $Z", style = MaterialTheme.typography.bodyMedium)*/
                 //Text("Diff: $XD", style = MaterialTheme.typography.bodyMedium)
-                Text(text = diferenciaImg.name, style = MaterialTheme.typography.headlineMedium)
+                Text(text = diferenciaImg.name, style = MaterialTheme.typography.displaySmall)
                 //Text(text = diferenciaImg.hp, style = MaterialTheme.typography.bodyMedium)
             }
 
