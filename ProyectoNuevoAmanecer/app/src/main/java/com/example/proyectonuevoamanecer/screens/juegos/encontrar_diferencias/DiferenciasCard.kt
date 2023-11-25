@@ -6,8 +6,11 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 
 import androidx.compose.foundation.layout.padding
 
@@ -105,95 +108,93 @@ fun ImageCard(diferenciaImg: Diferencias, navController: NavController, nivel: I
     var clickPosition by remember { mutableStateOf(Offset(0f, 0f)) }
     var listSize by remember { mutableStateOf((diferenciaImg.differences.size)-nivel) }
     //var XD by remember { mutableStateOf(false) }
-    Column(
-        //modifier = Modifier.padding(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+
+    Card(
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxSize(),
+
+        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
-        Card(
-            modifier = Modifier
-                .padding(4.dp),
-
-            shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        Column(
+            modifier = Modifier.padding(10.dp).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier.padding(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp)),
-
-                    ) {
-                    val img1 = painterResource(id = diferenciaImg.image1)
-                    Image(painter = img1, contentDescription = "Encuentra las diferencias",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        alignment = Alignment.Center
-                    )
-                }
-                var anchoImagen by remember { mutableStateOf(0f) }
-                var largoImagen by remember { mutableStateOf(0f) }
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .fillMaxWidth()
-                        .padding(0.dp)
-
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp)),
 
                 ) {
-                    val img2 = painterResource(id = diferenciaImg.image2)
-                    Image(painter = img2, contentDescription = "Encuentra las diferencias",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .onSizeChanged { size ->
-                                anchoImagen = size.width.toFloat()
-                                largoImagen = size.height.toFloat()
-                            }
-                            .pointerInput(Unit) {
-                                detectTapGestures { offset ->
-                                    clickPosition = offset
-                                    var x = (1000f / 1002 * anchoImagen) / clickPosition.x
-                                    var y = (1000f / 596 * largoImagen) / clickPosition.y
-                                    var ind = findDiff(X = x, Y = y, diffList = diferenciaImg.differences)
-                                    if (ind != -1) {
-                                        diferenciaImg.differences.removeAt(ind)
-                                        listSize--
-                                    }
-                                    //XD = findDiff(X = x, Y = y, diffList = diferenciaImg.differences)
+                val img1 = painterResource(id = diferenciaImg.image1)
+                Image(painter = img1, contentDescription = "Encuentra las diferencias",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    alignment = Alignment.Center
+                )
+            }
+            var anchoImagen by remember { mutableStateOf(0f) }
+            var largoImagen by remember { mutableStateOf(0f) }
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .fillMaxWidth()
+                    .padding(0.dp)
+
+
+            ) {
+                val img2 = painterResource(id = diferenciaImg.image2)
+                Image(painter = img2, contentDescription = "Encuentra las diferencias",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onSizeChanged { size ->
+                            anchoImagen = size.width.toFloat()
+                            largoImagen = size.height.toFloat()
+                        }
+                        .pointerInput(Unit) {
+                            detectTapGestures { offset ->
+                                clickPosition = offset
+                                var x = (1000f / 1002 * anchoImagen) / clickPosition.x
+                                var y = (1000f / 596 * largoImagen) / clickPosition.y
+                                var ind = findDiff(X = x, Y = y, diffList = diferenciaImg.differences)
+                                if (ind != -1) {
+                                    diferenciaImg.differences.removeAt(ind)
+                                    listSize--
                                 }
+                                //XD = findDiff(X = x, Y = y, diffList = diferenciaImg.differences)
                             }
-                        /*.clickable {
-                            println("...................................")
-                            //
-                            }*/
-                        ,
-                        alignment = Alignment.Center
+                        }
+                    /*.clickable {
+                        println("...................................")
+                        //
+                        }*/
+                    ,
+                    alignment = Alignment.Center
 
-                    )
-
-                }
-                Column(modifier = Modifier.padding(6.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center) {
-                    WinningMess(diferenciasFaltanttes = listSize, navController)
-                    Text("Diferencias restantes: $listSize", style = MaterialTheme.typography.displayMedium)
-                    /*var W = (1000f/1002 * anchoImagen) / clickPosition.x
-                    var Z = (1000f/596 * largoImagen) / clickPosition.y
-                    Text("X: $W Y: $Z", style = MaterialTheme.typography.bodyMedium)*/
-                    //Text("Diff: $XD", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = diferenciaImg.name, style = MaterialTheme.typography.displaySmall)
-                    //Text(text = diferenciaImg.hp, style = MaterialTheme.typography.bodyMedium)
-                }
+                )
 
             }
+            Column(modifier = Modifier.padding(6.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center) {
+                WinningMess(diferenciasFaltanttes = listSize, navController)
+                Text("Diferencias restantes: $listSize", style = MaterialTheme.typography.displayMedium)
+                /*var W = (1000f/1002 * anchoImagen) / clickPosition.x
+                var Z = (1000f/596 * largoImagen) / clickPosition.y
+                Text("X: $W Y: $Z", style = MaterialTheme.typography.bodyMedium)*/
+                //Text("Diff: $XD", style = MaterialTheme.typography.bodyMedium)
+                Text(text = diferenciaImg.name, style = MaterialTheme.typography.displaySmall)
+                //Text(text = diferenciaImg.hp, style = MaterialTheme.typography.bodyMedium)
+            }
+
         }
     }
+
 }
 
 fun findDiff(X: Float, Y:Float, diffList: MutableList<BotonDiferencias>): Int {

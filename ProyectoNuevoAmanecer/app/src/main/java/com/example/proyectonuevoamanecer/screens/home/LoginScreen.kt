@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,12 +59,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
         Text(text = "LogIn", modifier = Modifier.padding(8.dp))
         TextField(
             value = name,
-            onValueChange = {
-                name = if (it.isNotEmpty() && it.last() == ' ') {
-                    it.dropLast(1)
-                } else {
-                    it
-                }},
+            onValueChange = { name = it },
             label = { Text(text = "Nombre") },
             modifier = Modifier.padding(8.dp)
         )
@@ -99,6 +95,9 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
         ) {
             Text(text = "Iniciar Sesion")
         }
+        Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route) }) {
+            Text(text = "Iniciar Sesion RAPIDO")
+        }
         Gif()
     }
 }
@@ -125,5 +124,7 @@ fun Gif() {
             imageLoader = imageLoader
         ),
         contentDescription = null,
+        modifier = Modifier
+            .width(250.dp)
     )
 }
