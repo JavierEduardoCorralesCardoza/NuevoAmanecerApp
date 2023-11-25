@@ -39,3 +39,4 @@ fun BodyContent(navController: NavController){
 
     Configuracion()
 }
+
