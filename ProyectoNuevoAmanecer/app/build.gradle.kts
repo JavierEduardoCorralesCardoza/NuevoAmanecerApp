@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.proyectonuevoamanecer"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.proyectonuevoamanecer"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -64,7 +64,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.2")
-
     implementation("androidx.compose.runtime:runtime-livedata:1.3.0-rc01")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -88,7 +87,14 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("io.coil-kt:coil-compose:2.4.0")
+    // API
+    implementation("com.squareup.okhttp3:okhttp")
     // room
     implementation("androidx.room:room-ktx:2.5.2")
     ksp("androidx.room:room-compiler:2.5.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
+    //gif
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-gif:2.5.0")
 }
