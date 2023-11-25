@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.clases.CartaFlash
 import com.example.proyectonuevoamanecer.clases.Mazos
+import com.example.proyectonuevoamanecer.clases.processTTS
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
 /*@Preview(showBackground = true)
@@ -168,7 +170,9 @@ fun BodyGameContent(navController: NavController, mazo:MutableState<Mazos>) {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
 
+            val context = LocalContext.current
             Button(onClick = {
+                processTTS(context, currentCard.resp1)
                 onAnswerSelected(currentCard.resp1)
                 setFlipped(true)
                 setAnswerSelected(true)
@@ -180,6 +184,7 @@ fun BodyGameContent(navController: NavController, mazo:MutableState<Mazos>) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(onClick = {
+                processTTS(context, currentCard.resp2)
                 onAnswerSelected(currentCard.resp2)
                 setFlipped(true)
                 setAnswerSelected(true)
