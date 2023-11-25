@@ -48,6 +48,7 @@ fun MemoramaScreen(navController: NavController, nivel: Int){
 @Composable
 fun BodyContent(navController: NavController, viewModel: MemoramaViewModel){
     Column {
+        Text(text = viewModel.score.value.toString())
         ListOfCards(cartas = viewModel.cartas, indexCartasVolteadas = viewModel.indexCartasVolteadas, viewModel = viewModel)
         WinningMessage(viewModel = viewModel, navController)
     }
@@ -66,7 +67,7 @@ fun WinningMessage(viewModel: MemoramaViewModel, navController: NavController){
         AlertDialog(
             onDismissRequest = {},
             title = { Text("¡Felicidades!") },
-            text = { Text("Haz ganadoooooo") },
+            text = { Text("Haz ganadoooooo. Score: "+viewModel.score.value.toString()) },
             confirmButton = {
                 NavigationButton(navController = navController)
             }
@@ -101,22 +102,27 @@ fun CardItem(carta: CartasMemorama, cartas: List<CartasMemorama>, indexCartasVol
     val configuration = LocalConfiguration.current
     val cardSize = configuration.screenWidthDp.dp / sqrt(cartas.size.toDouble()).roundToInt()
 
-    Card(modifier = Modifier.clickable(enabled = !viewModel.retrasoEnEjecucion.value) {
-        onCardClick(carta, cartas, indexCartasVolteadas, viewModel)
-    }) {
-        if(!carta.volteada) {
-            Image(
-                painter = painterResource(id = R.drawable.dorsal_carta),
-                contentDescription = "Dorsal de la carta",
-                modifier = Modifier.size(cardSize)
-            )
-        }
-        else {
-            Image(painter = painterResource(id = carta.imagen),
-                contentDescription = "Imagen carta",
-                modifier = Modifier.size(cardSize)
-            )
-        }
+    if(!carta.volteada) {
+        Image(
+            painter = painterResource(id = R.drawable.dorsal_carta),
+            contentDescription = "Dorsal de la carta",
+            modifier = Modifier
+                .size(cardSize)
+                .clickable(enabled = !viewModel.retrasoEnEjecucion.value) {
+                    onCardClick(carta, cartas, indexCartasVolteadas, viewModel)
+                }
+        )
+    }
+    else {
+        Image(
+            painter = painterResource(id = carta.imagen),
+            contentDescription = "Imagen carta",
+            modifier = Modifier
+                .size(cardSize)
+                .clickable(enabled = !viewModel.retrasoEnEjecucion.value) {
+                    onCardClick(carta, cartas, indexCartasVolteadas, viewModel)
+                }
+        )
     }
 }
 
@@ -133,15 +139,19 @@ fun onCardClick(carta: CartasMemorama, cartas: List<CartasMemorama>, indexCartas
         if (indexCartasVolteadas.size == 2) {
             if (cartas[indexCartasVolteadas[0]].imagen == cartas[indexCartasVolteadas[1]].imagen) {
                 indexCartasVolteadas.clear()
+                viewModel.score.value = viewModel.score.value+100
             } else {
                 viewModel.voltearCartasConRetraso(cartas, indexCartasVolteadas)
+                viewModel.score.value = viewModel.score.value-10
             }
         }
     } else if (indexCartasVolteadas.size == 2) {
         if (cartas[indexCartasVolteadas[0]].imagen != cartas[indexCartasVolteadas[1]].imagen) {
             viewModel.voltearCartasConRetraso(cartas, indexCartasVolteadas)
+            viewModel.score.value = viewModel.score.value-10
         } else {
             indexCartasVolteadas.clear()
+            viewModel.score.value = viewModel.score.value+100
         }
     }
 }

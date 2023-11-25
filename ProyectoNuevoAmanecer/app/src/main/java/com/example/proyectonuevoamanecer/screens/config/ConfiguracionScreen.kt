@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,14 @@ fun Configuracion(){
                         val volumeLevel = configViewModel.volumen.value * audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
                         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeLevel.toInt(), 0)
                     })
+                Text(text = "Texto a voz")
+                Switch(
+                    checked = configViewModel.tts.value,
+                    onCheckedChange = {
+                        configViewModel.tts.value = it
+                        configViewModel.saveState()
+                    }
+                )
                 Button(onClick = { configViewModel.configuracionAbierta.value = false }) {
                     Text(text = "Cerrar")
                 }
