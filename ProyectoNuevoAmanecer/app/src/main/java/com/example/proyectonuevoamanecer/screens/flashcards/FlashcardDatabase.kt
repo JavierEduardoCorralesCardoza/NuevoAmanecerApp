@@ -6,8 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.proyectonuevoamanecer.clases.Converters
+import com.example.proyectonuevoamanecer.clases.Usuario
 
-@Database(entities = [MazoEntity::class, CartaFlashEntity::class], version = 1)
+@Database(entities = [MazoEntity::class, CartaFlashEntity::class, Usuario::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class FlashcardDatabase : RoomDatabase() {
     abstract fun flashcardDao(): FlashcardDao
@@ -22,7 +23,8 @@ abstract class FlashcardDatabase : RoomDatabase() {
                     context.applicationContext,
                     FlashcardDatabase::class.java,
                     "flashcard_database"
-                ).build()
+                ).fallbackToDestructiveMigration() // Este método se utiliza para realizar una migración destructiva
+                    .build()
                 INSTANCE = instance
                 instance
             }

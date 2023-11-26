@@ -98,6 +98,9 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
         Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route) }) {
             Text(text = "Iniciar Sesion RAPIDO")
         }
+        Button(onClick = {  }) {
+            Text(text = "Prueba bajar y cargar info")
+        }
         Gif()
     }
 }
