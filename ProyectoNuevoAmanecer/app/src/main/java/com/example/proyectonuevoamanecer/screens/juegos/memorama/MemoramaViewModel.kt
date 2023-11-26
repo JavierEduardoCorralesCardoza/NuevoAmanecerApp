@@ -1,6 +1,7 @@
 package com.example.proyectonuevoamanecer.screens.juegos.memorama
 
 import android.app.Application
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,7 @@ class MemoramaViewModel(application: Application) : AndroidViewModel(application
     val indexCartasVolteadas = mutableListOf<Int>()
     val retrasoEnEjecucion = mutableStateOf(false)
     val cuadroDeDialogo = mutableStateOf(false)
+    val score = mutableIntStateOf(50)
 
     fun ListaDeImagenes(numCartas: Int){
         if(imagenes_carta.isEmpty()) {

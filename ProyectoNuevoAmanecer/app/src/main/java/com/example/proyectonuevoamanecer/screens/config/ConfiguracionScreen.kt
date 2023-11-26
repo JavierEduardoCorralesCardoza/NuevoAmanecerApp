@@ -5,19 +5,32 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.media.AudioManager
 import android.view.Window
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.proyectonuevoamanecer.R
 
 @Composable
 fun Configuracion(){
@@ -28,8 +41,16 @@ fun Configuracion(){
 
     if(configViewModel.configuracionAbierta.value){
         Dialog(onDismissRequest = {}) {
-            Column {
-                Text(text = "Configuracion")
+            Card(
+                colors = CardDefaults.cardColors(contentColor = Color.White, containerColor = Color.Transparent),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(focusedElevation = 1.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { configViewModel.configuracionAbierta.value = false }) {
+                        Icon(Icons.Default.Close,contentDescription = "Cerrar")
+                    }
+                    Text(text = "Configuracion",style = MaterialTheme.typography.headlineMedium)
+                }
                 Text(text = "Brillo")
                 Slider(
                     value = configViewModel.brillo.value,
@@ -48,9 +69,14 @@ fun Configuracion(){
                         val volumeLevel = configViewModel.volumen.value * audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
                         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeLevel.toInt(), 0)
                     })
-                Button(onClick = { configViewModel.configuracionAbierta.value = false }) {
-                    Text(text = "Cerrar")
-                }
+                Text(text = "Texto a voz")
+                Switch(
+                    checked = configViewModel.tts.value,
+                    onCheckedChange = {
+                        configViewModel.tts.value = it
+                        configViewModel.saveState()
+                    }
+                )
             }
         }
     }

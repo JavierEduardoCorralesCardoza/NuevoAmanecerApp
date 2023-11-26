@@ -9,8 +9,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.juego1jetpc.ui.EligirImagen
-import com.example.nuevoamanecer_numeros.Numeros.Numeros
+
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashViewModel
+
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.Numeros
+
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardDecks
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardGame
 import com.example.proyectonuevoamanecer.screens.flashcards.MainFlashMenu
@@ -19,7 +22,6 @@ import com.example.proyectonuevoamanecer.screens.home.LoginScreen
 import com.example.proyectonuevoamanecer.screens.juegos.JuegosScreen
 import com.example.proyectonuevoamanecer.screens.juegos.NivelesJuegos
 import com.example.proyectonuevoamanecer.screens.juegos.memorama.MemoramaScreen
-import com.example.proyectonuevoamanecer.screens.juegos.rompecabezas.PuzzleBoard
 import com.example.proyectonuevoamanecer.screens.juegos.rompecabezas.Rompecabezas
 
 @Composable
@@ -30,7 +32,7 @@ fun Navegacion(){
         composable(AppRoutes.HomeScreen.route) { HomeScreen(navController) }
         composable(AppRoutes.MainFlashMenu.route) { MainFlashMenu(navController) }
         composable(AppRoutes.FlashcardDecks.route) { FlashcardDecks(navController) }
-        composable(AppRoutes.Numeros.route){ Numeros(navController)}
+        composable(AppRoutes.Numeros.route){ Numeros(navController) }
         composable(AppRoutes.EligirImagen.route){ EligirImagen(navController) }
         composable(AppRoutes.Rompecabezas.route){ Rompecabezas(navController) }
         composable(route = AppRoutes.FlashcardGame.route + "/{mazo}",

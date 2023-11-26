@@ -1,22 +1,31 @@
-package com.example.nuevoamanecer_numeros.Numeros
+package com.example.proyectonuevoamanecer.screens.juegos.numeros
 
 import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,34 +34,130 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.nuevoamanecer_numeros.Numeros.viewModel.NumerosViewModel
-import com.example.nuevoamanecer_numeros.Numeros.viewModel.NumerosViewModelFactory
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.viewModel.NumerosViewModelFactory
+import com.example.proyectonuevoamanecer.api.llamarApi
+import com.example.proyectonuevoamanecer.clases.BotonBase
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.configuracion.Configuracion
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.configuracion.MenuConfiguracion
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.viewModel.NumerosViewModel
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.viewModel.ScreenViewModel
 import org.json.JSONObject
+enum class GameScreenState {
+    SelectLevel,
+    PlayNormal,
+    PlayTimed
+}
 
 @Composable
+fun SelectLevelScreen(onModeSelected: (Int) -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Card(
+            colors = CardDefaults.cardColors(Color.Transparent),
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Text(
+                    "Selecciona un Modo",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Button(
+                    onClick = { onModeSelected(1) },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Normal")
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    onClick = { onModeSelected(2) },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Temporizado")
+                }
+            }
+        }
+    }
+}
+@Composable
 fun Numeros(navController: NavController) {
+    val screenViewModel: ScreenViewModel = viewModel()
+    when (screenViewModel.currentScreen.value) {
+        GameScreenState.SelectLevel -> SelectLevelScreen(screenViewModel::onModeSelected)
+        GameScreenState.PlayNormal -> GameScreen(Timed = false)
+        GameScreenState.PlayTimed -> GameScreen(Timed = true)
+    }
+}
+
+
+@Composable
+fun GameScreen(Timed: Boolean){
     val primaryColor = MaterialTheme.colorScheme.tertiary
     val viewModelStoreOwner = LocalViewModelStoreOwner.current
     val application = LocalContext.current.applicationContext as Application
-    val viewModel = ViewModelProvider(viewModelStoreOwner!!, NumerosViewModelFactory(application, 1)).get(NumerosViewModel::class.java)
-    var showDialog by remember { mutableStateOf(false) }
-    var puntacion by remember {mutableStateOf(0) }
-
+    val viewModel = ViewModelProvider(viewModelStoreOwner!!, NumerosViewModelFactory(
+        application,
+        obtenerConfiguracion(), Timed
+    )
+    )[NumerosViewModel::class.java]
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Box(
+        Column(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
                 .background(color = primaryColor)
                 .border(width = 2.dp, color = Color.Black)
         ) {
-            Text(style = MaterialTheme.typography.displaySmall, text = "Tiempo restante: ${viewModel.tiempoRestante.value / 1000}s", modifier = Modifier.align(Alignment.TopStart))  // Muestra el tiempo restante
-            Text(style = MaterialTheme.typography.displaySmall, text = "Puntaje más alto: ${viewModel.highScore.value}", modifier = Modifier.align(Alignment.TopEnd))  // Muestra el puntaje más alto
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Números",
+                    modifier = Modifier
+                        .wrapContentSize(Alignment.CenterStart),
+                    style = MaterialTheme.typography.displayLarge,
+                )
+                BotonBase {
+                    MenuConfiguracion(viewModel)
+                }
+            }
+            Text(
+                text = "Instrucciones: Haz click en orden ${if (viewModel.ordenActual == "ASC") "Ascendente" else "Descendente"}",
+                modifier = Modifier
+                    .wrapContentSize(Alignment.CenterStart),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (Timed) {
+                    Text(
+                        style = MaterialTheme.typography.titleMedium,
+                        text = "Tiempo restante: ${viewModel.tiempoRestante.value / 1000}s",
+                        modifier = Modifier
+                            .wrapContentSize(Alignment.CenterStart)
+                            .weight(1f)
+                    )  // Muestra el tiempo restante
+                }
+                Text(
+                    style = MaterialTheme.typography.titleMedium,
+                    text = "Puntaje más alto: ${if (Timed) viewModel.highScoreTimed.value else viewModel.highScoreNormal.value}",
+                    modifier = Modifier
+                        .wrapContentSize(Alignment.CenterStart)
+                        .weight(1f)
+                )  // Muestra el puntaje más alto
+            }
         }
 
         Box(
@@ -60,14 +165,7 @@ fun Numeros(navController: NavController) {
                 .weight(2f)
                 .border(width = 2.dp, color = Color.Black)
         ) {
-            if (viewModel.juegoEnProgreso.value) {
-                GameBox(viewModel = viewModel)
-                Text(style = MaterialTheme.typography.displaySmall, text = "Puntuación: ${viewModel.score.value}", modifier = Modifier.align(Alignment.BottomCenter))  // Muestra la puntuación
-            } else {
-                Box(modifier = Modifier.fillMaxSize()){
-                    Text("¡NÚMEROS!", style = MaterialTheme.typography.displayLarge, modifier = Modifier.align(Alignment.Center))  // Muestra el título del juego
-                }
-            }
+            GameBox(viewModel = viewModel, Timed = Timed)
         }
 
         Box(
@@ -79,98 +177,122 @@ fun Numeros(navController: NavController) {
         ) {
             if (!viewModel.juegoEnProgreso.value) {
                 Button(onClick = {
-                    viewModel.primerJuego.value = false
                     viewModel.startGame() }, modifier = Modifier.align(Alignment.Center)) {
                     Text(style = MaterialTheme.typography.displaySmall,
-                        text = "Iniciar juego")
+                        text = "Iniciar juego",
+                        modifier = Modifier
+                            .wrapContentSize(Alignment.CenterStart))
                 }
             }
-            if (showDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDialog = false },
-                    title = { Text(style = MaterialTheme.typography.displayLarge, text = "Juego terminado") },
-                    text = { Text(style = MaterialTheme.typography.displayMedium, text = "Puntuación obtenida: $puntacion") },
-                    confirmButton = {
-                        Button(onClick = {
-                            showDialog = false
-                            viewModel.startGame()
-                        }) {
-                            Text(style = MaterialTheme.typography.displaySmall, text = "Intentar otra vez")
-                        }
-                    },
-                    dismissButton = {
-                        Button(onClick = {
-                            showDialog = false
-                        }) {
-                            Text(style = MaterialTheme.typography.displaySmall,text = "Cerrar")
-                        }
-                    }
-                )
-            }
-        }
-    }
-
-    LaunchedEffect(viewModel.tiempoRestante.value) {
-        if (viewModel.tiempoRestante.value?.let { it <= 0 } == true
-            && viewModel.juegoEnProgreso.value
-            && !viewModel.primerJuego.value) {
-            showDialog = true
-            puntacion = viewModel.score.value
         }
     }
 }
-
-
-fun Configuracion(DatosJuego: JSONObject): Int {
-    val grupo = DatosJuego.optJSONObject("Grupo")
-
-    if (grupo != null) {
-        val dificultad = grupo.optInt("Dificultad")
-
-        when (dificultad) {
-            1 -> return 1
-            2 -> return 2
-            else -> return 3
-        }
-    }
-
-    // En caso de que no se encuentre la estructura esperada en los datos JSON
-    return -1
-}
-
 @Composable
-fun GameBox(viewModel: NumerosViewModel) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+fun GameBox(viewModel: NumerosViewModel,Timed: Boolean) {
+    var showDialog by remember { mutableStateOf(false) }
+    var puntacion by remember { mutableIntStateOf(0) }
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.Center) {
         val density = LocalDensity.current
         val boxWidth = with(density) { constraints.maxWidth.toDp() / 2 }
         val boxHeight = with(density) { constraints.maxHeight.toDp() / 2 }
         val textHeight = with(density) { MaterialTheme.typography.displaySmall.fontSize.toDp() }
-        LaunchedEffect(Unit) {
-            viewModel.setConstraints(boxWidth, boxHeight, textHeight)
+        LaunchedEffect(Unit){
+            viewModel.setConstraints(boxWidth, boxHeight, textHeight)}
+        if (viewModel.juegoEnProgreso.value){
+        viewModel.numbers.forEach { number ->
+            // Determina el color del numero
+            val color = viewModel.coloresNumeros[number] ?: Color.Black
+            // Usa las posiciones aleatorias generadas
+            val (offsetX, offsetY) = viewModel.posiciones[number] ?: Pair(0.dp, 0.dp)
+            Text(
+                text = number.toString(),
+                color = color,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .absoluteOffset(offsetX, offsetY) // Cambiar la posicion del numero
+                    .clickable {
+                        viewModel.addNumber(number)
+                    },
+                style = MaterialTheme.typography.displayMedium
+            )
         }
-        if (!viewModel.primerJuego.value){
-            viewModel.numbers.forEach { number ->
-                // Determina el color del numero
-                val color = when {
-                    viewModel.NumerosIncorrecto.contains(number) -> Color.Red
-                    viewModel.NumerosOprimidos.contains(number) -> Color.Green
-                    else -> Color.Black
-                }
-
-                // Usa las posiciones aleatorias generadas
-                val (offsetX, offsetY) = viewModel.posiciones[number] ?: Pair(0.dp, 0.dp)
-                Text(
-                    text = number.toString(),
-                    color = color,
+            Text(style = MaterialTheme.typography.displaySmall,
+                text = "Puntuación: ${viewModel.score.value}",
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .wrapContentSize(Alignment.CenterStart))  // Muestra la puntuación
+        }
+        else {
+            Box(modifier = Modifier.fillMaxSize()){
+                Text("¡NÚMEROS!", style = MaterialTheme.typography.displayLarge,
                     modifier = Modifier
-                        .padding(4.dp)
-                        .absoluteOffset(offsetX, offsetY) // Cambiar la posicion del numero
-                        .clickable {
-                            viewModel.addNumber(number)
-                        },
-                    style = MaterialTheme.typography.displayMedium
-                )
+                        .align(Alignment.Center)
+                        .wrapContentSize(Alignment.CenterStart))  // Muestra el título del juego
+            }
+        }
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text(style = MaterialTheme.typography.displayLarge,
+                    text = "Juego terminado",
+                    modifier = Modifier
+                        .wrapContentSize(Alignment.CenterStart))},
+                text = { Text(style = MaterialTheme.typography.displayMedium,
+                    text = "Puntuación obtenida: $puntacion",
+                    modifier = Modifier
+                        .wrapContentSize(Alignment.CenterStart)) },
+                confirmButton = {
+                    Button(onClick = {
+                        showDialog = false
+                        viewModel.startGame()
+                    }) {
+                        Text(style = MaterialTheme.typography.displaySmall,
+                            text = "Intentar otra vez",
+                            modifier = Modifier
+                            .wrapContentSize(Alignment.CenterStart))
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = {
+                        showDialog = false
+                    }) {
+                        Text(style = MaterialTheme.typography.displaySmall,
+                            text = "Cerrar",
+                            modifier = Modifier
+                            .wrapContentSize(Alignment.CenterStart))
+                    }
+                }
+            )
+        }
+    }
+
+    if (Timed) {
+        LaunchedEffect(viewModel.tiempoRestante.value) {
+            if (viewModel.tiempoRestante.value <= 0
+                && viewModel.juegoEnProgreso.value) {
+                showDialog = true
+                puntacion = viewModel.score.value
             }
         }
     }
+}
+
+fun obtenerConfiguracion(): Configuracion {
+    return if (hayConexionInternet()) {
+        val response = llamarApi("miembros", emptyMap(),"GET")
+        Configuracion(response)
+    } else {
+        // Devuelve la configuración predeterminada si no hay conexión a Internet
+        Configuracion(JSONObject("{\"Niveles\":[{\"Rango\":10,\"CantidadNumeros\":10,\"Orden\":\"ASC\"},{\"Rango\":10,\"CantidadNumeros\":10,\"Orden\":\"DESC\"}],\"TiempoInicial\":30,\"TiempoAgregar\":15,\"TiempoClickIncorrecto\":1,\"PuntosClickCorrecto\":50,\"PuntosClickIncorrecto\":10,\"PuntosCompletarSet\":150}"))
+    }
+}
+
+fun hayConexionInternet(): Boolean {
+    // Implementa esta función para verificar si hay conexión a Internet
+    // ...
+    return false
 }
