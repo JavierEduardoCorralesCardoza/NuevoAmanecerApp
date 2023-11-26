@@ -91,4 +91,12 @@ dependencies {
     // room
     implementation("androidx.room:room-ktx:2.5.2")
     ksp("androidx.room:room-compiler:2.5.0")
+    //para add flashcard dialog
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.18.0")
+    //lifecycle-viewmodel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    //Imagen
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+
 }

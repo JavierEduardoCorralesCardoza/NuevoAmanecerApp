@@ -26,9 +26,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,66 +54,53 @@ import com.example.proyectonuevoamanecer.clases.Mazos
 import com.example.proyectonuevoamanecer.clases.processTTS
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
-/*@Preview(showBackground = true)
-@Composable
-fun PreviewFlashcardGame() {
-    val navController = rememberNavController()
-    FlashcardGame(navController)
-
-}
-*/
-
+import kotlinx.coroutines.flow.first
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.ViewModel
+import coil.compose.AsyncImagePainter.State.Empty.painter
+import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.launch
+import coil.compose.rememberImagePainter
 
 @Composable
-fun FlashcardGame(navController: NavController, mazo : String){
-
-    val mazo = remember { mutableStateOf(generateDeck(mazo)) }
-    BodyGameContent(navController, mazo)
-}
-fun generateDeck(mazo: String): Mazos {
-    return when (mazo) {
-        "Animales"-> {
-            val cardList = mutableListOf<CartaFlash>(
-            CartaFlash(R.drawable.imagen_memorama1, "As", "As", "Rey"),
-            CartaFlash(R.drawable.imagen_memorama2, "Magic", "Rey", "Magic"),
-            CartaFlash(R.drawable.imagen_memorama3, "Uno", "Uno", "Dos"),
-            CartaFlash(R.drawable.imagen_memorama4, "Nibbles", "Needles", "Nibbles")
-        ).apply { shuffle() }
-            Mazos(0,"Animales" ,cardList)
-    }
-    "Objetos"-> {
-        val cardList2 = mutableListOf<CartaFlash>(
-            CartaFlash(R.drawable.imagen_memorama5, "Pokemon", "Libre", "Pokemon"),
-            CartaFlash(R.drawable.imagen_memorama6, "Yugio", "Yugio", "Chainsaw"),
-            CartaFlash(R.drawable.imagen_memorama7, "Española", "Española", "Sueca"),
-            CartaFlash(R.drawable.imagen_memorama8, "Lovers", "Amantes", "Lovers")
-        ).apply { shuffle() }
-        Mazos(0,"Objetos", cardList2)
-    }
-        else ->{
-            Mazos(0,"Animales", mutableListOf())
-
+fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: FlashViewModel){
+    val mazoState = remember{ mutableStateOf<Mazos?>(null)}
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(mazoTitulo){
+        coroutineScope.launch{
+            val mazos = viewModel.allMazos.first()
+            val mazoEntity = mazos.find{it.titulo==mazoTitulo}
+            if(mazoEntity != null){
+                mazoState.value=Mazos(mazoEntity.id,mazoEntity.titulo,mazoEntity.flashcardList)
+            }
         }
     }
-
+    val mazoValue = mazoState.value
+    if(mazoValue != null) {
+        BodyGameContent(navController, mazoValue , viewModel)
+    }
 }
 
 
+
+
+
 @Composable
-fun BodyGameContent(navController: NavController, mazo:MutableState<Mazos>) {
+fun BodyGameContent(navController: NavController, mazo:Mazos, viewModel: FlashViewModel) {
 
     Text(
-        text = mazo.value.titulo,
+        text = mazo.titulo,
         style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
         textAlign = TextAlign.Center
     )
+    val flashcards = viewModel.getCartasFlashFromMazo(mazo.id).collectAsState(initial = emptyList())
     val (isAnswerSelected, setAnswerSelected) = remember { mutableStateOf(false) }
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val (currentIndex, setCurrentIndex) = remember { mutableStateOf(0) }
-    val currentCard = mazo.value.flashcardList[currentIndex]
+    val currentCard = flashcards.value[currentIndex]
     val correctAnswer = currentCard.texto
     val (isFlipped, setFlipped) = remember { mutableStateOf(false) }
     val (selectedAnswer, onAnswerSelected)= remember {
@@ -124,7 +115,7 @@ fun BodyGameContent(navController: NavController, mazo:MutableState<Mazos>) {
                     setCurrentIndex(0)
                     setFlipped(false)
                     onAnswerSelected("")
-                    mazo.value= generateDeck(mazo.value.titulo)
+
                     setShowDialog(false)
                 }) {
                     Text("Volver a iniciar")
@@ -157,7 +148,10 @@ fun BodyGameContent(navController: NavController, mazo:MutableState<Mazos>) {
 
             ) {
                 if (!isFlipped) {
-                    Image(painterResource(id = currentCard.imagen), contentDescription = null)
+                    Image(
+                        painter= rememberAsyncImagePainter(model = currentCard.imagen),
+                        contentDescription = null
+                    )
 
                 } else {
                     Text(text = currentCard.texto)
@@ -202,7 +196,7 @@ fun BodyGameContent(navController: NavController, mazo:MutableState<Mazos>) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             if(isAnswerSelected) {
-                if (currentIndex < mazo.value.flashcardList.size - 1) {
+                if (currentIndex < flashcards.value.size - 1) {
                     setCurrentIndex(currentIndex + 1)
                 } else {
                     setShowDialog(true)

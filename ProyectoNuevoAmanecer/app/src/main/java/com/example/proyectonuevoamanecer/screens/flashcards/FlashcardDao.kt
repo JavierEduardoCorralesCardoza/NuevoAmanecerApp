@@ -16,10 +16,12 @@ interface FlashcardDao {
     fun getCartasFlashFromMazo(mazoId: Int): Flow<List<CartaFlashEntity>>
     @Insert
     fun insertMazo(mazo: MazoEntity): Long
-    //@Query("DELETE FROM MazoEntity WHERE id = :mazoId")
-    @Delete
-    fun deleteMazo(mazoId: MazoEntity): Int
 
+    @Query("DELETE FROM MazoEntity WHERE id = :mazoId")
+    fun deleteMazo(mazoId: Int): Int
+
+    @Query("UPDATE MazoEntity SET titulo = :newName WHERE id = :mazoId")
+    fun renameMazo(mazoId: Int, newName: String): Int
 
     @Insert
     fun insertCartaFlash(cartaFlash: CartaFlashEntity)

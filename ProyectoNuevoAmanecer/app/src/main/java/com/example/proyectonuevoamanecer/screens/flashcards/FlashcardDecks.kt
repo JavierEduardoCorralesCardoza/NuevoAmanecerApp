@@ -62,15 +62,15 @@ import com.example.proyectonuevoamanecer.clases.CartaFlash
 @Composable
 fun FlashcardDecks(navController: NavController)
 {
+    val showAddCardDialog = remember{ mutableStateOf(false)}
+    val showRenameDialog = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val database = FlashcardDatabase.getInstance(context)
     val viewModel:FlashViewModel= viewModel(factory = FlashViewModelFactory(database))
     val showDialog = remember { mutableStateOf(false)}
     val mazos by viewModel.allMazos.collectAsState(initial = emptyList())
-    val mazosList: MutableList<Mazos> = mazos.map {
-        Mazos(0,it.titulo, it.flashcardList)
-    }.toMutableList()
-    BodyContentDecks(navController,showDialog, mazosList, viewModel )
+
+    BodyContentDecks(navController,showDialog,mazos, viewModel, showRenameDialog, showAddCardDialog )
     Text(text = "Mazos", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
     if(showDialog.value){
         CrearMazoDialog(showDialog){mazoTitulo->
@@ -89,6 +89,7 @@ data class DropDownItem(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PersonItem(
+    mazo: MazoEntity,
     personName: String,
     dropDownItems: List<DropDownItem>,
     navController: NavController,
@@ -104,10 +105,14 @@ fun PersonItem(
     var itemHeight by remember {
         mutableStateOf(0.dp)
     }
+    var showDialog by remember{
+        mutableStateOf(false)
+    }
     //val interactionSource = remember {
       // MutableInteractionSource()
     //}
     //val density = LocalDensity.current
+
     Spacer(modifier = Modifier.height(20.dp))
     Card(
 
@@ -128,11 +133,17 @@ fun PersonItem(
                             pressOffset = DpOffset(offset.x.toDp(), offset.y.toDp())
                         },
                         onTap = {
-                            if(!isContextMenuVisible){
-                                navController.navigate(AppRoutes.FlashcardGame.route + "/${personName}")
+                            if (!isContextMenuVisible) {
+                                if (mazo==null||mazo.flashcardList.isEmpty()) {
+                                    showDialog = true
+                                } else {
+                                    showDialog=false
+                                    navController.navigate(AppRoutes.FlashcardGame.route + "/${personName}")
+                                }
                             }
                         }
                     )
+
                 }
                 .padding(16.dp)
         ) {
@@ -157,28 +168,38 @@ fun PersonItem(
             }
         }
     }
+    if(showDialog){
+        AlertDialog(
+            onDismissRequest = {showDialog=false },
+            title={Text("Error")},
+            text={Text("El mazo está vacío. Haz clic en 'Agregar Tarjeta' para añadir tarjetas al mazo.")},
+            confirmButton = {
+                Button(
+                    onClick={showDialog=false}
+                ){
+                    Text("Aceptar")
+                }
+            })
+    }
 }
-fun mazosToMazoEntity(mazos: Mazos): MazoEntity {
-    // Create a new instance of MazoEntity using the properties of mazos
-    return MazoEntity(
-        id = 0, // Replace this with your ID generation logic
-        titulo = mazos.titulo,
-        flashcardList = mazos.flashcardList
-    )
-}
+
 
 @Composable
-fun BodyContentDecks(navController: NavController,showDialog:MutableState<Boolean>, mazosList:MutableList<Mazos>,viewModel: FlashViewModel= androidx.lifecycle.viewmodel.compose.viewModel()) {
-
-
+fun BodyContentDecks(
+    navController: NavController,
+    showDialog:MutableState<Boolean>,
+    mazos:List<MazoEntity>,
+    viewModel: FlashViewModel= androidx.lifecycle.viewmodel.compose.viewModel(),
+    showRenameDialog: MutableState<Boolean>,
+    showAddCardDialog:MutableState<Boolean>
+) {
     LazyColumn(
-
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(mazosList)
-         { mazo ->
+        items(mazos) { mazo ->
             PersonItem(
+                mazo=mazo,
                 personName = mazo.titulo,
                 navController= navController,
                 dropDownItems = listOf(
@@ -189,21 +210,32 @@ fun BodyContentDecks(navController: NavController,showDialog:MutableState<Boolea
                 )
             ) {item ->
                 when(item.text){
+                    "Añadir Tarjeta" ->{
+                        showAddCardDialog.value=true
+                    }
                     "Borrar Mazo"->{
-                        val mazoEntity = MazoEntity(id = mazo.id, titulo = mazo.titulo, flashcardList = mazo.flashcardList)
-                        viewModel.deleteMazo(mazoEntity)
-                        mazosList.remove(mazo)
+                        val MazoId = mazo.id
+                        viewModel.deleteMazo(MazoId, mazos)
+                    }
+                    "Renombrar Mazo"->{
+                        showRenameDialog.value = true
                     }
                 }
-
-
             }
-
-
-
-
+            if(showAddCardDialog.value){
+                AddCardDialog(showAddCardDialog,mazo.id ){newCard ->
+                    viewModel.insertCartaFlash(newCard)
+                }
+            }
+            if(showRenameDialog.value){
+                RenameMazoDialog(showRenameDialog, mazo.id){newName->
+                    viewModel.renameMazo(mazo.id, newName)
+                    showRenameDialog.value = false
+                }
+            }
         }
     }
+
     Box(
         modifier=Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
@@ -214,7 +246,6 @@ fun BodyContentDecks(navController: NavController,showDialog:MutableState<Boolea
         ) {
             Text("Crear Mazo")
         }
-
     }
 }
 
