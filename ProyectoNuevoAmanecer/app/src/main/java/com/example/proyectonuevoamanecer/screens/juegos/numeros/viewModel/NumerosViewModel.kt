@@ -1,13 +1,17 @@
-package com.example.nuevoamanecer_numeros.Numeros.viewModel
+package com.example.proyectonuevoamanecer.screens.juegos.numeros.viewModel
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.configuracion.Configuracion
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.configuracion.Nivel
+import com.example.proyectonuevoamanecer.screens.juegos.numeros.configuracion.Orden
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Random
@@ -15,13 +19,21 @@ import kotlin.math.abs
 
 class NumerosViewModel(
     application: Application,
-    _nivelDificultad: Int,
-    _Ascendente: Boolean = true,
+    configuracion: Configuracion,
     val Timed: Boolean
 ) : AndroidViewModel(application) {
-    val nivelDificultad = _nivelDificultad
-    val Ascendente = _Ascendente
-    var numbers: List<Int> = generarListaNumeros(nivelDificultad,Ascendente)
+    var niveles = configuracion.niveles
+    var nivelActual = 0
+    var setsCompletados = 0
+    var ordenActual: String? = null
+    var tiempoInicial = configuracion.tiempoInicial
+    var tiempoAgregar = configuracion.tiempoAgregar
+    var tiempoClickIncorrecto = configuracion.tiempoClickIncorrecto
+    var puntosClickCorrecto = configuracion.puntosClickCorrecto
+    var puntosClickInCorrecto = configuracion.puntosClickIncorrecto
+    var puntosCompletarSet = configuracion.puntosCompletarSet
+    var numbers: List<Int> = generarListaNumeros(niveles,nivelActual)
+    val coloresNumeros = mutableStateMapOf<Int, Color>()
     val NumerosOprimidos = mutableStateListOf<Int>()
     val NumerosIncorrecto = mutableStateListOf<Int>()
     val score = mutableStateOf(0)
@@ -61,7 +73,8 @@ class NumerosViewModel(
         if (constraintsSet.value) {
             juegoEnProgreso.value = true  // Marca el juego como en curso
             if (Timed) {
-                tiempoRestante.value = 30 * 1000L}  // Reinicia el tiempo restante
+                tiempoRestante.value = tiempoInicial * 1000L}  // Reinicia el tiempo restante
+            setsCompletados = 0
             resetGame()  // Reinicia el juego
         }
     }
@@ -75,21 +88,32 @@ class NumerosViewModel(
                 highScoreNormal.value = score.value  // Actualiza la puntuación alta del modo normal
             }
             score.value = 0
+            nivelActual = 0
+            setsCompletados = 0
         }
     }
 
-
-    private fun generarListaNumeros(nivelDificultad: Int, ordenAscendente: Boolean = true): List<Int> {
-        val numeros = when (nivelDificultad) {
-            1 -> (1..10).toList()
-            2 -> (1..50).shuffled().take(10).toList()
-            3 -> (-100..100).shuffled().take(15).toList()
-            else -> (1..10).toList()
-        }
-        return if (ordenAscendente) {
-            numeros.sorted()
-        } else {
-            numeros.sortedDescending()
+    private fun generarListaNumeros(niveles: List<Nivel>, nivelActual: Int): List<Int> {
+        val nivel = niveles[nivelActual]
+        val numeros = (nivel.rango).shuffled().take(nivel.cantidadNumeros).toList()
+        return when (nivel.orden) {
+            Orden.ASC -> {
+                ordenActual = "ASC"
+                numeros.sorted()
+            }
+            Orden.DESC -> {
+                ordenActual = "DESC"
+                numeros.sortedDescending()
+            }
+            Orden.AL -> {
+                if (kotlin.random.Random.nextBoolean()) {
+                    ordenActual = "ASC"
+                    numeros.sorted()
+                } else {
+                    ordenActual = "DESC"
+                    numeros.sortedDescending()
+                }
+            }
         }
     }
 
@@ -103,16 +127,25 @@ class NumerosViewModel(
         if (number == siguienteNumeroEsperado) {
             NumerosOprimidos.add(number)
             NumerosIncorrecto.remove(number)
-            score.value += 50
+            coloresNumeros[number] = Color.Green
+            score.value += puntosClickCorrecto
             if (NumerosOprimidos.size == numbers.size) {
-                score.value += 150  // Incrementa la puntuación en 500 si se oprimen todos los números
-                tiempoRestante.value += 15 * 1000L
+                score.value += puntosCompletarSet  // Incrementa la puntuación si se oprimen todos los números
+                tiempoRestante.value += tiempoAgregar * 1000L
+                setsCompletados++
+                if (setsCompletados % 2 == 0) {
+                    nivelActual++
+                    if (nivelActual >= niveles.size) {
+                        endGame()
+                    }
+                }
                 resetGame()
             }
         } else if (!NumerosOprimidos.contains(number) && !NumerosIncorrecto.contains(number)) {
             NumerosIncorrecto.add(number)
-            score.value -= 10
-            tiempoRestante.value -= 1 * 1000L
+            score.value -= puntosClickInCorrecto
+            coloresNumeros[number] = Color.Red
+            tiempoRestante.value -= tiempoClickIncorrecto * 1000L
         }
     }
     fun resetGame() {
@@ -121,7 +154,8 @@ class NumerosViewModel(
         }
         NumerosOprimidos.clear()
         NumerosIncorrecto.clear()
-        numbers = generarListaNumeros(nivelDificultad,Ascendente)
+        coloresNumeros.clear()
+        numbers = generarListaNumeros(niveles,nivelActual)
         // Generar nuevas posiciones aleatorias para los números
         val random = Random()
         posiciones.clear()
