@@ -1,16 +1,16 @@
 package com.example.proyectonuevoamanecer.screens.home
 
 import android.os.Build.VERSION.SDK_INT
-import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -30,7 +30,6 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.proyectonuevoamanecer.R
-import com.example.proyectonuevoamanecer.api.api
 import com.example.proyectonuevoamanecer.api.llamarApi
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 
@@ -44,11 +43,10 @@ fun LoginScreen(navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
-    var name by remember { mutableStateOf("") }
-    var pass by remember { mutableStateOf("") }
-    var ids: Map<String, String> = emptyMap()
+    var clave by remember { mutableStateOf("") }
     var data = emptyMap<String, Any>()
     var pase by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,33 +56,22 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
     ) {
         Text(text = "LogIn", modifier = Modifier.padding(8.dp))
         TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text(text = "Nombre") },
-            modifier = Modifier.padding(8.dp)
-        )
-        TextField(
-            value = pass,
-            onValueChange = { pass = it },
-            label = { Text(text = "Contraseña") },
+            value = clave,
+            onValueChange = { clave = it },
+            label = { Text(text = "Clave") },
             modifier = Modifier.padding(8.dp)
         )
         Button(
             onClick = {
-                val response = llamarApi("usuario", data, "GET")
-                if (response.has("status") && response.getString("status") == "success") {
-                    val usuariosArray = response.getJSONArray("Usuarios")
-
-                    for (i in 0 until usuariosArray.length()) {
-                        val usuario = usuariosArray.getJSONObject(i)
-                        val id = usuario.getString("ID")
-                        val nombre = usuario.getString("Nombre")
-                        val contrasena = usuario.getString("Contrasena")
-
-                        if (nombre == name && contrasena == pass)
-                            pase = true
-                    }
+                val response = llamarApi("usuario", data, "GET",mapOf("id" to clave))
+                val usuariosArray = response.getJSONArray("Usuarios")
+                if (usuariosArray.length() > 0) {
+                    val usuario = usuariosArray.getJSONObject(0)
+                    val id = usuario.getString("ID")
+                    if (id == clave)
+                        pase = true
                 } else {
+                    showDialog = true
                     println("La respuesta no tiene el estado 'success'")
                 }
                 if (pase) {
@@ -95,6 +82,15 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
         ) {
             Text(text = "Iniciar Sesion")
         }
+        if(showDialog){AlertDialog(
+            onDismissRequest = {},
+            title = { Text(style = MaterialTheme.typography.displayMedium, text = "Error de Inicio de Sesion:") },
+            text = { Text(style = MaterialTheme.typography.displaySmall, text = "¡Clave invalida!") },
+            confirmButton = {
+                Button(onClick = {showDialog = false}) {
+                    Text(style = MaterialTheme.typography.headlineSmall, text = "Intentar otra vez")
+                }
+            })}
         Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route) }) {
             Text(text = "Iniciar Sesion RAPIDO")
         }
