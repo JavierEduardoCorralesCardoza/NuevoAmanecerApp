@@ -213,7 +213,7 @@ fun BodyContentDecks(
                         DropDownItem("Añadir Tarjeta"),
                         DropDownItem("Renombrar Mazo"),
                         DropDownItem("Borrar Mazo"),
-                        DropDownItem("Editar Mazo"),
+                        DropDownItem("Borrar Tarjeta"),
                     )
                 ) {item ->
                     when(item.text){

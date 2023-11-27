@@ -79,25 +79,13 @@ fun isUriValid(uriString: String, context: Context): Boolean {
 }
 
 @Composable
-<<<<<<< HEAD
-fun FlashcardGame(navController: NavController, mazoId : Int, viewModel: FlashViewModel){
-    val mazoState = remember{ mutableStateOf<Mazos?>(null)}
-    val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(mazoId){
-        coroutineScope.launch{
-            val mazos = viewModel.allMazos.first()
-            val mazoEntity = mazos.find{it.id==mazoId}
-=======
 fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: FlashViewModel){
     val mazoState = remember{ mutableStateOf<MazoConCartasEntity?>(null)}
     val coroutineScope = rememberCoroutineScope()
-
     LaunchedEffect(mazoTitulo){
         coroutineScope.launch{
             val mazos = viewModel.allMazos.first()
             val mazoEntity = mazos.find{it.titulo==mazoTitulo}
-
->>>>>>> ca55d317c6c0676c92710ed8bcdf9d5a4a267d69
             if(mazoEntity != null){
                 val mazoConCartas = viewModel.getMazoConCartasPorNombre(mazoEntity.titulo).first()
                 mazoState.value = mazoConCartas
@@ -109,33 +97,29 @@ fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: 
         BodyGameContent(navController, mazoValue.mazo , mazoValue.cartas, viewModel)
     }
 }
-<<<<<<< HEAD
-@Composable
-fun BodyGameContent(navController: NavController, mazoValue: Mazos, viewModel: FlashViewModel) {
-=======
+
 
 @Composable
 fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: List<CartaFlashEntity>, viewModel: FlashViewModel) {
->>>>>>> ca55d317c6c0676c92710ed8bcdf9d5a4a267d69
 
     Text(
-        text = mazoValue.titulo,
+        text = mazo.titulo,
         style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
         textAlign = TextAlign.Center
     )
-<<<<<<< HEAD
-    val flashcards = viewModel.getCartasFlashFromMazo(mazoValue.id).collectAsState(initial = emptyList())
-=======
 
->>>>>>> ca55d317c6c0676c92710ed8bcdf9d5a4a267d69
+    val flashcards = viewModel.getCartasFlashFromMazo(mazo.id).collectAsState(initial = emptyList())
+
+
+
     val (isAnswerSelected, setAnswerSelected) = remember { mutableStateOf(false) }
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val (currentIndex, setCurrentIndex) = remember { mutableStateOf(0) }
     println(flashcards)
-    val currentCard = flashcards[currentIndex]
+    val currentCard = flashcards.value[currentIndex]
     val correctAnswer = currentCard.texto
     val (isFlipped, setFlipped) = remember { mutableStateOf(false) }
     val (selectedAnswer, onAnswerSelected)= remember {
@@ -234,7 +218,7 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             if(isAnswerSelected) {
-                if (currentIndex < flashcards.size - 1) {
+                if (currentIndex < flashcards.value.size - 1) {
                     setCurrentIndex(currentIndex + 1)
                 } else {
                     setShowDialog(true)

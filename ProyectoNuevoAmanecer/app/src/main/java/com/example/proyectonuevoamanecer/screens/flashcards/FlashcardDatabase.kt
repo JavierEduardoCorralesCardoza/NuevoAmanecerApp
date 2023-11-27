@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.proyectonuevoamanecer.clases.Converters
 
-@Database(entities = [MazoEntity::class, CartaFlashEntity::class], version = 1)
+@Database(entities = [MazoEntity::class, CartaFlashEntity::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class FlashcardDatabase : RoomDatabase() {
     abstract fun flashcardDao(): FlashcardDao

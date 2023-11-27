@@ -39,24 +39,21 @@ fun Navegacion(){
         composable(AppRoutes.EligirImagen.route) { EligirImagen(navController) }
         composable(AppRoutes.Rompecabezas.route) { Rompecabezas(navController) }
         composable(
-            route = AppRoutes.FlashcardGame.route + "/{mazoId}",
-            arguments = listOf(navArgument("mazoId") {
-                type = NavType.IntType
-
+            route = AppRoutes.FlashcardGame.route + "/{mazoTitulo}",
+            arguments = listOf(navArgument("mazoTitulo"){
+                type = NavType.StringType
             })
-        ) { backStackEntry ->
-            val viewModel: FlashViewModel = viewModel()
-            val mazoId = backStackEntry.arguments?.getInt("mazoId")
-            if (mazoId != null) {
-                FlashcardGame(navController, mazoId, viewModel)
-                val context = LocalContext.current
-                val database = FlashcardDatabase.getInstance(context)
-                val viewModel: FlashViewModel = viewModel(factory = FlashViewModelFactory(database))
-                val mazo = backStackEntry.arguments?.getString("mazo")
-                if (mazo != null) {
-                    FlashcardGame(navController, mazoId, viewModel)
-                }
+        ){backStackEntry ->
+            val context = LocalContext.current
+            val database = FlashcardDatabase.getInstance(context)
+            val viewModel: FlashViewModel = viewModel(factory = FlashViewModelFactory(database))
+            val mazoTitulo = backStackEntry.arguments?.getString("mazoTitulo")
+            if(mazoTitulo != null){
+                FlashcardGame(navController, mazoTitulo, viewModel)
             }
+
+        }
+
             composable(AppRoutes.JuegosScreen.route) { JuegosScreen(navController) }
             composable(AppRoutes.NivelesJuegos.route) {
                 NivelesJuegos(
@@ -107,4 +104,3 @@ fun Navegacion(){
             }
         }
     }
-}
