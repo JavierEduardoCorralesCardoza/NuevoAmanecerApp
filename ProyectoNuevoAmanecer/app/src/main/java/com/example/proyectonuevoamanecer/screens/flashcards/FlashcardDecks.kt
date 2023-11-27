@@ -70,13 +70,12 @@ fun FlashcardDecks(navController: NavController)
     val showDialog = remember { mutableStateOf(false)}
     val mazos by viewModel.allMazos.collectAsState(initial = emptyList())
 
-    BodyContentDecks(navController,showDialog,mazos, viewModel, showRenameDialog, showAddCardDialog )
+    BodyContentDecks(navController,showDialog, mazos, viewModel, showRenameDialog, showAddCardDialog )
     Text(text = "Mazos", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
     if(showDialog.value){
         CrearMazoDialog(showDialog){mazoTitulo->
-            val newMazo = MazoEntity(0, mazoTitulo, mutableListOf())
+            val newMazo = MazoEntity(0, mazoTitulo)
             viewModel.insertMazo(newMazo)
-
         }
     }
 
@@ -89,13 +88,14 @@ data class DropDownItem(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PersonItem(
-    mazo: MazoEntity,
+    mazo: MazoConCartasEntity,
     personName: String,
     dropDownItems: List<DropDownItem>,
     navController: NavController,
     modifier: Modifier = Modifier,
     onItemClick: (DropDownItem) -> Unit,
 ) {
+
     var isContextMenuVisible by rememberSaveable {
         mutableStateOf(false)
     }
@@ -134,10 +134,12 @@ fun PersonItem(
                         },
                         onTap = {
                             if (!isContextMenuVisible) {
-                                if (mazo==null||mazo.flashcardList.isEmpty()) {
+                                if (mazo == null || mazo.cartas.isEmpty()) {
                                     showDialog = true
+                                    println("Vacioooo")
                                 } else {
-                                    showDialog=false
+                                    showDialog = false
+                                    println(mazo.cartas)
                                     navController.navigate(AppRoutes.FlashcardGame.route + "/${personName}")
                                 }
                             }
@@ -193,38 +195,51 @@ fun BodyContentDecks(
     showRenameDialog: MutableState<Boolean>,
     showAddCardDialog:MutableState<Boolean>
 ) {
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(mazos) { mazo ->
-            PersonItem(
-                mazo=mazo,
-                personName = mazo.titulo,
-                navController= navController,
-                dropDownItems = listOf(
-                    DropDownItem("Añadir Tarjeta"),
-                    DropDownItem("Renombrar Mazo"),
-                    DropDownItem("Borrar Mazo"),
-                    DropDownItem("Editar Mazo"),
-                )
-            ) {item ->
-                when(item.text){
-                    "Añadir Tarjeta" ->{
-                        showAddCardDialog.value=true
-                    }
-                    "Borrar Mazo"->{
-                        val MazoId = mazo.id
-                        viewModel.deleteMazo(MazoId, mazos)
-                    }
-                    "Renombrar Mazo"->{
-                        showRenameDialog.value = true
+
+            val mazoConCartas = viewModel.getMazoConCartasPorNombre(mazo.titulo).collectAsState(initial = null)
+
+            mazoConCartas.value?.let {
+                PersonItem(
+                    mazo= it,
+                    personName = mazo.titulo,
+                    navController= navController,
+                    dropDownItems = listOf(
+                        DropDownItem("Añadir Tarjeta"),
+                        DropDownItem("Renombrar Mazo"),
+                        DropDownItem("Borrar Mazo"),
+                        DropDownItem("Editar Mazo"),
+                    )
+                ) {item ->
+                    when(item.text){
+                        "Añadir Tarjeta" ->{
+                            showAddCardDialog.value=true
+                        }
+
+                        "Borrar Mazo"->{
+                            val MazoId = mazo.id
+                            viewModel.deleteMazo(MazoId, mazos)
+                        }
+
+                        "Renombrar Mazo"->{
+                            showRenameDialog.value = true
+                        }
                     }
                 }
             }
             if(showAddCardDialog.value){
-                AddCardDialog(showAddCardDialog,mazo.id ){newCard ->
-                    viewModel.insertCartaFlashIntoMazo(newCard,mazo.id)
+                AddCardDialog(showAddCardDialog,mazo.id ){nombre ->
+
+                    viewModel.insertCartaFlashIntoMazo(nombre,mazo.id)
+
+                    viewModel.getMazoConCartasPorNombre(mazo.titulo)
+                    viewModel.renameMazo(mazo.id, mazo.titulo)
+
                 }
             }
             if(showRenameDialog.value){

@@ -21,6 +21,9 @@ class FlashViewModel(private val database: FlashcardDatabase) : ViewModel() {
         return dao.getCartasFlashFromMazo(mazoId)
     }
 
+    fun getMazoConCartasPorNombre(nombre: String): Flow<MazoConCartasEntity> {
+        return dao.getMazoConCartasPorNombre(nombre)
+    }
 
     fun insertMazo(mazo: MazoEntity) = viewModelScope.launch(Dispatchers.IO) {
         dao.insertMazo(mazo)
@@ -36,4 +39,6 @@ class FlashViewModel(private val database: FlashcardDatabase) : ViewModel() {
         cartaFlashEntity.mazoId=mazoId
         dao.insertCartaFlash(cartaFlashEntity)
     }
+
+
 }
