@@ -3,15 +3,19 @@ package com.example.proyectonuevoamanecer.screens.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
+import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,16 +46,19 @@ import com.example.proyectonuevoamanecer.databases.Repositorio
 import com.example.proyectonuevoamanecer.databases.Usuario
 import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.screens.AppRoutes
+import com.example.proyectonuevoamanecer.screens.config.findWindow
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(navController: NavController){
     val viewModel: LoginViewModel = viewModel()
-
+    val layoutParams = LocalContext.current.findWindow().attributes
+    layoutParams.dimAmount = 0.5f
+    LocalContext.current.findWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+    LocalContext.current.findWindow().attributes = layoutParams
     LoginBodyContent(navController, viewModel)
 }
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
     val context = LocalContext.current
@@ -66,7 +74,11 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
 
     LaunchedEffect(key1 = true) {
         usuarioActivo = repositorio.getUsuarioActivo()
-        if (usuarioActivo != null && mantenerSesion) {
+        if (usuarioActivo != null && !mantenerSesion){
+            repositorio.deleteUsuarioActivo(usuarioActivo!!)
+            usuarioActivo = null
+        }
+        else if (usuarioActivo != null && mantenerSesion) {
             navController.navigate(AppRoutes.HomeScreen.route)
         }
     }
@@ -79,13 +91,30 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "LogIn", modifier = Modifier.padding(8.dp))
+            Text(text = "LogIn", modifier = Modifier.padding(8.dp),
+                style = MaterialTheme.typography.displayLarge,
+                color = Color.White
+            )
             TextField(
                 value = clave,
                 onValueChange = { clave = it },
                 label = { Text(text = "Clave") },
                 modifier = Modifier.padding(8.dp)
             )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Mantener Sesión?", color = Color.White)
+                Checkbox(
+                    checked = mantenerSesion,
+                    colors = CheckboxDefaults.colors(uncheckedColor = Color.White),
+                    onCheckedChange = { checked ->
+                        mantenerSesion = checked
+                        with (sharedPreferences.edit()) {
+                            putBoolean("mantenerSesion", checked)
+                            apply()
+                        }
+                    },
+                )
+            }
             val scope = rememberCoroutineScope()
             Button(
                 onClick = {
@@ -117,24 +146,13 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
                     }
                 },
                 modifier = Modifier.padding(8.dp)
-            ) {
-                Text(text = "Iniciar Sesion")
+                ) {
+                Text(text = "Iniciar Sesión")
             }
-            Checkbox(
-                checked = mantenerSesion,
-                onCheckedChange = { checked ->
-                    mantenerSesion = checked
-                    with (sharedPreferences.edit()) {
-                        putBoolean("mantenerSesion", checked)
-                        apply()
-                    }
-                },
-            )
-            Text(text = "Mantener sesión")
             if(showDialog){AlertDialog(
                 onDismissRequest = {},
-                title = { Text(style = MaterialTheme.typography.displayMedium, text = "Error de Inicio de Sesion:") },
-                text = { Text(style = MaterialTheme.typography.displaySmall, text = "¡Clave invalida!") },
+                title = { Text(style = MaterialTheme.typography.displayMedium, text = "Error al iniciar Sesión:") },
+                text = { Text(style = MaterialTheme.typography.displaySmall, text = "¡Clave inválida!") },
                 confirmButton = {
                     Button(onClick = {showDialog = false}) {
                         Text(style = MaterialTheme.typography.headlineSmall, text = "Intentar otra vez")

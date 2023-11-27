@@ -99,6 +99,8 @@ interface DbDao {
     @Update
     suspend fun updateHistorial(historial: Historial)
     @Delete
+    suspend fun deleteUsuarioActivo(usuarioActivo: UsuarioActivo)
+    @Delete
     suspend fun deleteUsuario(usuario: Usuario)
     @Delete
     suspend fun deleteGrupo(grupo: Grupo)
@@ -174,6 +176,9 @@ class Repositorio(private val dbDao: DbDao) {
     }
     suspend fun updateHistorial(historial: Historial) = withContext(Dispatchers.IO) {
         dbDao.updateHistorial(historial)
+    }
+    suspend fun deleteUsuarioActivo(usuarioActivo: UsuarioActivo) = withContext(Dispatchers.IO){
+        dbDao.deleteUsuarioActivo(usuarioActivo)
     }
     suspend fun deleteUsuario(usuario: Usuario) = withContext(Dispatchers.IO) {
         dbDao.deleteUsuario(usuario)
