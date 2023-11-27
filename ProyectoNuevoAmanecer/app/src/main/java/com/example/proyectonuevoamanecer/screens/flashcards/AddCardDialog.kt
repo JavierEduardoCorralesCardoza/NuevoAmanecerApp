@@ -68,7 +68,7 @@ fun AddCardDialog(showDialog: MutableState<Boolean>, mazoId: Int, onAddCard: (Ca
                     onClick = {
                         // Aquí puedes crear una nueva CartaFlashEntity con la información recogida
                         // y llamar a onAddCard con la nueva tarjeta
-                        val newCard = CartaFlashEntity(0, imagen, texto, resp1, resp2,mazoId)
+                        val newCard = CartaFlashEntity(0, imagen, texto, resp1, resp2, mazoId)
                         onAddCard(newCard)
                         showDialog.value = false
                     }
