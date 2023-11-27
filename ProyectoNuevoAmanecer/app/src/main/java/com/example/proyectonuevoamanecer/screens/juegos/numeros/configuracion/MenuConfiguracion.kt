@@ -210,7 +210,6 @@ fun MenuConfiguracion(viewModel: NumerosViewModel) {
                     }
                 }
             }
-
         }
     }
 }
