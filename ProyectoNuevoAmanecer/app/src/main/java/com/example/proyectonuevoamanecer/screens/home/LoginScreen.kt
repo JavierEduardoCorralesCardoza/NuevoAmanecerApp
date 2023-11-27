@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,8 +44,6 @@ import com.example.proyectonuevoamanecer.databases.Repositorio
 import com.example.proyectonuevoamanecer.databases.Usuario
 import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.screens.AppRoutes
-import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardDatabase
-
 import com.example.proyectonuevoamanecer.screens.config.findWindow
 import kotlinx.coroutines.launch
 
