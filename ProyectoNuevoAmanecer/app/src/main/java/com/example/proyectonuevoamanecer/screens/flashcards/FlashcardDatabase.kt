@@ -22,7 +22,8 @@ abstract class FlashcardDatabase : RoomDatabase() {
                     context.applicationContext,
                     FlashcardDatabase::class.java,
                     "flashcard_database"
-                ).build()
+                ).fallbackToDestructiveMigration() // Este método se utiliza para realizar una migración destructiva
+                    .build()
                 INSTANCE = instance
                 instance
             }
