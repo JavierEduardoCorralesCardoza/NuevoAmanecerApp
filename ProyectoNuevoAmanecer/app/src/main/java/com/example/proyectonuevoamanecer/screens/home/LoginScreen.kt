@@ -46,13 +46,10 @@ import com.example.proyectonuevoamanecer.databases.Repositorio
 import com.example.proyectonuevoamanecer.databases.Usuario
 import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.screens.AppRoutes
-<<<<<<< HEAD
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardDatabase
 
-=======
 import com.example.proyectonuevoamanecer.screens.config.findWindow
 import kotlinx.coroutines.launch
->>>>>>> ca55d317c6c0676c92710ed8bcdf9d5a4a267d69
 
 @Composable
 fun LoginScreen(navController: NavController){
@@ -67,10 +64,6 @@ fun LoginScreen(navController: NavController){
 @Composable
 fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
     val context = LocalContext.current
-<<<<<<< HEAD
-    val database = FlashcardDatabase.getInstance(context)
-=======
->>>>>>> ca55d317c6c0676c92710ed8bcdf9d5a4a267d69
     var clave by remember { mutableStateOf("") }
     var data = emptyMap<String, Any>()
     var pase by remember { mutableStateOf(false) }
