@@ -105,5 +105,7 @@ dependencies {
     //gif
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("io.coil-kt:coil-gif:2.5.0")
+    //Permisos
+    implementation ("com.google.accompanist:accompanist-permissions:0.31.5-beta")
 
 }

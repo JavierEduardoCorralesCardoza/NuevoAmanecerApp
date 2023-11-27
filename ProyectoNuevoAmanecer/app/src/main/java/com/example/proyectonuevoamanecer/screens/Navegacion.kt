@@ -2,6 +2,7 @@ package com.example.proyectonuevoamanecer.screens
 
 import DiferenciasCard
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,6 +12,8 @@ import androidx.navigation.navArgument
 import com.example.juego1jetpc.ui.EligirImagen
 
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashViewModel
+import com.example.proyectonuevoamanecer.screens.flashcards.FlashViewModelFactory
+import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardDatabase
 
 import com.example.proyectonuevoamanecer.screens.juegos.numeros.Numeros
 
@@ -41,7 +44,9 @@ fun Navegacion(){
                         defaultValue = "defualt_value"
                     })
         ) { backStackEntry ->
-            val viewModel: FlashViewModel= viewModel()
+            val context = LocalContext.current
+            val database = FlashcardDatabase.getInstance(context)
+            val viewModel: FlashViewModel = viewModel(factory = FlashViewModelFactory(database))
             val mazo = backStackEntry.arguments?.getString("mazo")
             if (mazo != null) {
                 FlashcardGame(navController, mazo,viewModel)

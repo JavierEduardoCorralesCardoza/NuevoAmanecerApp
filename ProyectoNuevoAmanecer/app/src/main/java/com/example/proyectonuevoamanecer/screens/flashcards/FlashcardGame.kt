@@ -2,6 +2,8 @@
 
 package com.example.proyectonuevoamanecer.screens.flashcards
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -64,31 +66,42 @@ import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
 import coil.compose.rememberImagePainter
 
+fun isUriValid(uriString: String, context: Context): Boolean {
+    return try {
+        val uri = Uri.parse(uriString)
+        val inputStream = context.contentResolver.openInputStream(uri)
+        inputStream?.close()
+        true
+    } catch (e: Exception) {
+        println(e.message)
+        false
+    }
+}
+
 @Composable
 fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: FlashViewModel){
-    val mazoState = remember{ mutableStateOf<Mazos?>(null)}
+    val mazoState = remember{ mutableStateOf<MazoConCartasEntity?>(null)}
     val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(mazoTitulo){
         coroutineScope.launch{
             val mazos = viewModel.allMazos.first()
             val mazoEntity = mazos.find{it.titulo==mazoTitulo}
+
             if(mazoEntity != null){
-                mazoState.value=Mazos(mazoEntity.id,mazoEntity.titulo,mazoEntity.flashcardList)
+                val mazoConCartas = viewModel.getMazoConCartasPorNombre(mazoEntity.titulo).first()
+                mazoState.value = mazoConCartas
             }
         }
     }
     val mazoValue = mazoState.value
     if(mazoValue != null) {
-        BodyGameContent(navController, mazoValue , viewModel)
+        BodyGameContent(navController, mazoValue.mazo , mazoValue.cartas, viewModel)
     }
 }
 
-
-
-
-
 @Composable
-fun BodyGameContent(navController: NavController, mazo:Mazos, viewModel: FlashViewModel) {
+fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: List<CartaFlashEntity>, viewModel: FlashViewModel) {
 
     Text(
         text = mazo.titulo,
@@ -98,11 +111,12 @@ fun BodyGameContent(navController: NavController, mazo:Mazos, viewModel: FlashVi
             .fillMaxWidth(),
         textAlign = TextAlign.Center
     )
-    val flashcards = viewModel.getCartasFlashFromMazo(mazo.id).collectAsState(initial = emptyList())
+
     val (isAnswerSelected, setAnswerSelected) = remember { mutableStateOf(false) }
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val (currentIndex, setCurrentIndex) = remember { mutableStateOf(0) }
-    val currentCard = flashcards.value[currentIndex]
+    println(flashcards)
+    val currentCard = flashcards[currentIndex]
     val correctAnswer = currentCard.texto
     val (isFlipped, setFlipped) = remember { mutableStateOf(false) }
     val (selectedAnswer, onAnswerSelected)= remember {
@@ -150,6 +164,8 @@ fun BodyGameContent(navController: NavController, mazo:Mazos, viewModel: FlashVi
 
             ) {
                 if (!isFlipped) {
+                    val context = LocalContext.current
+                    println(isUriValid(currentCard.imagen, context))
                     Image(
                         painter= rememberAsyncImagePainter(model = currentCard.imagen),
                         contentDescription = null
@@ -199,7 +215,7 @@ fun BodyGameContent(navController: NavController, mazo:Mazos, viewModel: FlashVi
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             if(isAnswerSelected) {
-                if (currentIndex < flashcards.value.size - 1) {
+                if (currentIndex < flashcards.size - 1) {
                     setCurrentIndex(currentIndex + 1)
                 } else {
                     setShowDialog(true)
