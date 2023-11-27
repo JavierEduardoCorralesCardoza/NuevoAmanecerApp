@@ -17,7 +17,7 @@ import com.example.proyectonuevoamanecer.screens.home.LoginScreen
 import com.example.proyectonuevoamanecer.screens.juegos.JuegosScreen
 import com.example.proyectonuevoamanecer.screens.juegos.NivelesJuegos
 import com.example.proyectonuevoamanecer.screens.juegos.memorama.MemoramaScreen
-import com.example.proyectonuevoamanecer.screens.juegos.rompecabezas.Rompecabezas
+import com.example.rompecabezas.Rompecabezas
 
 @Composable
 fun Navegacion(){

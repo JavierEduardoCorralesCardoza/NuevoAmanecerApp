@@ -32,6 +32,8 @@ import coil.request.ImageRequest
 import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.api.llamarApi
 import com.example.proyectonuevoamanecer.screens.AppRoutes
+import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardDatabase
+
 
 @Composable
 fun LoginScreen(navController: NavController){
@@ -43,6 +45,8 @@ fun LoginScreen(navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
+    val context = LocalContext.current
+    val database = FlashcardDatabase.getInstance(context)
     var clave by remember { mutableStateOf("") }
     var data = emptyMap<String, Any>()
     var pase by remember { mutableStateOf(false) }
@@ -93,9 +97,6 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             })}
         Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route) }) {
             Text(text = "Iniciar Sesion RAPIDO")
-        }
-        Button(onClick = {  }) {
-            Text(text = "Prueba bajar y cargar info")
         }
         Gif()
     }

@@ -1,6 +1,5 @@
 package com.example.proyectonuevoamanecer.screens.flashcards
 
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -13,6 +12,7 @@ interface FlashcardDao {
 
     @Query("SELECT * FROM CartaFlashEntity WHERE mazoId = :mazoId")
     fun getCartasFlashFromMazo(mazoId: Int): Flow<List<CartaFlashEntity>>
+
     @Insert
     fun insertMazo(mazo: MazoEntity): Long
 
