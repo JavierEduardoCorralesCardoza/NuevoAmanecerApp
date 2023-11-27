@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.room.Room
+import androidx.navigation.compose.rememberNavController
 import com.example.proyectonuevoamanecer.databases.DbDatabase
-import com.example.proyectonuevoamanecer.screens.Navegacion
+import com.example.proyectonuevoamanecer.screens.modalUI.ModalUi
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +24,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         db = DbDatabase.getInstance(this)
         setContent {
-
             ProyectoNuevoAmanecerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -34,6 +32,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     BoxWithConstraints(
                         modifier = Modifier.fillMaxSize()
+
                     ) {
                         val constraints = maxWidth / maxHeight
                         val imagePainter = painterResource(id = R.drawable.galaxy_doodle2)
@@ -48,7 +47,7 @@ class MainActivity : ComponentActivity() {
                                 .background(MaterialTheme.colorScheme.background)
                         )
 
-                        Navegacion()
+                        ModalUi(rememberNavController())
                     }
                 }
             }
@@ -56,10 +55,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview(){
-    ProyectoNuevoAmanecerTheme {
-        Navegacion()
-    }
-}
