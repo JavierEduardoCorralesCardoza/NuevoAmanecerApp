@@ -44,7 +44,7 @@ fun BodyContent(navController: NavController){
     val density = LocalDensity.current.density
 
     Column {
-        Row(
+        /*Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -65,7 +65,7 @@ fun BodyContent(navController: NavController){
                 )
             }
 
-        }
+        }*/
 
         Column(
             modifier = Modifier
