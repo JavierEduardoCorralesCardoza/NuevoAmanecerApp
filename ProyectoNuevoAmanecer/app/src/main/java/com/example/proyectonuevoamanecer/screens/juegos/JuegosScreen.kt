@@ -32,8 +32,5 @@ fun BodyContentJuegos(navController: NavController){
         Button(onClick = {navController.navigate(AppRoutes.Numeros.route) }) {
             Text(text = "Numeros")
         }
-        Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route)  }) {
-            Text(text = "Regresar")
-        }
     }
 }
