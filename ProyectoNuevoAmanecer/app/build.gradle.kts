@@ -92,9 +92,20 @@ dependencies {
     // room
     implementation("androidx.room:room-ktx:2.5.2")
     ksp("androidx.room:room-compiler:2.5.0")
+
+    //para add flashcard dialog
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.18.0")
+    //lifecycle-viewmodel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    //Imagen
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
     //gif
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("io.coil-kt:coil-gif:2.5.0")
+    //Permisos
+    implementation ("com.google.accompanist:accompanist-permissions:0.31.5-beta")
+
 }
