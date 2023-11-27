@@ -35,16 +35,16 @@ fun Navegacion(){
         composable(AppRoutes.Numeros.route){ Numeros(navController) }
         composable(AppRoutes.EligirImagen.route){ EligirImagen(navController) }
         composable(AppRoutes.Rompecabezas.route){ Rompecabezas(navController) }
-        composable(route = AppRoutes.FlashcardGame.route + "/{mazo}",
-                    arguments = listOf(navArgument("mazo"){
-                        type = NavType.StringType
-                        defaultValue = "defualt_value"
+        composable(route = AppRoutes.FlashcardGame.route + "/{mazoId}",
+                    arguments = listOf(navArgument("mazoId"){
+                        type = NavType.IntType
+
                     })
         ) { backStackEntry ->
             val viewModel: FlashViewModel= viewModel()
-            val mazo = backStackEntry.arguments?.getString("mazo")
-            if (mazo != null) {
-                FlashcardGame(navController, mazo,viewModel)
+            val mazoId = backStackEntry.arguments?.getInt("mazoId")
+            if (mazoId != null) {
+                FlashcardGame(navController, mazoId,viewModel)
             }
         }
         composable(AppRoutes.JuegosScreen.route) { JuegosScreen(navController) }

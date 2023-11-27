@@ -11,5 +11,5 @@ data class CartaFlashEntity(
     val texto: String,
     val resp1: String,
     val resp2: String,
-    val mazoId: Int
+    var mazoId: Int
 )

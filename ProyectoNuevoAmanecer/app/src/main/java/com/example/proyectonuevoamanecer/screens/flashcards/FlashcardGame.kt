@@ -65,13 +65,13 @@ import kotlinx.coroutines.launch
 import coil.compose.rememberImagePainter
 
 @Composable
-fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: FlashViewModel){
+fun FlashcardGame(navController: NavController, mazoId : Int, viewModel: FlashViewModel){
     val mazoState = remember{ mutableStateOf<Mazos?>(null)}
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(mazoTitulo){
+    LaunchedEffect(mazoId){
         coroutineScope.launch{
             val mazos = viewModel.allMazos.first()
-            val mazoEntity = mazos.find{it.titulo==mazoTitulo}
+            val mazoEntity = mazos.find{it.id==mazoId}
             if(mazoEntity != null){
                 mazoState.value=Mazos(mazoEntity.id,mazoEntity.titulo,mazoEntity.flashcardList)
             }
@@ -82,23 +82,18 @@ fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: 
         BodyGameContent(navController, mazoValue , viewModel)
     }
 }
-
-
-
-
-
 @Composable
-fun BodyGameContent(navController: NavController, mazo:Mazos, viewModel: FlashViewModel) {
+fun BodyGameContent(navController: NavController, mazoValue: Mazos, viewModel: FlashViewModel) {
 
     Text(
-        text = mazo.titulo,
+        text = mazoValue.titulo,
         style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
         textAlign = TextAlign.Center
     )
-    val flashcards = viewModel.getCartasFlashFromMazo(mazo.id).collectAsState(initial = emptyList())
+    val flashcards = viewModel.getCartasFlashFromMazo(mazoValue.id).collectAsState(initial = emptyList())
     val (isAnswerSelected, setAnswerSelected) = remember { mutableStateOf(false) }
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val (currentIndex, setCurrentIndex) = remember { mutableStateOf(0) }

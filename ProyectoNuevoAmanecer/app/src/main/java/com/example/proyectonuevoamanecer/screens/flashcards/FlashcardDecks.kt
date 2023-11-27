@@ -189,7 +189,7 @@ fun BodyContentDecks(
     navController: NavController,
     showDialog:MutableState<Boolean>,
     mazos:List<MazoEntity>,
-    viewModel: FlashViewModel= androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: FlashViewModel,
     showRenameDialog: MutableState<Boolean>,
     showAddCardDialog:MutableState<Boolean>
 ) {
@@ -224,7 +224,7 @@ fun BodyContentDecks(
             }
             if(showAddCardDialog.value){
                 AddCardDialog(showAddCardDialog,mazo.id ){newCard ->
-                    viewModel.insertCartaFlash(newCard)
+                    viewModel.insertCartaFlashIntoMazo(newCard,mazo.id)
                 }
             }
             if(showRenameDialog.value){
