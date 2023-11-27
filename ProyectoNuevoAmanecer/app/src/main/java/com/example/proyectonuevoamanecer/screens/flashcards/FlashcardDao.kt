@@ -12,6 +12,9 @@ interface FlashcardDao {
     @Query("SELECT * FROM MazoEntity")
     fun getAllMazos(): Flow<List<MazoEntity>>
 
+    @Query("SELECT * FROM CartaFlashEntity")
+    fun getAllCartas(): Flow<List<CartaFlashEntity>>
+
     @Query("SELECT * FROM MazoEntity WHERE titulo = :titulo")
     fun getMazoPorNombre(titulo: String): Flow<MazoEntity>
 
@@ -26,6 +29,9 @@ interface FlashcardDao {
 
     @Query("DELETE FROM MazoEntity WHERE id = :mazoId")
     fun deleteMazo(mazoId: Int): Int
+
+    @Query("DELETE FROM CartaFlashEntity WHERE id = :cartaId")
+    fun deleteCartaFlash(cartaId: Int): Int
 
     @Query("UPDATE MazoEntity SET titulo = :newName WHERE id = :mazoId")
     fun renameMazo(mazoId: Int, newName: String): Int

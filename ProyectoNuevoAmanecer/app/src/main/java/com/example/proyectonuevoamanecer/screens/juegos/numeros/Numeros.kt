@@ -99,7 +99,6 @@ fun Numeros(navController: NavController) {
     }
 }
 
-
 @Composable
 fun GameScreen(Timed: Boolean){
     val primaryColor = MaterialTheme.colorScheme.tertiary

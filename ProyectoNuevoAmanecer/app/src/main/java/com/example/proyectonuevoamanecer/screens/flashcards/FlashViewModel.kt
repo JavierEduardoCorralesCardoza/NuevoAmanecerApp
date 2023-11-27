@@ -17,6 +17,8 @@ class FlashViewModel(private val database: FlashcardDatabase) : ViewModel() {
 
     val allMazos: Flow<List<MazoEntity>> = dao.getAllMazos()
 
+    val allCartas: Flow<List<CartaFlashEntity>> = dao.getAllCartas()
+
     fun getCartasFlashFromMazo(mazoId: Int): Flow<List<CartaFlashEntity>> {
         return dao.getCartasFlashFromMazo(mazoId)
     }
@@ -31,6 +33,11 @@ class FlashViewModel(private val database: FlashcardDatabase) : ViewModel() {
     fun deleteMazo(mazoId: Int,mazos: List<MazoEntity>) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteMazo(mazoId)
     }
+
+    fun deleteCartaFlash(cartaId: Int) = viewModelScope.launch(Dispatchers.IO) {
+        dao.deleteCartaFlash(cartaId)
+    }
+
     fun renameMazo(mazoId: Int, newName: String) = viewModelScope.launch(Dispatchers.IO) {
         dao.renameMazo(mazoId, newName)
     }
