@@ -45,6 +45,7 @@ import com.example.proyectonuevoamanecer.databases.Usuario
 import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.screens.config.findWindow
+import com.example.proyectonuevoamanecer.widgets.BotonGeneral
 import kotlinx.coroutines.launch
 
 @Composable
@@ -82,6 +83,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
     }
 
     if (usuarioActivo == null){
+        BotonGeneral(onClick = { /*TODO*/ }, text = "Boton")
         Column(
             modifier = Modifier
                 .fillMaxSize()

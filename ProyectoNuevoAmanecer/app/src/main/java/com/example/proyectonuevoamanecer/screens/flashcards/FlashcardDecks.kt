@@ -64,13 +64,14 @@ fun FlashcardDecks(navController: NavController)
 {
     val showAddCardDialog = remember{ mutableStateOf(false)}
     val showRenameDialog = remember { mutableStateOf(false) }
+    val showDeleteDialog = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val database = FlashcardDatabase.getInstance(context)
     val viewModel:FlashViewModel= viewModel(factory = FlashViewModelFactory(database))
     val showDialog = remember { mutableStateOf(false)}
     val mazos by viewModel.allMazos.collectAsState(initial = emptyList())
 
-    BodyContentDecks(navController,showDialog, mazos, viewModel, showRenameDialog, showAddCardDialog )
+    BodyContentDecks(navController,showDialog, mazos, viewModel, showRenameDialog, showAddCardDialog, showDeleteDialog )
     Text(text = "Mazos", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
     if(showDialog.value){
         CrearMazoDialog(showDialog){mazoTitulo->
@@ -193,7 +194,8 @@ fun BodyContentDecks(
     mazos:List<MazoEntity>,
     viewModel: FlashViewModel= androidx.lifecycle.viewmodel.compose.viewModel(),
     showRenameDialog: MutableState<Boolean>,
-    showAddCardDialog:MutableState<Boolean>
+    showAddCardDialog:MutableState<Boolean>,
+    showDeleteDialog: MutableState<Boolean>
 ) {
 
     LazyColumn(
@@ -229,6 +231,10 @@ fun BodyContentDecks(
                         "Renombrar Mazo"->{
                             showRenameDialog.value = true
                         }
+
+                        "Editar Mazo"->{
+                            showDeleteDialog.value = true
+                        }
                     }
                 }
             }
@@ -242,6 +248,12 @@ fun BodyContentDecks(
                 RenameMazoDialog(showRenameDialog, mazo.id){newName->
                     viewModel.renameMazo(mazo.id, newName)
                     showRenameDialog.value = false
+                }
+            }
+            if(showDeleteDialog.value){
+                val mazoCartas = viewModel.getMazoConCartasPorNombre(mazo.titulo).collectAsState(null)
+                DeleteCardDialog(showDeleteDialog, mazoCartas.value?.cartas ?: emptyList()){carta->
+                    viewModel.deleteCartaFlash(carta.id)
                 }
             }
         }
