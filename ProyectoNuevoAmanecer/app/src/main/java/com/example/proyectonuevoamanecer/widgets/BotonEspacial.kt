@@ -48,7 +48,7 @@ fun BotonGeneral(
                 .clip(RoundedCornerShape(50.dp))
         ) {
             Image(
-                painter = painterResource(id = R.drawable.fondo_estrellas),
+                painter = painterResource(id = R.drawable.dorsal_carta),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
