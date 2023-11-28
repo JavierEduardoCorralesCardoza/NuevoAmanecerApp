@@ -111,7 +111,6 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
         textAlign = TextAlign.Center
     )
 
-    val flashcards = viewModel.getCartasFlashFromMazo(mazo.id).collectAsState(initial = emptyList())
 
 
 
@@ -119,7 +118,7 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val (currentIndex, setCurrentIndex) = remember { mutableStateOf(0) }
     println(flashcards)
-    val currentCard = flashcards.value[currentIndex]
+    val currentCard = flashcards[currentIndex]
     val correctAnswer = currentCard.texto
     val (isFlipped, setFlipped) = remember { mutableStateOf(false) }
     val (selectedAnswer, onAnswerSelected)= remember {
@@ -169,6 +168,7 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
                 if (!isFlipped) {
                     val context = LocalContext.current
                     println(isUriValid(currentCard.imagen, context))
+
                     Image(
                         painter= rememberAsyncImagePainter(model = currentCard.imagen),
                         contentDescription = null
@@ -218,7 +218,7 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             if(isAnswerSelected) {
-                if (currentIndex < flashcards.value.size - 1) {
+                if (currentIndex < flashcards.size - 1) {
                     setCurrentIndex(currentIndex + 1)
                 } else {
                     setShowDialog(true)

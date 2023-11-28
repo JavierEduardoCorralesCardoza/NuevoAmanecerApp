@@ -44,11 +44,9 @@ fun FlashcardDecks(navController: NavController)
     val database = FlashcardDatabase.getInstance(context)
     val viewModel:FlashViewModel= viewModel(factory = FlashViewModelFactory(database))
     val showDialog = remember { mutableStateOf(false)}
-    val showRenameDialog = remember { mutableStateOf(false)}
-    val showAddCardDialog = remember{ mutableStateOf(false)}
     val mazos by viewModel.allMazos.collectAsState(initial = emptyList())
 
-    BodyContentDecks(navController,showDialog, mazos, showRenameDialog, showAddCardDialog, viewModel)
+    BodyContentDecks(navController,showDialog, mazos, viewModel)
     Text(text = "Mazos", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
     if(showDialog.value){
         CrearMazoDialog(showDialog){mazoTitulo->
@@ -170,8 +168,6 @@ fun BodyContentDecks(
     navController: NavController,
     showDialog:MutableState<Boolean>,
     mazos:List<MazoEntity>,
-    showRenameDialog: MutableState<Boolean>,
-    showAddCardDialog:MutableState<Boolean>,
     viewModel: FlashViewModel= androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
 
@@ -181,7 +177,8 @@ fun BodyContentDecks(
     ) {
         items(mazos) { mazo ->
             val showDeleteDialog = remember { mutableStateOf(false) }
-
+            val showRenameDialog = remember { mutableStateOf(false)}
+            val showAddCardDialog= remember{ mutableStateOf(false)}
             PersonItem(
                 mazo= mazo,
                 personName = mazo.titulo,
@@ -214,11 +211,8 @@ fun BodyContentDecks(
             }
 
             if(showAddCardDialog.value){
-                AddCardDialog(showAddCardDialog,mazo.id ){nombre ->
-
-                    viewModel.insertCartaFlashIntoMazo(nombre,mazo.id)
-
-                    viewModel.getMazoConCartasPorNombre(mazo.titulo)
+                AddCardDialog(showAddCardDialog,mazo.id ){newCard ->
+                    viewModel.insertCartaFlashIntoMazo(newCard,mazo.id)
                     viewModel.renameMazo(mazo.id, mazo.titulo)
 
                 }
