@@ -29,7 +29,10 @@ fun AddCardDialog(showDialog: MutableState<Boolean>, mazoId: Int, onAddCard: (Ca
         val context = LocalContext.current
         val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             // Aquí puedes guardar la Uri de la imagen en imageUri
-            imagen = uri.toString()
+            if(uri != null) {
+                val filePath= copyImageToInternalStore(context,uri)
+                imagen = filePath
+            }
         }
 
         AlertDialog(
