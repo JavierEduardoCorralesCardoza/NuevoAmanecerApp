@@ -15,9 +15,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,28 +27,28 @@ import androidx.navigation.NavController
 import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.clases.CartasMemorama
 import com.example.proyectonuevoamanecer.screens.AppRoutes
+import com.example.proyectonuevoamanecer.screens.juegos.memorama.database.DBViewModel
+import com.example.proyectonuevoamanecer.screens.juegos.memorama.database.DBViewModelFactory
+import com.example.proyectonuevoamanecer.screens.juegos.memorama.database.MemoramaDatabase
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 @Composable
-fun MemoramaScreen(navController: NavController, nivel: Int){
+fun MemoramaScreen(navController: NavController, numCartas: Int){
     val viewModel: MemoramaViewModel = viewModel()
 
-    val numCartas: Int = when (nivel){
-        1 -> 3
-        2 -> 6
-        3 -> 10
-        else -> {
-            0
-        }
-    }
-    viewModel.ListaDeImagenes(numCartas)
+    val context = LocalContext.current
+    val database = MemoramaDatabase.getInstance(context)
+    val viewModelDB: DBViewModel = viewModel(factory = DBViewModelFactory(database))
+
+    var cartas = viewModelDB.allImages.collectAsState(initial = emptyList())
+
     viewModel.GenerarCartas(numCartas)
-    BodyContent(navController, viewModel)
+    BodyContent(navController, viewModel, viewModelDB)
 }
 
 @Composable
-fun BodyContent(navController: NavController, viewModel: MemoramaViewModel){
+fun BodyContent(navController: NavController, viewModel: MemoramaViewModel, viewModelDB: DBViewModel){
     Column {
         Text(text = viewModel.score.value.toString())
         ListOfCards(cartas = viewModel.cartas, indexCartasVolteadas = viewModel.indexCartasVolteadas, viewModel = viewModel)

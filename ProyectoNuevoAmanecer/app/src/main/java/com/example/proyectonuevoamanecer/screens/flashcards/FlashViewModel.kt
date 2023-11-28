@@ -45,6 +45,4 @@ class FlashViewModel(private val database: FlashcardDatabase) : ViewModel() {
     fun insertCartaFlash(cartaFlash: CartaFlashEntity) = viewModelScope.launch(Dispatchers.IO) {
         dao.insertCartaFlash(cartaFlash)
     }
-
-
 }

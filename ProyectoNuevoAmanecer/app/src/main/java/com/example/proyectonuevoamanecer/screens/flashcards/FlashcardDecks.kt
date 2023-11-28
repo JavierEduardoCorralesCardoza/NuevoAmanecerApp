@@ -1,18 +1,7 @@
 package com.example.proyectonuevoamanecer.screens.flashcards
 
-import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Indication
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -27,8 +16,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.*
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,22 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.proyectonuevoamanecer.clases.Mazos
 import com.example.proyectonuevoamanecer.screens.AppRoutes
-import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 //import androidx.compose.ui.draw.EmptyBuildDrawCacheParams.density
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.proyectonuevoamanecer.clases.CartaFlash
 
 @Composable
 fun FlashcardDecks(navController: NavController)
