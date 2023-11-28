@@ -77,7 +77,7 @@ fun BodyContent(navController: NavController){
                 text = "Minijuegos",
                 click = { navController.navigate(route = AppRoutes.JuegosScreen.route) } ,
                 imgCard = imgCard,
-                back = Color(0xCC, 0x00, 0x00),
+                back = Color(0x99, 0x00, 0x55),
                 0.5f
             )
             BotonFlashcards(
