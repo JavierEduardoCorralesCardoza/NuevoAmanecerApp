@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -76,8 +77,11 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
     var mantenerSesion by remember { mutableStateOf(sharedPreferences.getBoolean("mantenerSesion", false)) }
     val repositorio = Repositorio(db.dbDao())
     var usuarioActivo by remember { mutableStateOf<UsuarioActivo?>(null) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val isAtStartDestination = currentRoute == AppRoutes.LoginScreen.route
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(isAtStartDestination) {
         usuarioActivo = repositorio.getUsuarioActivo()
         if (usuarioActivo != null && !mantenerSesion){
             repositorio.deleteUsuarioActivo(usuarioActivo!!)
@@ -125,7 +129,6 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             var isConnected = Variables.isNetworkConnected
             Button(
                 onClick = {
-                    println(isConnected)
                     if (!isConnected){
                         showDialog = true
                         return@Button
@@ -137,6 +140,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
                     if (usuariosArray.length() > 0) {
                         usuarioAPI = UsuarioAPI(usuariosArray.getJSONObject(0))
                         usuario = Usuario(usuarioAPI.Id, usuarioAPI.Nombre, usuarioAPI.Admin)
+                        println(usuario)
                         }
                     else {
                         showDialog = true
@@ -152,6 +156,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
                     if (miembrosArray.length() > 0){
                         miembroAPI = MiembroAPI(miembrosArray.getJSONObject(0))
                         miembro = Miembro(miembroAPI.Id_Grupo,miembroAPI.Id_Usuario,miembroAPI.Configuracion)
+                        println(miembro)
                     }
                     if (usuario.id == clave)
                         pase = true
@@ -163,7 +168,9 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
                         else {
                             repositorio.insertUsuario(usuario)
                         }
-                        repositorio.setUsuarioActivo(UsuarioActivo(1,usuario.id,miembro.id_grupo))
+                        val usuarioActivo = UsuarioActivo(1,usuario.id,miembro.id_grupo.toString())
+                        println(usuarioActivo)
+                        repositorio.setUsuarioActivo(usuarioActivo)
                     }
                     if (pase) {
                         navController.navigate(AppRoutes.HomeScreen.route)

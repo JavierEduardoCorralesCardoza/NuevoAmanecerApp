@@ -56,6 +56,8 @@ suspend fun actualizarBaseDeDatosLocal(context: Context,nombreTabla: String, dat
                 repositorio.insertJuego(juego)
             }
             "miembros" -> {
+                println("TEST")
+                println(item)
                 val miembroAPI = MiembroAPI(item)
                 val miembro = Miembro(miembroAPI.Id_Grupo, miembroAPI.Id_Usuario, miembroAPI.Configuracion)
                 repositorio.insertMiembro(miembro)
