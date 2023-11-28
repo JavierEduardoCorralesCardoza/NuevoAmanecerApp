@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.example.proyectonuevoamanecer.screens.flashcards.CartaFlashEntity
+import com.example.proyectonuevoamanecer.screens.flashcards.copyImageToInternalStore
 import com.example.proyectonuevoamanecer.screens.juegos.memorama.database.CartaEntity
 
 @Composable
@@ -27,7 +28,10 @@ fun AddCardDialog(showDialog: MutableState<Boolean>, onAddCard: (CartaEntity) ->
         val context = LocalContext.current
         val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             // Aquí puedes guardar la Uri de la imagen en imageUri
-            imagen = uri.toString()
+            if(uri != null) {
+                val filePath= copyImageToInternalStore(context,uri)
+                imagen = filePath
+            }
         }
 
         AlertDialog(

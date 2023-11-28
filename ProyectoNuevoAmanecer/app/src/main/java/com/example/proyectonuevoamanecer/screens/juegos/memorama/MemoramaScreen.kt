@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.clases.CartasMemorama
 import com.example.proyectonuevoamanecer.screens.AppRoutes
@@ -36,15 +37,18 @@ import kotlin.math.sqrt
 @Composable
 fun MemoramaScreen(navController: NavController, numCartas: Int){
     val viewModel: MemoramaViewModel = viewModel()
-
+    println(numCartas)
     val context = LocalContext.current
     val database = MemoramaDatabase.getInstance(context)
     val viewModelDB: DBViewModel = viewModel(factory = DBViewModelFactory(database))
 
     var cartas = viewModelDB.allImages.collectAsState(initial = emptyList())
-
-    viewModel.GenerarCartas(numCartas)
-    BodyContent(navController, viewModel, viewModelDB)
+    if(!cartas.value.isEmpty()) {
+        println(cartas.value)
+        viewModel.ListaDeImagenes(cartas.value)
+        viewModel.GenerarCartas(numCartas)
+        BodyContent(navController, viewModel, viewModelDB)
+    }
 }
 
 @Composable
@@ -117,7 +121,7 @@ fun CardItem(carta: CartasMemorama, cartas: List<CartasMemorama>, indexCartasVol
     }
     else {
         Image(
-            painter = painterResource(id = carta.imagen),
+            painter = rememberAsyncImagePainter(model = carta.imagen),
             contentDescription = "Imagen carta",
             modifier = Modifier
                 .size(cardSize)

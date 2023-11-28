@@ -2,11 +2,13 @@ package com.example.proyectonuevoamanecer.screens.juegos.memorama
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -33,7 +35,6 @@ fun MemoramaMenuScreen(navController: NavController){
 
     BodyContent(navController = navController, viewModel)
 }
-
 @Composable
 fun BodyContent(navController: NavController, viewModel: DBViewModel){
 
@@ -49,6 +50,7 @@ fun BodyContent(navController: NavController, viewModel: DBViewModel){
 
     val showAddCardDialog = remember{ mutableStateOf(false)}
     val showDeleteCardDialog = remember{ mutableStateOf(false)}
+    val showDialogVacio = remember{ mutableStateOf(false)}
 
     Column {
         Text(text = "Elige el numero de cartas")
@@ -73,7 +75,14 @@ fun BodyContent(navController: NavController, viewModel: DBViewModel){
             Text(text = "Eliminar carta")
         }
 
-        Button(onClick = { navController.navigate("${AppRoutes.MemoramaScreen.route}/${sliderPosition}") }) {
+        Button(onClick = {
+            if(sliderPosition.toInt() != 0) {
+                navController.navigate("${AppRoutes.MemoramaScreen.route}/${sliderPosition.toInt()}")
+            }
+            else{
+                showDialogVacio.value = true
+            }
+        }) {
             Text(text = "Jugar")
         }
     }
@@ -81,11 +90,27 @@ fun BodyContent(navController: NavController, viewModel: DBViewModel){
     if(showAddCardDialog.value){
         AddCardDialog(showDialog = showAddCardDialog){carta ->
             viewModel.insertCarta(carta)
+            sliderPosition = intervalStart
         }
     }
     if(showDeleteCardDialog.value){
         DeleteCardDialog(showDialog = showDeleteCardDialog, cartas = cartas.value){carta ->
             viewModel.deleteCarta(carta)
+            sliderPosition = intervalStart
         }
+    }
+    if(showDialogVacio.value){
+        AlertDialog(
+            onDismissRequest = {showDialogVacio.value = false},
+            title={Text("Error")},
+            text={Text("No se estan seleccionando cartas. Ingrese un numero.")},
+            confirmButton = {
+                Button(
+                    onClick={showDialogVacio.value = false}
+                ){
+                    Text("Aceptar")
+                }
+            }
+        )
     }
 }
