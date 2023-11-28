@@ -18,21 +18,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.navigation.compose.rememberNavController
+import com.example.proyectonuevoamanecer.api.CheckNetwork
 import com.example.proyectonuevoamanecer.databases.DbDatabase
 import com.example.proyectonuevoamanecer.screens.modalUI.ModalUi
 import com.example.proyectonuevoamanecer.ui.theme.ProyectoNuevoAmanecerTheme
 import com.example.proyectonuevoamanecer.widgets.Gif
+
 
 class MainActivity : ComponentActivity() {
     lateinit var db: DbDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = DbDatabase.getInstance(this)
+        val network = CheckNetwork().registerNetworkCallback(applicationContext)
         setContent {
 
             ProyectoNuevoAmanecerTheme {

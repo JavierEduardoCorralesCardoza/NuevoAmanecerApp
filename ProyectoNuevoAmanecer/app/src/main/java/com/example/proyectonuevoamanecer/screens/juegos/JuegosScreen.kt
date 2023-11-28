@@ -80,24 +80,26 @@ fun BodyContentJuegos(navController: NavController){
 
         }}
 
-        item{Row {
-            BotonFlashcards(
-                text = "Numeros",
-                click = {navController.navigate(AppRoutes.Numeros.route) },
-                imgCard = imgNum,
-                Color(0xD1, 0xCA, 0x6, 0xFF),
-                0.3f,
-                0.45f
-            )
-            BotonFlashcards(
-                text = "Regresar",
-                click = {navController.navigate(AppRoutes.HomeScreen.route) },
-                imgCard = imgBack,
-                Color(0xD1, 0xCA, 0x6, 0xFF),
-                0.3f,
-            )
+        item{
+            Row {
+                BotonFlashcards(
+                    text = "Numeros",
+                    click = {navController.navigate(AppRoutes.Numeros.route) },
+                    imgCard = imgNum,
+                    Color(0xD1, 0xCA, 0x6, 0xFF),
+                    0.3f,
+                    0.45f
+                )
+                BotonFlashcards(
+                    text = "Regresar",
+                    click = {navController.navigate(AppRoutes.HomeScreen.route) },
+                    imgCard = imgBack,
+                    Color(0xD1, 0xCA, 0x6, 0xFF),
+                    0.3f,
+                )
 
-        } }
+            }
+        }
 
     }
 }

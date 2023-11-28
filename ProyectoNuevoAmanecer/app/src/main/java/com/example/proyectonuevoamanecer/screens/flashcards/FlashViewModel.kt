@@ -46,6 +46,4 @@ class FlashViewModel(private val database: FlashcardDatabase) : ViewModel() {
         cartaFlashEntity.mazoId=mazoId
         dao.insertCartaFlash(cartaFlashEntity)
     }
-
-
 }
