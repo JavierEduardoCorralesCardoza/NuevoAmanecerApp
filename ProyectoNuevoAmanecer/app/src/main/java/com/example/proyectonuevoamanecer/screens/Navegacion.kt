@@ -36,10 +36,10 @@ fun Navegacion(navController: NavHostController){
         composable(AppRoutes.EligirImagen.route){ EligirImagen(navController) }
         composable(AppRoutes.Rompecabezas.route){ Rompecabezas(navController) }
         composable(route = AppRoutes.FlashcardGame.route + "/{mazo}",
-                    arguments = listOf(navArgument("mazo"){
-                        type = NavType.StringType
-                        defaultValue = "defualt_value"
-                    })
+            arguments = listOf(navArgument("mazo"){
+                type = NavType.StringType
+                defaultValue = "defualt_value"
+            })
         ) { backStackEntry ->
             val context = LocalContext.current
             val database = FlashcardDatabase.getInstance(context)

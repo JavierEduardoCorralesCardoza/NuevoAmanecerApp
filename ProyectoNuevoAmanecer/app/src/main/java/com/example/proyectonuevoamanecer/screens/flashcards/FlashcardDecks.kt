@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectonuevoamanecer.screens.AppRoutes
-//import androidx.compose.ui.draw.EmptyBuildDrawCacheParams.density
 
 @Composable
 fun FlashcardDecks(navController: NavController)
@@ -87,7 +86,7 @@ fun PersonItem(
     }
     var mazoCartas = viewModel.getMazoConCartasPorNombre(mazo.titulo).collectAsState(initial = null)
     //val interactionSource = remember {
-      // MutableInteractionSource()
+    // MutableInteractionSource()
     //}
     //val density = LocalDensity.current
 
@@ -176,10 +175,9 @@ fun BodyContentDecks(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(mazos) { mazo ->
-            val showAddCardDialog = remember{ mutableStateOf(false)}
-            val showRenameDialog = remember { mutableStateOf(false) }
             val showDeleteDialog = remember { mutableStateOf(false) }
-
+            val showRenameDialog = remember { mutableStateOf(false)}
+            val showAddCardDialog= remember{ mutableStateOf(false)}
             PersonItem(
                 mazo= mazo,
                 personName = mazo.titulo,
@@ -196,7 +194,6 @@ fun BodyContentDecks(
                     "Añadir Tarjeta" ->{
                         showAddCardDialog.value=true
                     }
-
                     "Borrar Mazo"->{
                         val MazoId = mazo.id
                         viewModel.deleteMazo(MazoId, mazos)
@@ -214,8 +211,9 @@ fun BodyContentDecks(
 
             if(showAddCardDialog.value){
                 AddCardDialog(showAddCardDialog,mazo.id ){newCard ->
-                    viewModel.insertCartaFlash(newCard)
+                    viewModel.insertCartaFlashIntoMazo(newCard,mazo.id)
                     viewModel.renameMazo(mazo.id, mazo.titulo)
+
                 }
             }
             if(showRenameDialog.value){
@@ -245,6 +243,38 @@ fun BodyContentDecks(
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

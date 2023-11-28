@@ -82,12 +82,10 @@ fun isUriValid(uriString: String, context: Context): Boolean {
 fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: FlashViewModel){
     val mazoState = remember{ mutableStateOf<MazoConCartasEntity?>(null)}
     val coroutineScope = rememberCoroutineScope()
-
     LaunchedEffect(mazoTitulo){
         coroutineScope.launch{
             val mazos = viewModel.allMazos.first()
             val mazoEntity = mazos.find{it.titulo==mazoTitulo}
-
             if(mazoEntity != null){
                 val mazoConCartas = viewModel.getMazoConCartasPorNombre(mazoEntity.titulo).first()
                 mazoState.value = mazoConCartas
@@ -100,6 +98,7 @@ fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: 
     }
 }
 
+
 @Composable
 fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: List<CartaFlashEntity>, viewModel: FlashViewModel) {
 
@@ -111,6 +110,9 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
             .fillMaxWidth(),
         textAlign = TextAlign.Center
     )
+
+
+
 
     val (isAnswerSelected, setAnswerSelected) = remember { mutableStateOf(false) }
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
@@ -166,6 +168,7 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
                 if (!isFlipped) {
                     val context = LocalContext.current
                     println(isUriValid(currentCard.imagen, context))
+
                     Image(
                         painter= rememberAsyncImagePainter(model = currentCard.imagen),
                         contentDescription = null
