@@ -8,28 +8,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.clases.CartasMemorama
+import com.example.proyectonuevoamanecer.screens.juegos.memorama.database.CartaEntity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Collections
 
 class MemoramaViewModel(application: Application) : AndroidViewModel(application) {
 
-    val imagenes_carta = mutableListOf<Int>()
+    val imagenes_carta = mutableListOf<String>()
     val cartas = mutableListOf<CartasMemorama>()
     val indexCartasVolteadas = mutableListOf<Int>()
     val retrasoEnEjecucion = mutableStateOf(false)
     val cuadroDeDialogo = mutableStateOf(false)
     val score = mutableIntStateOf(50)
 
-    fun ListaDeImagenes(numCartas: Int){
+    fun ListaDeImagenes(cartas: List<CartaEntity>){
         if(imagenes_carta.isEmpty()) {
-            for (i in 1..numCartas) { // Ajusta este rango según la cantidad de imágenes que tienes
-                val id = getApplication<Application>().resources.getIdentifier(
-                    "imagen_memorama$i",
-                    "drawable",
-                    getApplication<Application>().packageName
-                )
-                imagenes_carta.add(id)
+            for (i in 0..cartas.size-1) { // Ajusta este rango según la cantidad de imágenes que tienes
+                imagenes_carta.add(cartas[i].path)
             }
         }
     }
