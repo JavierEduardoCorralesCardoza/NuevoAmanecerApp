@@ -11,9 +11,7 @@ data class CartaFlashEntity(
     val texto: String,
     val resp1: String,
     val resp2: String,
-    val mazoId: Int
-){
-    override fun toString(): String {
-        return "CartaFlashEntity(id=$id, imagen='$imagen', texto='$texto', resp1='$resp1', resp2='$resp2', mazoId=$mazoId)"
-    }
-}
+    var mazoId: Int
+)
+
+

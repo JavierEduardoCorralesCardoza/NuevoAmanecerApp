@@ -4,12 +4,10 @@ import DiferenciasCard
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.juego1jetpc.ui.EligirImagen
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashViewModel
@@ -23,6 +21,7 @@ import com.example.proyectonuevoamanecer.screens.home.HomeScreen
 import com.example.proyectonuevoamanecer.screens.home.LoginScreen
 import com.example.proyectonuevoamanecer.screens.juegos.JuegosScreen
 import com.example.proyectonuevoamanecer.screens.juegos.NivelesJuegos
+import com.example.proyectonuevoamanecer.screens.juegos.memorama.MemoramaMenuScreen
 import com.example.proyectonuevoamanecer.screens.juegos.memorama.MemoramaScreen
 import com.example.rompecabezas.Rompecabezas
 
@@ -37,10 +36,10 @@ fun Navegacion(navController: NavHostController){
         composable(AppRoutes.EligirImagen.route){ EligirImagen(navController) }
         composable(AppRoutes.Rompecabezas.route){ Rompecabezas(navController) }
         composable(route = AppRoutes.FlashcardGame.route + "/{mazo}",
-                    arguments = listOf(navArgument("mazo"){
-                        type = NavType.StringType
-                        defaultValue = "defualt_value"
-                    })
+            arguments = listOf(navArgument("mazo"){
+                type = NavType.StringType
+                defaultValue = "defualt_value"
+            })
         ) { backStackEntry ->
             val context = LocalContext.current
             val database = FlashcardDatabase.getInstance(context)
@@ -72,15 +71,17 @@ fun Navegacion(navController: NavHostController){
 
         composable(AppRoutes.DiferenciasCard.route) {DiferenciasCard(navController, 1)}
 
+        composable(AppRoutes.MenuMemoramaScreen.route) { MemoramaMenuScreen(navController) }
+
         composable(
-            route = AppRoutes.MemoramaScreen.route + "/{nivel}",
-            arguments = listOf(navArgument("nivel") {
+            route = AppRoutes.MemoramaScreen.route + "/{numCartas}",
+            arguments = listOf(navArgument("numCartas") {
                 type = NavType.IntType
                 defaultValue = 1
             })
         ) { backStackEntry ->
-            val nivel = backStackEntry.arguments?.getInt("nivel")
-            MemoramaScreen(navController = navController, nivel = nivel ?: 0)
+            val nivel = backStackEntry.arguments?.getInt("numCartas")
+            MemoramaScreen(navController = navController, numCartas = nivel ?: 0)
         }
 
         composable(
