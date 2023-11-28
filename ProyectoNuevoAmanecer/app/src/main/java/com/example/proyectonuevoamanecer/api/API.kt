@@ -12,7 +12,7 @@ import org.json.JSONObject
 val client = OkHttpClient()
 val JSON = "application/json; charset=utf-8".toMediaType()
 
-suspend fun api(nombreTabla: String, data: Map<String, Any>, metodo: String, ids: Map<String, String>? = null): JSONObject = withContext(Dispatchers.IO) {
+suspend fun api(nombreTabla: String, data: Map<String, Any>, metodo: String, ids: Map<String, String?>? = null): JSONObject = withContext(Dispatchers.IO) {
     val baseUrl = "http://nextjs-nuevo-amanecer.vercel.app/pages/api"
     var endpoint = "$baseUrl/$nombreTabla"
     if (ids != null) {
@@ -64,7 +64,7 @@ suspend fun api(nombreTabla: String, data: Map<String, Any>, metodo: String, ids
     }
 }
 
-fun llamarApi(nombreTabla: String, data: Map<String, Any>, metodo: String, ids: Map<String, String>? = null): JSONObject {
+fun llamarApi(nombreTabla: String, data: Map<String, Any>, metodo: String, ids: Map<String, String?>? = null): JSONObject {
     var response: JSONObject? = null
     runBlocking {
         response = api(nombreTabla, data, metodo, ids)
