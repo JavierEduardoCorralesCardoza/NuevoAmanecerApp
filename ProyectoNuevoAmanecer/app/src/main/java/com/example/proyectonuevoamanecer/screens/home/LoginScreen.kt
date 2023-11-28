@@ -6,9 +6,12 @@ import android.os.Build.VERSION.SDK_INT
 import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
@@ -29,14 +32,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.request.ImageRequest
+
 import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.api.llamarApi
 import com.example.proyectonuevoamanecer.databases.DbDatabase
@@ -46,6 +46,7 @@ import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.screens.config.findWindow
 import com.example.proyectonuevoamanecer.widgets.BotonGeneral
+import com.example.proyectonuevoamanecer.widgets.Gif
 import kotlinx.coroutines.launch
 
 @Composable
@@ -83,7 +84,13 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
     }
 
     if (usuarioActivo == null){
-        BotonGeneral(onClick = { /*TODO*/ }, text = "Boton")
+        val yOffset = with(LocalDensity.current) { (-500).toDp() }
+        Gif(
+            R.drawable.star,
+            modifier = Modifier
+                .fillMaxSize()
+                .absoluteOffset(y = yOffset)
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -91,7 +98,8 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "LogIn", modifier = Modifier.padding(8.dp),
+
+            Text(text = "LogIn", modifier = Modifier.padding(top = 0.dp, bottom = 8.dp),
                 style = MaterialTheme.typography.displayLarge,
                 color = Color.White
             )
@@ -146,7 +154,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
                     }
                 },
                 modifier = Modifier.padding(8.dp)
-                ) {
+            ) {
                 Text(text = "Iniciar Sesión")
             }
             if(showDialog){AlertDialog(
@@ -161,34 +169,10 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route) }) {
                 Text(text = "Iniciar Sesion RAPIDO")
             }
-            Gif()
         }
+
     }
+
 }
 
-@Composable
-fun Gif() {
-    val imageLoader = ImageLoader.Builder(LocalContext.current)
-        .components {
-            if (SDK_INT >= 34) {
-                add(ImageDecoderDecoder.Factory())
-            } else {
-                add(GifDecoder.Factory())
-            }
-        }
-        .build()
 
-    Image(
-        painter = rememberAsyncImagePainter(
-            ImageRequest.Builder(LocalContext.current)
-                .data(data = R.drawable.star)
-                .apply(block = fun ImageRequest.Builder.() {
-                    //size(Size.ORIGINAL)
-                }).build(),
-            imageLoader = imageLoader
-        ),
-        contentDescription = null,
-        modifier = Modifier
-            .width(250.dp)
-    )
-}

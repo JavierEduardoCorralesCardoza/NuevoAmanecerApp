@@ -32,13 +32,14 @@ import androidx.compose.ui.unit.sp
 import com.example.proyectonuevoamanecer.R
 
 @Composable
-fun BotonFlashcards(text: String, click: () -> Unit, imgCard: Painter, back: Color, size: Float){
+fun BotonFlashcards(text: String, click: () -> Unit, imgCard: Painter, back: Color, size: Float, frac: Float = 1f){
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Card(
         modifier = Modifier
             .padding(16.dp)
             .clickable(onClick = click)
-            .fillMaxWidth()
+            .fillMaxWidth(fraction = frac)
             ,
 
         //shape = RoundedCornerShape(20.dp),
@@ -69,7 +70,7 @@ fun BotonFlashcards(text: String, click: () -> Unit, imgCard: Painter, back: Col
                 ,
                 text = text,
                 color = Color.White,
-                fontSize = 30.sp,
+                fontSize = 30.sp * size * 2,
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold
