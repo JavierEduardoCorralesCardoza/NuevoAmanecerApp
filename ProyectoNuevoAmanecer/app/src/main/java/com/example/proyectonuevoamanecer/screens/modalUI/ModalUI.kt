@@ -94,16 +94,9 @@ fun ModalUi(navController: NavHostController) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(
-                modifier = Modifier.fillMaxWidth((screenWidth/2.3f)/screenWidth)
-            ) {
-                ModalDrawerContent(
-                    currentScreen = currentRoute,
-                    navController = navController,
-                    drawerState)}
             if(!isAtLogin){
                 ModalDrawerSheet(
-                    modifier = Modifier.fillMaxWidth(0.65F)
+                    modifier = Modifier.fillMaxWidth((screenWidth/2.3f)/screenWidth)
                 ) {
                     ModalDrawerContent(
                         currentScreen = currentRoute,
