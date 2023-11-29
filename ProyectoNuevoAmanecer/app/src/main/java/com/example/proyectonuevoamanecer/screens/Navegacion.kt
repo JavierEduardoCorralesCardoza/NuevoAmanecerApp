@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.juego1jetpc.ui.EligirImagen
+import com.example.proyectonuevoamanecer.screens.config.Administracion
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashViewModel
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashViewModelFactory
 import com.example.proyectonuevoamanecer.screens.flashcards.FlashcardDatabase
@@ -30,6 +31,7 @@ fun Navegacion(navController: NavHostController){
     NavHost(navController = navController, startDestination = AppRoutes.LoginScreen.route){
         composable(AppRoutes.LoginScreen.route) { LoginScreen(navController) }
         composable(AppRoutes.HomeScreen.route) { HomeScreen(navController) }
+        composable(AppRoutes.Administracion.route){Administracion(navController)}
         composable(AppRoutes.MainFlashMenu.route) { MainFlashMenu(navController) }
         composable(AppRoutes.FlashcardDecks.route) { FlashcardDecks(navController) }
         composable(AppRoutes.Numeros.route){ Numeros(navController) }

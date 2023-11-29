@@ -99,7 +99,7 @@ fun PuzzleSelectionScreen(navController: androidx.navigation.NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.7f))
+            .background(Color.Black.copy(alpha = 0.6f))
     ) {
         // Background Image
         /*
@@ -216,14 +216,14 @@ fun PuzzleBoard(puzzleId: Int, navController: NavController) {
         contentAlignment = Alignment.Center, // This will center its children
         modifier = Modifier
             .fillMaxSize() // The background color for the whole screen
-            .background(Color.Black.copy(alpha = 0.7f))
+            .background(Color.Black.copy(alpha = 0.6f))
     ) {
         Image(
             painter = frameImage,
             contentDescription = "Frame",
             modifier = Modifier
                 .fillMaxWidth(fraction = 1f) // Adjust the fraction to control the size
-                .aspectRatio(0.7f) // Set the aspect ratio of the frame if it is square
+                .aspectRatio(1f) // Set the aspect ratio of the frame if it is square
                 .align(Alignment.Center) // This will center the frame in the Box
                 .offset(x = pieceSize * -0.18f)
         )
