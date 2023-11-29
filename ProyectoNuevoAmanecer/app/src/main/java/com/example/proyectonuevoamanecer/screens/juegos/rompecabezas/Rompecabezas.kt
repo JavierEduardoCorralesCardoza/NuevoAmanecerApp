@@ -49,6 +49,8 @@ import androidx.compose.foundation.layout.padding
 
 import android.media.MediaPlayer
 import android.content.Context
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 
 import androidx.compose.ui.platform.LocalContext
 
@@ -56,6 +58,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavController
 import com.example.proyectonuevoamanecer.R
+import com.example.proyectonuevoamanecer.screens.AppRoutes
+import com.example.proyectonuevoamanecer.screens.juegos.memorama.MemoramaViewModel
+import com.example.proyectonuevoamanecer.screens.juegos.memorama.NavigationButton
 
 
 fun playSound(context: Context, soundId: Int) {
@@ -88,17 +93,23 @@ fun PuzzleSelectionScreen(navController: androidx.navigation.NavController) {
 
 
     // You can use an image or a color for the background
-    val backgroundImage = painterResource(id = R.drawable.fondo) // Replace with your image resource
+    //val backgroundImage = painterResource(id = R.drawable.fondo) // Replace with your image resource
 
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.6f))
+    ) {
         // Background Image
+        /*
         Image(
             painter = backgroundImage,
             contentDescription = null,
             modifier = Modifier.matchParentSize(),
             contentScale = ContentScale.Crop // This is to ensure the image covers the entire screen
         )
+        */
 
         // Your main content
         Column(
@@ -155,15 +166,16 @@ fun PuzzleListItem(puzzle: Puzzle, onPuzzleSelected: (Int) -> Unit) {
 
 @Composable
 fun Rompecabezas(navController: NavController) {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "puzzleSelection") {
+    val navController2 = rememberNavController()
+
+    NavHost(navController = navController2, startDestination = "puzzleSelection") {
         composable("puzzleSelection") {
-            PuzzleSelectionScreen(navController)
+            PuzzleSelectionScreen(navController2)
         }
 
         composable("puzzleBoard/{puzzleId}", arguments = listOf(navArgument("puzzleId") { type = NavType.IntType })) { backStackEntry ->
             val puzzleId = backStackEntry.arguments?.getInt("puzzleId") ?: -1
-            PuzzleBoard(puzzleId) // Pass the puzzleId to the PuzzleBoard function
+            PuzzleBoard(puzzleId, navController) // Pass the puzzleId to the PuzzleBoard function
         }
     }
 }
@@ -172,7 +184,7 @@ fun Rompecabezas(navController: NavController) {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun PuzzleBoard(puzzleId: Int) {
+fun PuzzleBoard(puzzleId: Int, navController: NavController) {
     val gridSize = 3 // 3x3 grid
     val screenHeight = LocalConfiguration.current.screenWidthDp.dp
     // Calcular el tamaño de la pieza basándote en la altura de la pantalla
@@ -202,8 +214,9 @@ fun PuzzleBoard(puzzleId: Int) {
     // Use a Box to fill the entire screen
     Box(
         contentAlignment = Alignment.Center, // This will center its children
-        modifier = Modifier.fillMaxSize().background(Color.White) // The background color for the whole screen
-            .background(Color.LightGray)
+        modifier = Modifier
+            .fillMaxSize() // The background color for the whole screen
+            .background(Color.Black.copy(alpha = 0.6f))
     ) {
         Image(
             painter = frameImage,
@@ -212,12 +225,18 @@ fun PuzzleBoard(puzzleId: Int) {
                 .fillMaxWidth(fraction = 1f) // Adjust the fraction to control the size
                 .aspectRatio(1f) // Set the aspect ratio of the frame if it is square
                 .align(Alignment.Center) // This will center the frame in the Box
-                .offset(x = pieceSize*-0.16f)
+                .offset(x = pieceSize * -0.18f)
         )
 
         if (gameComplete) {
             // Display the "You Win" message when the game is complete
-            Text("¡Ganaste!", style = MaterialTheme.typography.headlineMedium)
+            Column {
+                Text("¡Ganaste!", style = MaterialTheme.typography.headlineMedium)
+                Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route) }) {
+                    Text(text = "Inicio")
+                }
+            }
+
         } else {
             // Display the puzzle board centered in the Box
             Box(
@@ -270,7 +289,9 @@ fun DraggablePuzzlePiece(
                 detectDragGestures { change, dragAmount ->
 
                     val newPosition = position + dragAmount
-                    val closestGridPosition = gridPositions.minByOrNull { gridPosition -> gridPosition.getDistanceTo(newPosition) }
+                    val closestGridPosition = gridPositions.minByOrNull { gridPosition ->
+                        gridPosition.getDistanceTo(newPosition)
+                    }
 
                     if (closestGridPosition != null) {
                         val distanceToClosestPx = closestGridPosition.getDistanceTo(newPosition)
