@@ -81,13 +81,15 @@ fun ModalUi(navController: NavHostController) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(
-                modifier = Modifier.fillMaxWidth(0.65F)
-            ) {
-                ModalDrawerContent(
-                    currentScreen = currentRoute,
-                    navController = navController,
-                    drawerState)}
+            if(!isAtLogin){
+                ModalDrawerSheet(
+                    modifier = Modifier.fillMaxWidth(0.65F)
+                ) {
+                    ModalDrawerContent(
+                        currentScreen = currentRoute,
+                        navController = navController,
+                        drawerState)}
+                }
             },
         ) {
         Scaffold(
@@ -196,7 +198,10 @@ fun ModalDrawerContent(currentScreen: String?, navController: NavHostController,
         NavigationDrawerItem(
             label = { Text(text = "Administracion") },
             selected = false,
-            onClick = {/* TODO */},
+            onClick = {
+                navController.navigate(AppRoutes.Administracion.route) {
+                    popUpTo(AppRoutes.Administracion.route) { inclusive = true } }
+                scope.launch { drawerState.close() }},
             icon = {Icon(Icons.Filled.AddCircle, contentDescription = "Inicio")}
         )
     }
