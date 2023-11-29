@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -102,14 +104,18 @@ fun FlashcardGame(navController: NavController, mazoTitulo : String, viewModel: 
 @Composable
 fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: List<CartaFlashEntity>, viewModel: FlashViewModel) {
 
-    Text(
-        text = mazo.titulo,
-        style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        textAlign = TextAlign.Center
-    )
+    Box(modifier = Modifier
+        .background(Color.Black.copy(alpha = 0.8f))
+        .padding(8.dp)
+        .fillMaxWidth(),
+        contentAlignment=Alignment.Center
+    ) {
+        Text(text = mazo.titulo,
+            style= TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
+            textAlign = TextAlign.Center,
+            color = Color.White,
+        )
+    }
 
 
 
@@ -121,30 +127,35 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
     val currentCard = flashcards[currentIndex]
     val correctAnswer = currentCard.texto
     val (isFlipped, setFlipped) = remember { mutableStateOf(false) }
-    val (selectedAnswer, onAnswerSelected)= remember {
+    val (selectedAnswer, onAnswerSelected) = remember {
         mutableStateOf("")
     }
-    if (showDialog){
-        AlertDialog(
-            onDismissRequest ={setShowDialog(false)} ,
-            title = {Text("¡Ya acabaste el mazo!")},
+    if (showDialog) {
+        AlertDialog(containerColor=Color.White,
+            shape= RoundedCornerShape(12.dp),
+            onDismissRequest = { setShowDialog(false) },
+            title = { Text("¡Ya acabaste el mazo!", textAlign = TextAlign.End,style= TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp),color=Color.Black) },
             confirmButton = {
-                Button(onClick = {
+                Button(colors=ButtonDefaults.buttonColors(Color.Blue),
+                    shape= RoundedCornerShape(12.dp),
+                    onClick = {
                     setCurrentIndex(0)
                     setFlipped(false)
                     onAnswerSelected("")
 
                     setShowDialog(false)
                 }) {
-                    Text("Volver a iniciar")
+                    Text("Volver a iniciar",color=Color.White,style= TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold))
                 }
             },
             dismissButton = {
-                Button(onClick = {
+                Button(colors=ButtonDefaults.buttonColors(Color.Blue),
+                    shape= RoundedCornerShape(12.dp),
+                    onClick = {
                     setShowDialog(false)
                     navController.navigate(AppRoutes.FlashcardDecks.route)
                 }) {
-                    Text("Regresar")
+                    Text("Regresar",color=Color.White,style= TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold))
                 }
             })
     }
@@ -170,7 +181,7 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
                     println(isUriValid(currentCard.imagen, context))
 
                     Image(
-                        painter= rememberAsyncImagePainter(model = currentCard.imagen),
+                        painter = rememberAsyncImagePainter(model = currentCard.imagen),
                         contentDescription = null
                     )
 
@@ -192,8 +203,10 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
                 onAnswerSelected(currentCard.resp1)
                 setFlipped(true)
                 setAnswerSelected(true)
-            }) {
-                Text(text = currentCard.resp1)
+            },
+                colors=ButtonDefaults.buttonColors(Color.Blue),
+                shape = RoundedCornerShape(12.dp)) {
+                Text(text = currentCard.resp1,color = Color.White, style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp))
 
             }
 
@@ -204,20 +217,34 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
                 onAnswerSelected(currentCard.resp2)
                 setFlipped(true)
                 setAnswerSelected(true)
-            }) {
-                Text(text = currentCard.resp2)
+            },
+                colors=ButtonDefaults.buttonColors(Color.Blue),
+                shape = RoundedCornerShape(12.dp)) {
+                Text(text = currentCard.resp2,color=Color.White, style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp))
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
 
         if (selectedAnswer.isNotEmpty()) {
-            Text(text = if (selectedAnswer == correctAnswer) "¡Correcto! La Respuesta es $correctAnswer"
-            else "Incorrecto, la respuesta correcta es $correctAnswer")
+            Box(
+                modifier = Modifier
+                    .background(Color.Black.copy(alpha = 0.8f))
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+            Text(
+                text = if (selectedAnswer == correctAnswer) "¡Correcto! La Respuesta es $correctAnswer"
+                else "Incorrecto, la respuesta correcta es $correctAnswer"
+            )
+           }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            if(isAnswerSelected) {
+        Button(colors=ButtonDefaults.buttonColors(Color.Blue),
+            shape=RoundedCornerShape(12.dp),
+            onClick = {
+            if (isAnswerSelected) {
                 if (currentIndex < flashcards.size - 1) {
                     setCurrentIndex(currentIndex + 1)
                 } else {
@@ -227,12 +254,12 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
                 onAnswerSelected("")
                 setAnswerSelected(false)
             }
-        }, enabled = isAnswerSelected) {
-            Text(text = "Siguiente")
+        }, enabled = isAnswerSelected)
+        {
+            Text(text = "Siguiente",color=Color.White, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
         }
 
     }
-
 }
 
 
