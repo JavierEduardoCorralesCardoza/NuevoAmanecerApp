@@ -14,7 +14,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 
 @Composable
-fun Gif(gif:Int, modifier: Modifier) {
+fun Gif(gif:Int, modifier: Modifier, alfa: Float = 1f) {
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components {
             if (Build.VERSION.SDK_INT >= 33) {
@@ -35,6 +35,7 @@ fun Gif(gif:Int, modifier: Modifier) {
             imageLoader = imageLoader
         ),
         contentDescription = null,
-        modifier = modifier
+        modifier = modifier,
+        alpha = alfa
     )
 }

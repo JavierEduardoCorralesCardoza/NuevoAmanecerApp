@@ -34,19 +34,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.screens.juegos.numeros.viewModel.NumerosViewModelFactory
 import com.example.proyectonuevoamanecer.api.llamarApi
 import com.example.proyectonuevoamanecer.clases.BotonBase
+import com.example.proyectonuevoamanecer.fonts.MyFontFamily
 import com.example.proyectonuevoamanecer.screens.juegos.numeros.configuracion.Configuracion
 import com.example.proyectonuevoamanecer.screens.juegos.numeros.configuracion.MenuConfiguracion
 import com.example.proyectonuevoamanecer.screens.juegos.numeros.viewModel.NumerosViewModel
 import com.example.proyectonuevoamanecer.screens.juegos.numeros.viewModel.ScreenViewModel
+import com.example.proyectonuevoamanecer.widgets.Gif
 import org.json.JSONObject
 enum class GameScreenState {
     SelectLevel,
@@ -56,20 +62,28 @@ enum class GameScreenState {
 
 @Composable
 fun SelectLevelScreen(onModeSelected: (Int) -> Unit) {
+    /*Gif(
+        gif = R.font.,
+        modifier = Modifier.fillMaxSize()
+    )*/
     Box(modifier = Modifier.fillMaxSize()) {
         Card(
             colors = CardDefaults.cardColors(Color.Transparent),
             modifier = Modifier.align(Alignment.Center)
         ) {
             Column(
+                verticalArrangement= Arrangement.Center,
+                horizontalAlignment= Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(16.dp)
             ) {
                 Text(
                     "Selecciona un Modo",
-                    style = MaterialTheme.typography.displayLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    style = MaterialTheme.typography.displayMedium,
+                    //fontWeight = FontWeight.Bold,
+                    color = Color(0xF7, 0xEE, 0xBA, 0xFF),
+                    fontFamily = MyFontFamily,
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
@@ -101,7 +115,7 @@ fun Numeros(navController: NavController) {
 
 @Composable
 fun GameScreen(Timed: Boolean){
-    val primaryColor = MaterialTheme.colorScheme.tertiary
+    val primaryColor = Color.Transparent
     val viewModelStoreOwner = LocalViewModelStoreOwner.current
     val application = LocalContext.current.applicationContext as Application
     val viewModel = ViewModelProvider(viewModelStoreOwner!!, NumerosViewModelFactory(
@@ -112,18 +126,24 @@ fun GameScreen(Timed: Boolean){
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(
+            verticalArrangement= Arrangement.Center,
+            horizontalAlignment= Alignment.CenterHorizontally,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
                 .background(color = primaryColor)
-                .border(width = 2.dp, color = Color.Black)
+
+                //.border(width = 2.dp, color = Color.Black)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Text(
                     text = "Números",
                     modifier = Modifier
                         .wrapContentSize(Alignment.CenterStart),
                     style = MaterialTheme.typography.displayLarge,
+                    fontFamily = MyFontFamily,
+                    textAlign = TextAlign.Center,
+                    color = Color(0x21, 0x96, 0xF3, 0xFF)
                 )
                 BotonBase {
                     MenuConfiguracion(viewModel)
@@ -134,6 +154,7 @@ fun GameScreen(Timed: Boolean){
                 modifier = Modifier
                     .wrapContentSize(Alignment.CenterStart),
                 style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.weight(1f))
             Row(
@@ -146,7 +167,9 @@ fun GameScreen(Timed: Boolean){
                         text = "Tiempo restante: ${viewModel.tiempoRestante.value / 1000}s",
                         modifier = Modifier
                             .wrapContentSize(Alignment.CenterStart)
-                            .weight(1f)
+                            .weight(1f),
+                        fontFamily = MyFontFamily,
+                        textAlign = TextAlign.Center
                     )  // Muestra el tiempo restante
                 }
                 Text(
@@ -154,7 +177,9 @@ fun GameScreen(Timed: Boolean){
                     text = "Puntaje más alto: ${if (Timed) viewModel.highScoreTimed.value else viewModel.highScoreNormal.value}",
                     modifier = Modifier
                         .wrapContentSize(Alignment.CenterStart)
-                        .weight(1f)
+                        .weight(1f),
+                    fontFamily = MyFontFamily,
+                    textAlign = TextAlign.Center
                 )  // Muestra el puntaje más alto
             }
         }
@@ -162,7 +187,8 @@ fun GameScreen(Timed: Boolean){
         Box(
             modifier = Modifier
                 .weight(2f)
-                .border(width = 2.dp, color = Color.Black)
+                //.padding(start = 16.dp, end = 16.dp)
+                //.border(width = 2.dp, color = Color.Black)
         ) {
             GameBox(viewModel = viewModel, Timed = Timed)
         }
@@ -172,7 +198,7 @@ fun GameScreen(Timed: Boolean){
                 .weight(1f)
                 .fillMaxSize()
                 .background(color = primaryColor)
-                .border(width = 2.dp, color = Color.Black)
+                //.border(width = 2.dp, color = Color.Black)
         ) {
             if (!viewModel.juegoEnProgreso.value) {
                 Button(onClick = {
@@ -180,7 +206,10 @@ fun GameScreen(Timed: Boolean){
                     Text(style = MaterialTheme.typography.displaySmall,
                         text = "Iniciar juego",
                         modifier = Modifier
-                            .wrapContentSize(Alignment.CenterStart))
+                            .wrapContentSize(Alignment.CenterStart),
+                        fontFamily = MyFontFamily,
+                        textAlign = TextAlign.Center
+                        )
                 }
             }
         }
@@ -193,8 +222,13 @@ fun GameBox(viewModel: NumerosViewModel,Timed: Boolean) {
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color(0x0, 0x0, 0x0, 0xF3)),
         contentAlignment = Alignment.Center) {
+        Gif(
+            gif = R.drawable.lines,
+            modifier = Modifier.fillMaxSize(),
+            alfa = 0.3f
+        )
         val density = LocalDensity.current
         val boxWidth = with(density) { constraints.maxWidth.toDp() / 2 }
         val boxHeight = with(density) { constraints.maxHeight.toDp() / 2 }
@@ -204,7 +238,7 @@ fun GameBox(viewModel: NumerosViewModel,Timed: Boolean) {
         if (viewModel.juegoEnProgreso.value){
         viewModel.numbers.forEach { number ->
             // Determina el color del numero
-            val color = viewModel.coloresNumeros[number] ?: Color.Black
+            val color = viewModel.coloresNumeros[number] ?: Color.White
             // Usa las posiciones aleatorias generadas
             val (offsetX, offsetY) = viewModel.posiciones[number] ?: Pair(0.dp, 0.dp)
             Text(
@@ -216,21 +250,30 @@ fun GameBox(viewModel: NumerosViewModel,Timed: Boolean) {
                     .clickable {
                         viewModel.addNumber(number)
                     },
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
+                fontFamily = MyFontFamily,
+                textAlign = TextAlign.Center
             )
         }
             Text(style = MaterialTheme.typography.displaySmall,
                 text = "Puntuación: ${viewModel.score.value}",
                 modifier = Modifier
+                    .padding(8.dp)
                     .align(Alignment.BottomCenter)
-                    .wrapContentSize(Alignment.CenterStart))  // Muestra la puntuación
+                    .wrapContentSize(Alignment.CenterStart),  // Muestra la puntuación
+                fontFamily = MyFontFamily,
+                textAlign = TextAlign.Center,
+                color = Color(0x80, 0xD5, 0x9E, 0xFF))
         }
         else {
             Box(modifier = Modifier.fillMaxSize()){
                 Text("¡NÚMEROS!", style = MaterialTheme.typography.displayLarge,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .wrapContentSize(Alignment.CenterStart))  // Muestra el título del juego
+                        .wrapContentSize(Alignment.CenterStart),
+                        fontFamily = MyFontFamily,
+                        textAlign = TextAlign.Center
+                )  // Muestra el título del juego
             }
         }
         if (showDialog) {

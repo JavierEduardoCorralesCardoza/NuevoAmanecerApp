@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [CartaEntity::class], version = 1)
+@Database(entities = [CartaEntity::class], version = 2)
 abstract class MemoramaDatabase : RoomDatabase() {
     abstract fun MemoramaDao(): MemoramaDao
 
