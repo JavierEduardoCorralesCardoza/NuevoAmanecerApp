@@ -87,20 +87,23 @@ fun ModalUi(navController: NavHostController) {
     val appBarColor = when (currentRoute) {
         //AppRoutes.Numeros.route -> Color(0x0, 0x0, 0x0, 0x63)
         AppRoutes.DiferenciasCard.route -> Color(0x0, 0x0, 0x0, 0x4D)
-        AppRoutes.EligirImagen.route -> Color.White
+        AppRoutes.EligirImagen.route -> Color.Transparent
         AppRoutes.Administracion.route -> Color.White
         AppRoutes.Rompecabezas.route -> Color.Black.copy(alpha = 0.6f)
         AppRoutes.MenuMemoramaScreen.route -> Color.Black.copy(alpha = 0.4f)
         //AppRoutes.EligirImagen.route -> Color.White
         else -> Color.Transparent
     }
-    val altColor = Color.White
+    val altColor = when(currentRoute){
+        AppRoutes.Administracion.route -> Color.Black
+        else -> Color.White
+    }
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             if(!isAtLogin){
                 ModalDrawerSheet(
-                    modifier = Modifier.fillMaxWidth((screenWidth/2.3f)/screenWidth)
+                    modifier = Modifier.fillMaxWidth((screenWidth/2.5f)/screenWidth)
                 ) {
                     ModalDrawerContent(
                         currentScreen = currentRoute,

@@ -146,7 +146,7 @@ fun ImageCard(diferenciaImg: Diferencias, navController: NavController, nivel: I
                 color = Color.White)
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(fraction = 0.9f)
+                    .fillMaxWidth(fraction = 0.8f)
                     .clip(RoundedCornerShape(16.dp))
                 ,
                 ) {
@@ -165,8 +165,8 @@ fun ImageCard(diferenciaImg: Diferencias, navController: NavController, nivel: I
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
-                    .fillMaxWidth()
-                    .padding(0.dp)
+                    .fillMaxWidth(0.85F)
+                    //.padding(8.dp)
                     //.border(width = 2.dp, color = Color.Yellow)
 
             ) {

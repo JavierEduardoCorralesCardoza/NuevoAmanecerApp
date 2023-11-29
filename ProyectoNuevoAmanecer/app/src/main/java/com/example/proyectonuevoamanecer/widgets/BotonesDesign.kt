@@ -76,7 +76,7 @@ fun BotonFlashcards(text: String, click: () -> Unit, imgCard: Painter, back: Col
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
-                    lineHeight = (20000f/screenHeight).sp
+                    lineHeight = (100F).sp
                 )
             }
 

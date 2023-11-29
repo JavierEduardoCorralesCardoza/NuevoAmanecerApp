@@ -216,7 +216,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
                         }
                     })
             }
-            Button(onClick = {
+            /*Button(onClick = {
                 scope.launch {
                     repositorio.setUsuarioActivo(
                         UsuarioActivo(
@@ -229,7 +229,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
                 navController.navigate(AppRoutes.HomeScreen.route)
             }) {
                 Text(text = "Iniciar Sesion RAPIDO")
-            }
+            }*/
         }
 
     }
