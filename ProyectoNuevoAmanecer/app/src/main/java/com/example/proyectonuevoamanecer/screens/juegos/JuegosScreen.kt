@@ -42,7 +42,7 @@ fun BodyContentJuegos(navController: NavController){
 
             BotonFlashcards(
                 text = "Memorama",
-                click = { navController.navigate("${AppRoutes.NivelesJuegos.route}/${AppRoutes.MemoramaScreen.route}") },
+                click = { navController.navigate("${AppRoutes.MenuMemoramaScreen.route}") },
                 imgCard = imgMemo,
                 Color(0xD1, 0xCA, 0x6, 0xFF),
                 0.3f,
