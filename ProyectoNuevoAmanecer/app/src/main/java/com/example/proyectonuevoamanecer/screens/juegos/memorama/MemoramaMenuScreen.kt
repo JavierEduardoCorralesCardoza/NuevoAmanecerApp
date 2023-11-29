@@ -1,9 +1,16 @@
 package com.example.proyectonuevoamanecer.screens.juegos.memorama
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,9 +22,15 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectonuevoamanecer.screens.AppRoutes
@@ -52,38 +65,81 @@ fun BodyContent(navController: NavController, viewModel: DBViewModel){
     val showDeleteCardDialog = remember{ mutableStateOf(false)}
     val showDialogVacio = remember{ mutableStateOf(false)}
 
-    Column {
-        Text(text = "Elige el numero de cartas")
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Menu",
+            modifier = Modifier.fillMaxWidth().padding(40.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 40.sp
+        )
+        Text(
+            text = "Elige el numero de cartas: ${sliderPosition.toInt()}",
+            fontSize = 20.sp
+        )
         Slider(
             value = sliderPosition,
             onValueChange = { sliderPosition = it },
             valueRange = intervalStart..intervalEnd,
-            modifier = Modifier.width(200.dp)
+            modifier = Modifier.width(300.dp).padding(10.dp)
         )
 
-        Text(text = "El valor seleccionado es: ${sliderPosition.toInt()}")
-
-        Button(onClick = {
-            showAddCardDialog.value = true
-        }) {
-            Text(text = "Agregar Carta")
+        Button(
+            onClick = { showAddCardDialog.value = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            shape = RectangleShape,
+            colors = ButtonDefaults.buttonColors(containerColor = Color(130, 148, 196))
+        ) {
+            Text(
+                text = "Agregar Carta",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
         }
 
-        Button(onClick = {
-            showDeleteCardDialog.value = true
-        }) {
-            Text(text = "Eliminar carta")
+        Button(
+            onClick = { showDeleteCardDialog.value = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            shape = RectangleShape,
+            colors = ButtonDefaults.buttonColors(containerColor = Color(172, 177, 214))
+        ) {
+            Text(
+                text = "Eliminar carta",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
         }
 
-        Button(onClick = {
-            if(sliderPosition.toInt() != 0) {
-                navController.navigate("${AppRoutes.MemoramaScreen.route}/${sliderPosition.toInt()}")
-            }
-            else{
-                showDialogVacio.value = true
-            }
-        }) {
-            Text(text = "Jugar")
+        Button(
+            onClick = {
+                if(sliderPosition.toInt() != 0) {
+                    navController.navigate("${AppRoutes.MemoramaScreen.route}/${sliderPosition.toInt()}")
+                }
+                else{
+                    showDialogVacio.value = true
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            shape = RectangleShape,
+            colors = ButtonDefaults.buttonColors(containerColor = Color(219, 223, 234))
+        ) {
+            Text(
+                text = "Jugar",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
         }
     }
 
