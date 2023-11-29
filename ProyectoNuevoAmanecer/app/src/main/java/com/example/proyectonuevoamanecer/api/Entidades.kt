@@ -9,7 +9,7 @@ data class UsuarioAPI (
     constructor(datosUsuario: JSONObject): this (
         Id = datosUsuario.optString("ID"),
         Nombre = datosUsuario.optString("Nombre"),
-        Admin = datosUsuario.optBoolean("Administrador")
+        Admin = datosUsuario.optInt("Administrador") == 1
     )
     fun getIdUsuario() = Id
     fun getNombreUsuario() = Nombre

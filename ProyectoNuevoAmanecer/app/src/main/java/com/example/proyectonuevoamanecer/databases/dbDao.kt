@@ -5,6 +5,8 @@ import androidx.room.*
 import androidx.room.TypeConverter
 import androidx.sqlite.db.SimpleSQLiteQuery
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
@@ -155,117 +157,126 @@ abstract class DbDatabase : RoomDatabase() {
 }
 
 class Repositorio(private val dbDao: DbDao) {
-    suspend fun getUsuarioActivo() = withContext(Dispatchers.IO){
+    private val mutex = Mutex()
+    suspend fun getUsuarioActivo() = mutex.withLock { withContext(Dispatchers.IO){
         dbDao.getUsuarioActivo()
-    }
-    suspend fun getUsuarios() = withContext(Dispatchers.IO){
+    }}
+    suspend fun getUsuarios() = mutex.withLock {withContext(Dispatchers.IO){
         dbDao.getUsuarios()
-    }
-    suspend fun getUsuario(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+    }}
+    suspend fun getUsuario(ids: Map<String,String?>?) = mutex.withLock {withContext(Dispatchers.IO){
         val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
         val query = SimpleSQLiteQuery("SELECT * FROM Usuario WHERE $condiciones")
         dbDao.getUsuario(query)
-    }
-    suspend fun getGrupos() = withContext(Dispatchers.IO){
+    }}
+    suspend fun getGrupos() = mutex.withLock { withContext(Dispatchers.IO){
         dbDao.getGrupos()
-    }
-    suspend fun getGrupo(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+    }}
+    suspend fun getGrupo(ids: Map<String,String?>?) = mutex.withLock {withContext(Dispatchers.IO){
         val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
         val query = SimpleSQLiteQuery("SELECT * FROM Grupo WHERE $condiciones")
         dbDao.getGrupo(query)
-    }
-    suspend fun getJuegos() = withContext(Dispatchers.IO){
+    }}
+    suspend fun getJuegos() = mutex.withLock { withContext(Dispatchers.IO){
         dbDao.getJuegos()
-    }
-    suspend fun getJuego(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+    }}
+    suspend fun getJuego(ids: Map<String,String?>?) = mutex.withLock { withContext(Dispatchers.IO){
         val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
         val query = SimpleSQLiteQuery("SELECT * FROM Juego WHERE $condiciones")
         dbDao.getJuego(query)
-    }
-    suspend fun getMiembros() = withContext(Dispatchers.IO){
+    }}
+    suspend fun getMiembros() = mutex.withLock { withContext(Dispatchers.IO){
         dbDao.getMiembros()
-    }
-    suspend fun getMiembro(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+    }}
+    suspend fun getMiembro(ids: Map<String,String?>?) = mutex.withLock { withContext(Dispatchers.IO){
         val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
         val query = SimpleSQLiteQuery("SELECT * FROM Miembro WHERE $condiciones")
         dbDao.getMiembro(query)
-    }
-    suspend fun getConfiguraciones() = withContext(Dispatchers.IO){
+    }}
+    suspend fun getConfiguraciones() = mutex.withLock { withContext(Dispatchers.IO){
         dbDao.getConfiguraciones()
-    }
-    suspend fun getConfiguracion(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+    }}
+    suspend fun getConfiguracion(ids: Map<String,String?>?) = mutex.withLock { withContext(Dispatchers.IO){
         val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
         val query = SimpleSQLiteQuery("SELECT * FROM Configuracion WHERE $condiciones")
         dbDao.getConfiguracion(query)
-    }
-    suspend fun getHistoriales() = withContext(Dispatchers.IO){
+    }}
+    suspend fun getHistoriales() = mutex.withLock { withContext(Dispatchers.IO){
         dbDao.getHistoriales()
-    }
-    suspend fun getHistorial(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+    }}
+    suspend fun getHistorial(ids: Map<String,String?>?) = mutex.withLock { withContext(Dispatchers.IO){
         val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
         val query = SimpleSQLiteQuery("SELECT * FROM Historial WHERE $condiciones")
         dbDao.getHistorial(query)
+    }}
+    suspend fun setUsuarioActivo(usuarioActivo: UsuarioActivo) = mutex.withLock {
+        withContext(Dispatchers.IO){
+            try {
+                dbDao.setUsuarioActivo(usuarioActivo)
+            } catch (e: Exception) {
+                // Manejo de errores aquí
+                println("Error al guardar usuarioActivo: ${e.message}")
+            }
+        }
     }
-    suspend fun setUsuarioActivo(usuarioActivo: UsuarioActivo) = withContext(Dispatchers.IO){
-        dbDao.setUsuarioActivo(usuarioActivo)
-    }
-    suspend fun insertUsuario(usuario: Usuario) = withContext(Dispatchers.IO) {
+
+    suspend fun insertUsuario(usuario: Usuario) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.insertUsuario(usuario)
-    }
-    suspend fun insertGrupo(grupo: Grupo) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun insertGrupo(grupo: Grupo) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.insertGrupo(grupo)
-    }
-    suspend fun insertJuego(juego: Juego) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun insertJuego(juego: Juego) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.insertJuego(juego)
-    }
-    suspend fun insertMiembro(miembro: Miembro) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun insertMiembro(miembro: Miembro) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.insertMiembro(miembro)
-    }
-    suspend fun insertConfiguracion(configuracion: Configuracion) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun insertConfiguracion(configuracion: Configuracion) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.insertConfiguracion(configuracion)
-    }
-    suspend fun insertHistorial(historial: Historial) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun insertHistorial(historial: Historial) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.insertHistorial(historial)
-    }
-    suspend fun updateUsuario(usuario: Usuario) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun updateUsuario(usuario: Usuario) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.updateUsuario(usuario)
-    }
-    suspend fun updateGrupo(grupo: Grupo) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun updateGrupo(grupo: Grupo) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.updateGrupo(grupo)
-    }
-    suspend fun updateJuego(juego: Juego) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun updateJuego(juego: Juego) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.updateJuego(juego)
-    }
-    suspend fun updateMiembro(miembro: Miembro) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun updateMiembro(miembro: Miembro) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.updateMiembro(miembro)
-    }
-    suspend fun updateConfiguracion(configuracion: Configuracion) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun updateConfiguracion(configuracion: Configuracion) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.updateConfiguracion(configuracion)
-    }
-    suspend fun updateHistorial(historial: Historial) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun updateHistorial(historial: Historial) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.updateHistorial(historial)
-    }
-    suspend fun deleteUsuarioActivo(usuarioActivo: UsuarioActivo) = withContext(Dispatchers.IO){
+    }}
+    suspend fun deleteUsuarioActivo(usuarioActivo: UsuarioActivo) = mutex.withLock { withContext(Dispatchers.IO){
         dbDao.deleteUsuarioActivo(usuarioActivo)
-    }
-    suspend fun deleteUsuario(usuario: Usuario) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun deleteUsuario(usuario: Usuario) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.deleteUsuario(usuario)
-    }
-    suspend fun deleteGrupo(grupo: Grupo) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun deleteGrupo(grupo: Grupo) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.deleteGrupo(grupo)
-    }
-    suspend fun deleteJuego(juego: Juego) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun deleteJuego(juego: Juego) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.deleteJuego(juego)
-    }
-    suspend fun deleteMiembro(miembro: Miembro) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun deleteMiembro(miembro: Miembro) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.deleteMiembro(miembro)
-    }
-    suspend fun deleteConfiguracion(configuracion: Configuracion) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun deleteConfiguracion(configuracion: Configuracion) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.deleteConfiguracion(configuracion)
-    }
-    suspend fun deleteHistorial(historial: Historial) = withContext(Dispatchers.IO) {
+    }}
+    suspend fun deleteHistorial(historial: Historial) = mutex.withLock { withContext(Dispatchers.IO) {
         dbDao.deleteHistorial(historial)
-    }
+    }}
 }
 
 
