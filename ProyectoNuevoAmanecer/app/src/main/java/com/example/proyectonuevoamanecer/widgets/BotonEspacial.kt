@@ -44,11 +44,11 @@ fun SpaceButton(
             .height(50.dp)
             .clickable(onClick = onClick)
             .fillMaxWidth(0.5f),
-        shape = CutCornerShape(50.dp),
+        shape = CutCornerShape(20),
         colors = CardDefaults.cardColors(
             containerColor = Color(255, 255, 55)
         ),
-        border = BorderStroke(2.dp, Color.Black)
+        border = BorderStroke(1.dp, Color.Black)
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
