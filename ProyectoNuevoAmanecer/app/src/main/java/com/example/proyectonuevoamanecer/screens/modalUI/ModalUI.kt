@@ -1,12 +1,15 @@
 package com.example.proyectonuevoamanecer.screens.modalUI
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -16,6 +19,7 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -44,10 +48,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.api.GrupoAPI
 import com.example.proyectonuevoamanecer.api.MiembroAPI
 import com.example.proyectonuevoamanecer.api.UsuarioAPI
@@ -57,6 +65,8 @@ import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.databases.obtenerDatos
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.screens.Navegacion
+import com.example.proyectonuevoamanecer.screens.config.Configuracion
+import com.example.proyectonuevoamanecer.screens.config.ConfiguracionViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -65,6 +75,9 @@ import org.json.JSONArray
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModalUi(navController: NavHostController) {
+    val configViewModel: ConfiguracionViewModel = viewModel()
+    val density = LocalDensity.current.density
+    val screenWidth = LocalConfiguration.current.screenWidthDp.toFloat()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -72,17 +85,17 @@ fun ModalUi(navController: NavHostController) {
     val isAtStartDestination = currentRoute == AppRoutes.HomeScreen.route
     val isAtLogin = currentRoute == AppRoutes.LoginScreen.route
     val appBarColor = when (currentRoute) {
-        AppRoutes.Numeros.route -> MaterialTheme.colorScheme.tertiary
-        AppRoutes.Rompecabezas.route -> Color.hsl(74F,0.23F,0.87F,1F)
+        //AppRoutes.Numeros.route -> Color(0x0, 0x0, 0x0, 0x63)
+        //AppRoutes.Rompecabezas.route -> Color.hsl(74F,0.23F,0.87F,1F)
         AppRoutes.EligirImagen.route -> Color.White
         else -> Color.Transparent
     }
-    val altColor = if (appBarColor != Color.Transparent) Color.Black else Color.White
+    val altColor = if (appBarColor == Color.Transparent) Color.White else Color.Black
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.fillMaxWidth(0.65F)
+                modifier = Modifier.fillMaxWidth((screenWidth/2.3f)/screenWidth)
             ) {
                 ModalDrawerContent(
                     currentScreen = currentRoute,
@@ -108,10 +121,27 @@ fun ModalUi(navController: NavHostController) {
                                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = altColor)
                                 }
                             }
+
                         }
+
                     },
                     actions = {
                         if(!isAtLogin){
+                            IconButton(
+                                onClick = {  configViewModel.configuracionAbierta.value = true  },
+                                modifier = Modifier
+                                    .padding(2.dp)
+                                    .background(color = Color.Transparent)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Settings, // Puedes cambiar el ícono según tus necesidades
+                                    contentDescription = "Configuración",
+                                    tint = altColor,
+                                    modifier = Modifier
+                                        //.padding(7.dp)
+                                        .size(10.dp * density) // Ajusta el tamaño del ícono según tus necesidades
+                                )
+                            }
                             IconButton(onClick = {
                                 scope.launch {
                                     drawerState.apply {
@@ -122,9 +152,11 @@ fun ModalUi(navController: NavHostController) {
                                 Icon(
                                     Icons.Filled.Menu,
                                     contentDescription = "Menu",
-                                    tint = altColor
+                                    tint = altColor,
+                                    modifier = Modifier.size(13.dp * density)
                                 )
                             }
+
                         }
                     }
                 )
@@ -135,7 +167,9 @@ fun ModalUi(navController: NavHostController) {
                 Navegacion(navController)
             }
         }
+
     }
+    Configuracion()
 }
 @Composable
 fun ModalDrawerContent(currentScreen: String?, navController: NavHostController, drawerState: DrawerState) {

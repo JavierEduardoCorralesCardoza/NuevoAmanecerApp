@@ -44,28 +44,6 @@ fun BodyContent(navController: NavController){
     val density = LocalDensity.current.density
 
     Column {
-        /*Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = "Luminaria")
-            IconButton(
-                onClick = {  configViewModel.configuracionAbierta.value = true  },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .background(color = Color.Gray, shape = CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings, // Puedes cambiar el ícono según tus necesidades
-                    contentDescription = "Configuración",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(24.dp * density) // Ajusta el tamaño del ícono según tus necesidades
-                )
-            }
-
-        }*/
 
         Column(
             modifier = Modifier
@@ -91,6 +69,6 @@ fun BodyContent(navController: NavController){
 
     }
 
-    Configuracion()
+
 }
 
