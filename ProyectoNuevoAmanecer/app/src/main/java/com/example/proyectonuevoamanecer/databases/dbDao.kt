@@ -3,6 +3,7 @@ package com.example.proyectonuevoamanecer.databases
 import android.content.Context
 import androidx.room.*
 import androidx.room.TypeConverter
+import androidx.sqlite.db.SimpleSQLiteQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -22,7 +23,7 @@ class Converters {
 data class UsuarioActivo(
     @PrimaryKey val id: Int, // Siempre será 1
     val id_usuario: String,
-    val id_grupo: String? = null
+    var id_grupo: String? = null
 )
 @Entity
 data class Usuario(
@@ -35,7 +36,7 @@ data class Usuario(
 data class Grupo(
     @PrimaryKey val id: String,
     val nombre: String,
-    val administrador: String
+    val gamemaster: String
 )
 
 @Entity
@@ -53,7 +54,7 @@ data class Miembro(
 
 @Entity(primaryKeys = ["id_juego", "id_grupo"])
 data class Configuracion(
-    val id_juego: String,
+    val id_juego: Int,
     val id_grupo: String,
     val configuracion: String
 )
@@ -62,7 +63,7 @@ data class Configuracion(
 data class Historial(
     val id_jugador: String,
     val id_grupo: String,
-    val id_juego: String,
+    val id_juego: Int,
     val nivel: Int
 )
 
@@ -70,21 +71,43 @@ data class Historial(
 interface DbDao {
     @Query("SELECT * FROM UsuarioActivo WHERE id = 1")
     suspend fun getUsuarioActivo(): UsuarioActivo?
+    @Query("SELECT * FROM Usuario")
+    suspend fun getUsuarios(): List<Usuario>?
+    @RawQuery
+    suspend fun getUsuario(ids: SimpleSQLiteQuery): Usuario?
+    @Query("SELECT * FROM Grupo")
+    suspend fun getGrupos(): List<Grupo>?
+    @RawQuery
+    suspend fun getGrupo(ids: SimpleSQLiteQuery): Grupo?
+    @Query("SELECT * FROM Grupo")
+    suspend fun getJuegos(): List<Juego>?
+    @RawQuery
+    suspend fun getJuego(ids: SimpleSQLiteQuery): Juego?
+    @Query("SELECT * FROM Miembro")
+    suspend fun getMiembros(): List<Miembro>?
+    @RawQuery
+    suspend fun getMiembro(ids: SimpleSQLiteQuery): Miembro?
+    @Query("SELECT * FROM Configuracion")
+    suspend fun getConfiguraciones(): List<Configuracion>?
+    @RawQuery
+    suspend fun getConfiguracion(ids: SimpleSQLiteQuery): Configuracion?
+    @Query("SELECT * FROM Historial")
+    suspend fun getHistoriales(): List<Historial>?
+    @RawQuery
+    suspend fun getHistorial(ids: SimpleSQLiteQuery): Historial?
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setUsuarioActivo(usuarioActivo: UsuarioActivo)
-    @Query("SELECT * FROM Usuario WHERE id = :id")
-    suspend fun getUsuario(id: String): Usuario?
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUsuario(usuario: Usuario)
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGrupo(grupo: Grupo)
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertJuego(juego: Juego)
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMiembro(miembro: Miembro)
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertConfiguracion(configuracion: Configuracion)
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHistorial(historial: Historial)
     @Update
     suspend fun updateUsuario(usuario: Usuario)
@@ -135,8 +158,53 @@ class Repositorio(private val dbDao: DbDao) {
     suspend fun getUsuarioActivo() = withContext(Dispatchers.IO){
         dbDao.getUsuarioActivo()
     }
-    suspend fun getUsuario(id: String) = withContext(Dispatchers.IO){
-        dbDao.getUsuario(id)
+    suspend fun getUsuarios() = withContext(Dispatchers.IO){
+        dbDao.getUsuarios()
+    }
+    suspend fun getUsuario(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+        val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
+        val query = SimpleSQLiteQuery("SELECT * FROM Usuario WHERE $condiciones")
+        dbDao.getUsuario(query)
+    }
+    suspend fun getGrupos() = withContext(Dispatchers.IO){
+        dbDao.getGrupos()
+    }
+    suspend fun getGrupo(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+        val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
+        val query = SimpleSQLiteQuery("SELECT * FROM Grupo WHERE $condiciones")
+        dbDao.getGrupo(query)
+    }
+    suspend fun getJuegos() = withContext(Dispatchers.IO){
+        dbDao.getJuegos()
+    }
+    suspend fun getJuego(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+        val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
+        val query = SimpleSQLiteQuery("SELECT * FROM Juego WHERE $condiciones")
+        dbDao.getJuego(query)
+    }
+    suspend fun getMiembros() = withContext(Dispatchers.IO){
+        dbDao.getMiembros()
+    }
+    suspend fun getMiembro(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+        val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
+        val query = SimpleSQLiteQuery("SELECT * FROM Miembro WHERE $condiciones")
+        dbDao.getMiembro(query)
+    }
+    suspend fun getConfiguraciones() = withContext(Dispatchers.IO){
+        dbDao.getConfiguraciones()
+    }
+    suspend fun getConfiguracion(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+        val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
+        val query = SimpleSQLiteQuery("SELECT * FROM Configuracion WHERE $condiciones")
+        dbDao.getConfiguracion(query)
+    }
+    suspend fun getHistoriales() = withContext(Dispatchers.IO){
+        dbDao.getHistoriales()
+    }
+    suspend fun getHistorial(ids: Map<String,String?>?) = withContext(Dispatchers.IO){
+        val condiciones = ids?.entries?.joinToString(" AND " ){"${it.key} = '${it.value}'" }
+        val query = SimpleSQLiteQuery("SELECT * FROM Historial WHERE $condiciones")
+        dbDao.getHistorial(query)
     }
     suspend fun setUsuarioActivo(usuarioActivo: UsuarioActivo) = withContext(Dispatchers.IO){
         dbDao.setUsuarioActivo(usuarioActivo)
