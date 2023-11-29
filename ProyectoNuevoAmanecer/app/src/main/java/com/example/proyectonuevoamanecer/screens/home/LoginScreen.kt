@@ -44,7 +44,6 @@ import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.screens.config.findWindow
 import com.example.proyectonuevoamanecer.widgets.Gif
-import com.example.proyectonuevoamanecer.widgets.SpaceButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -108,6 +107,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
             Text(
                 text = "LogIn", modifier = Modifier.padding(top = 0.dp, bottom = 8.dp),
                 style = MaterialTheme.typography.displayLarge,
