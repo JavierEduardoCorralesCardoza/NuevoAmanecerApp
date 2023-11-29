@@ -75,6 +75,7 @@ fun ModalUi(navController: NavHostController) {
         AppRoutes.Numeros.route -> MaterialTheme.colorScheme.tertiary
         AppRoutes.Rompecabezas.route -> Color.hsl(74F,0.23F,0.87F,1F)
         AppRoutes.EligirImagen.route -> Color.White
+        AppRoutes.Administracion.route -> Color.White
         else -> Color.Transparent
     }
     val altColor = if (appBarColor != Color.Transparent) Color.Black else Color.White
@@ -215,7 +216,7 @@ fun ModalDrawerContent(currentScreen: String?, navController: NavHostController,
                 val sharedPreferences = context.getSharedPreferences("preferencias", Context.MODE_PRIVATE)
                 var mantenerSesion = sharedPreferences.getBoolean("mantenerSesion", false)
                 usuarioActivo?.let { repositorio.deleteUsuarioActivo(it) }
-                drawerState.close() }}
+                drawerState.close()}}
     },
         icon = {Icon(Icons.Filled.ExitToApp, contentDescription = "Inicio")})
 }
