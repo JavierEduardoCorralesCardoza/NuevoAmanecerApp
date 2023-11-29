@@ -1,18 +1,13 @@
 package com.example.proyectonuevoamanecer.screens.home
 
 import android.content.Context
-import android.os.Build.VERSION.SDK_INT
 import android.view.WindowManager
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -35,22 +30,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-
 import com.example.proyectonuevoamanecer.R
-import com.example.proyectonuevoamanecer.api.GrupoAPI
 import com.example.proyectonuevoamanecer.api.MiembroAPI
 import com.example.proyectonuevoamanecer.api.UsuarioAPI
 import com.example.proyectonuevoamanecer.api.Variables
 import com.example.proyectonuevoamanecer.api.llamarApi
 import com.example.proyectonuevoamanecer.databases.DbDatabase
-import com.example.proyectonuevoamanecer.databases.Grupo
 import com.example.proyectonuevoamanecer.databases.Miembro
 import com.example.proyectonuevoamanecer.databases.Repositorio
 import com.example.proyectonuevoamanecer.databases.Usuario
 import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.screens.config.findWindow
-import com.example.proyectonuevoamanecer.widgets.BotonGeneral
 import com.example.proyectonuevoamanecer.widgets.Gif
 import kotlinx.coroutines.launch
 import org.json.JSONArray

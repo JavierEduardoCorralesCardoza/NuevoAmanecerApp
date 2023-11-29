@@ -1,2 +1,0 @@
-package com.example.proyectonuevoamanecer.screens.juegos.encontrar_diferencias
-

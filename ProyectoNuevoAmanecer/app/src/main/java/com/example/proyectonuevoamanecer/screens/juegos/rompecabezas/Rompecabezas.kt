@@ -210,9 +210,9 @@ fun PuzzleBoard(puzzleId: Int) {
             contentDescription = "Frame",
             modifier = Modifier
                 .fillMaxWidth(fraction = 1f) // Adjust the fraction to control the size
-                .aspectRatio(0.7f) // Set the aspect ratio of the frame if it is square
+                .aspectRatio(1f) // Set the aspect ratio of the frame if it is square
                 .align(Alignment.Center) // This will center the frame in the Box
-                .offset(x = pieceSize*-0.18f)
+                .offset(x = pieceSize*-0.16f)
         )
 
         if (gameComplete) {
