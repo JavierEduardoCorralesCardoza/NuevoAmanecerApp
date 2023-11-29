@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.example.proyectonuevoamanecer.R
@@ -28,6 +29,8 @@ fun BodyContentJuegos(navController: NavController){
     val imgImg = painterResource(id = R.drawable.images)
     val imgPuzzle = painterResource(id = R.drawable.puzzle)
     val imgBack = painterResource(id = R.drawable.back)
+    val screenWidth = LocalConfiguration.current.screenWidthDp.toFloat()
+    val screenHeight = LocalConfiguration.current.screenHeightDp.toFloat()
     LazyColumn(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -36,8 +39,7 @@ fun BodyContentJuegos(navController: NavController){
         item { Text(text = "Minijuegos") }
 
         item{ Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+
         ) {
 
             BotonFlashcards(
@@ -45,8 +47,8 @@ fun BodyContentJuegos(navController: NavController){
                 click = { navController.navigate("${AppRoutes.MenuMemoramaScreen.route}") },
                 imgCard = imgMemo,
                 Color(0xD1, 0xCA, 0x6, 0xFF),
-                0.3f,
-                0.45f
+                frac = screenWidth/2f,
+                size = 0.4f
             )
 
 
@@ -55,8 +57,9 @@ fun BodyContentJuegos(navController: NavController){
                 click = {navController.navigate(AppRoutes.EligirImagen.route) },
                 imgCard = imgImg,
                 Color(0xD1, 0xCA, 0x6, 0xFF),
-                0.3f,
-
+                frac = screenWidth/2f,
+                size = 0.4f,
+                img = 0.3f
                 )
 
         }}
@@ -67,15 +70,18 @@ fun BodyContentJuegos(navController: NavController){
                 click = {navController.navigate("${AppRoutes.NivelesJuegos.route}/${AppRoutes.DiferenciasCard.route}")},
                 imgCard = imgDiff,
                 Color(0xD1, 0xCA, 0x6, 0xFF),
-                0.3f,
-                0.45f
+                frac = screenWidth/2f,
+                size = 0.4f,
+
             )
             BotonFlashcards(
                 text = "Rompecabezas",
                 click = {navController.navigate(AppRoutes.Rompecabezas.route) },
                 imgCard = imgPuzzle,
                 Color(0xD1, 0xCA, 0x6, 0xFF),
-                0.3f,
+                frac = screenWidth/2f,
+                size = 0.4f,
+                img = 0.25f
             )
 
         }}
@@ -87,15 +93,17 @@ fun BodyContentJuegos(navController: NavController){
                     click = {navController.navigate(AppRoutes.Numeros.route) },
                     imgCard = imgNum,
                     Color(0xD1, 0xCA, 0x6, 0xFF),
-                    0.3f,
-                    0.45f
+                    frac = screenWidth/2f,
+                    size = 0.4f
                 )
                 BotonFlashcards(
                     text = "Regresar",
                     click = {navController.navigate(AppRoutes.HomeScreen.route) },
                     imgCard = imgBack,
                     Color(0xD1, 0xCA, 0x6, 0xFF),
-                    0.3f,
+                    frac = screenWidth/2f,
+                    size = 0.4f,
+                    img = 0.3f
                 )
 
             }

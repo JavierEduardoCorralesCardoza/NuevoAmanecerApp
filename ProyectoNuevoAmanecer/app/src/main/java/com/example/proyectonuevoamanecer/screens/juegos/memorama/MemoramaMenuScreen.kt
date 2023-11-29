@@ -1,5 +1,6 @@
 package com.example.proyectonuevoamanecer.screens.juegos.memorama
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,7 +67,7 @@ fun BodyContent(navController: NavController, viewModel: DBViewModel){
     val showDialogVacio = remember{ mutableStateOf(false)}
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,55 +44,36 @@ fun BodyContent(navController: NavController){
     val imgCard2 = painterResource(id = R.drawable.flashcards)
     val imgCard = painterResource(id = R.drawable.minijuegos)
     val density = LocalDensity.current.density
+    val screenWidth = LocalConfiguration.current.screenWidthDp.toFloat()
 
     Column {
-        /*Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = "Luminaria")
-            IconButton(
-                onClick = {  configViewModel.configuracionAbierta.value = true  },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .background(color = Color.Gray, shape = CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings, // Puedes cambiar el ícono según tus necesidades
-                    contentDescription = "Configuración",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(24.dp * density) // Ajusta el tamaño del ícono según tus necesidades
-                )
-            }
 
-        }*/
-
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            BotonFlashcards(
+            item { BotonFlashcards(
                 text = "Minijuegos",
                 click = { navController.navigate(route = AppRoutes.JuegosScreen.route) } ,
                 imgCard = imgCard,
                 back = Color(0x99, 0x00, 0x55),
-                0.5f
-            )
-            BotonFlashcards(
-                text = "Tarjetas \n Educativas",
+                //img = screenWidth/1.8f
+
+            ) }
+            item { BotonFlashcards(
+                text = "Tarjetas Educativas",
                 {navController.navigate(AppRoutes.MainFlashMenu.route)},
                 imgCard2,
                 Color(0x00, 0x4C, 0x99),
-                0.5f
-            )
+                //img = screenWidth/1f
+            ) }
+
         }
 
     }
 
-    Configuracion()
+
 }
 

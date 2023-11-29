@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,53 +33,57 @@ import androidx.compose.ui.unit.sp
 import com.example.proyectonuevoamanecer.R
 
 @Composable
-fun BotonFlashcards(text: String, click: () -> Unit, imgCard: Painter, back: Color, size: Float, frac: Float = 1f){
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    Card(
-        modifier = Modifier
-            .padding(16.dp)
-            .clickable(onClick = click)
-            .fillMaxWidth(fraction = frac)
-            ,
-
-        //shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        )
-        ) {
-        Column(
+fun BotonFlashcards(text: String, click: () -> Unit, imgCard: Painter, back: Color, frac: Float = 1f, size: Float = 1f, img: Float = 1f){
+    val screenWidth = LocalConfiguration.current.screenWidthDp.toFloat()
+    val screenHeight = LocalConfiguration.current.screenHeightDp.toFloat()
+    Box(modifier = Modifier.width((if (frac != 1f) frac else screenWidth).dp)) {
+        Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(color = back)
+                .padding(12.dp)
+                .clickable(onClick = click)
+                .fillMaxWidth(fraction = 1f)
             ,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+
+            //shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp
+            )
         ) {
-            Image(
-
-                painter = imgCard,
-                contentDescription = "flashcards",
+            Column(
                 modifier = Modifier
-                    .padding(top = 18.dp, bottom = 6.dp, start = 18.dp, end = 18.dp)
-                    .height(screenWidth*size)
-            )
-
-            Text(
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()
+                    .background(color = back)
                 ,
-                text = text,
-                color = Color.White,
-                fontSize = 30.sp * size * 2,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Bold
-            )
-        }
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
 
+                    painter = imgCard,
+                    contentDescription = "flashcards",
+                    modifier = Modifier
+                        .padding(top = 18.dp, bottom = 6.dp, start = 18.dp, end = 18.dp)
+                        .width(if (img == 1f) (screenWidth/2.5f).dp else (screenWidth*img).dp)
+                )
+
+                Text(
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                    ,
+                    text = text,
+                    color = Color.White,
+                    fontSize = (screenWidth * 0.12 * size).sp,
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = (20000f/screenHeight).sp
+                )
+            }
+
+        }
     }
-}
+    }
+
 
 @Preview
 @Composable
