@@ -2,6 +2,7 @@ package com.example.proyectonuevoamanecer.screens.flashcards
 
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.*
 import androidx.compose.material3.DropdownMenu
@@ -27,12 +29,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectonuevoamanecer.screens.AppRoutes
@@ -47,7 +54,19 @@ fun FlashcardDecks(navController: NavController)
     val mazos by viewModel.allMazos.collectAsState(initial = emptyList())
 
     BodyContentDecks(navController,showDialog, mazos, viewModel)
-    Text(text = "Mazos", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
+    Spacer(modifier =Modifier.height(16.dp))
+    Box(modifier = Modifier
+        .background(Color.Black.copy(alpha = 0.7f))
+        .padding(8.dp)
+        .fillMaxWidth(),
+        contentAlignment=Alignment.Center
+    ) {
+        Text(text = "Mazos",
+            style= TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
+            textAlign = TextAlign.Center,
+            color = Color.White,
+        )
+    }
     if(showDialog.value){
         CrearMazoDialog(showDialog){mazoTitulo->
             val newMazo = MazoEntity(0, mazoTitulo)
@@ -86,15 +105,12 @@ fun PersonItem(
         mutableStateOf(false)
     }
     var mazoCartas = viewModel.getMazoConCartasPorNombre(mazo.titulo).collectAsState(initial = null)
-    //val interactionSource = remember {
-    // MutableInteractionSource()
-    //}
-    //val density = LocalDensity.current
 
     Spacer(modifier = Modifier.height(20.dp))
     Card(
 
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors=CardDefaults.cardColors(Color.Blue),
         modifier = modifier
             .onSizeChanged {
                 itemHeight = it.height.dp
@@ -124,9 +140,11 @@ fun PersonItem(
                     )
 
                 }
-                .padding(16.dp)
+                .padding(16.dp),
+            contentAlignment=Alignment.Center
         ) {
-            Text(text = personName)
+            Text(text = personName,
+                textAlign= TextAlign.Center)
         }
         DropdownMenu(
             expanded = isContextMenuVisible,
@@ -148,15 +166,21 @@ fun PersonItem(
         }
     }
     if(showDialog){
-        AlertDialog(
+        AlertDialog(containerColor=Color.White,
+            shape= RoundedCornerShape(12.dp),
+            modifier= Modifier.fillMaxWidth(),
             onDismissRequest = {showDialog=false },
-            title={Text("Error")},
-            text={Text("El mazo está vacío. Haz clic en 'Agregar Tarjeta' para añadir tarjetas al mazo.")},
+            title={Text("Mazo Vacío!", textAlign = TextAlign.End,style= TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp),color=Color.Black)},
+            text={Text("El mazo está vacío. Haz clic en 'Añadir Tarjeta' para añadir tarjetas al mazo.", textAlign = TextAlign.End,color=Color.Black)},
             confirmButton = {
-                Button(
+                Button(colors=ButtonDefaults.buttonColors(Color.Blue),
+                    shape= RoundedCornerShape(12.dp),
                     onClick={showDialog=false}
                 ){
-                    Text("Aceptar")
+                    Text("Aceptar",
+                        color=Color.White,
+                        style= TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    )
                 }
             })
     }
@@ -172,7 +196,9 @@ fun BodyContentDecks(
 ) {
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .padding(64.dp)
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(mazos) { mazo ->
@@ -238,9 +264,14 @@ fun BodyContentDecks(
     ) {
         Button(
             onClick = { showDialog.value = true },
-            modifier = Modifier.paddingFromBaseline(top = 0.dp, bottom = 32.dp)
+            modifier = Modifier.paddingFromBaseline(top = 0.dp, bottom = 32.dp),
+            colors= ButtonDefaults.buttonColors(Color.Blue),
+            shape= RoundedCornerShape(12.dp)
         ) {
-            Text("Crear Mazo")
+            Text("Crear Mazo",
+                color= Color.White,
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            )
         }
     }
 }
