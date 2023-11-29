@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.proyectonuevoamanecer.R
@@ -53,6 +56,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.proyectonuevoamanecer.clases.BotonDiferencias
 import com.example.proyectonuevoamanecer.screens.juegos.memorama.MemoramaViewModel
 import com.example.proyectonuevoamanecer.screens.juegos.memorama.NavigationButton
+import com.example.proyectonuevoamanecer.widgets.Gif
 import kotlinx.coroutines.delay
 
 
@@ -109,20 +113,25 @@ fun DiferenciasCard(navController: NavController, lvl: Int){
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ImageCard(diferenciaImg: Diferencias, navController: NavController, nivel: Int) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.toFloat()
     var clickPosition by remember { mutableStateOf(Offset(0f, 0f)) }
     var listSize by remember { mutableStateOf((diferenciaImg.differences.size)-nivel) }
     //var XD by remember { mutableStateOf(false) }
     var showSnackbar by remember { mutableStateOf(false) }
 
-
+    Gif(
+        R.drawable.fastlines,
+        modifier = Modifier
+            .fillMaxSize()
+    )
     Card(
         modifier = Modifier
             .padding(bottom = 32.dp)
             .fillMaxSize(),
 
         shape = RoundedCornerShape(corner = CornerSize(0.dp)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+        //elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0x0, 0x0, 0x0, 0x65))
     ) {
 
         Column(
@@ -194,7 +203,7 @@ fun ImageCard(diferenciaImg: Diferencias, navController: NavController, nivel: I
             }
             Card(
                 modifier = Modifier.padding(6.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xC0, 0x5A, 0x22, 0xFF))
+                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
             ){
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -241,6 +250,8 @@ fun ImageCard(diferenciaImg: Diferencias, navController: NavController, nivel: I
             showSnackbar = false
         }
     }
+
+
 
 }
 

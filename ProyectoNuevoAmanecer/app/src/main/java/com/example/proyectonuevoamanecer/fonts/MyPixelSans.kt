@@ -9,3 +9,7 @@ val MyFontFamily = FontFamily(
     Font(R.font.pixelifysans, FontWeight.Normal),
     Font(R.font.pixelifysanasbold, FontWeight.Bold)
 )
+
+val MySauce = FontFamily(
+    Font(R.font.novasquare, FontWeight.Normal)
+)
