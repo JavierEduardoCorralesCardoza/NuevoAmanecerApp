@@ -51,7 +51,7 @@ fun MemoramaMenuScreen(navController: NavController){
 }
 @Composable
 fun BodyContent(navController: NavController, viewModel: DBViewModel){
-
+    var colorTexto = Color.White
     var cartas = viewModel.allImages.collectAsState(initial = emptyList())
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -73,12 +73,14 @@ fun BodyContent(navController: NavController, viewModel: DBViewModel){
     ) {
         Text(
             text = "Menu",
+            color = colorTexto,
             modifier = Modifier.fillMaxWidth().padding(40.dp),
             textAlign = TextAlign.Center,
             fontSize = 40.sp
         )
         Text(
             text = "Elige el numero de cartas: ${sliderPosition.toInt()}",
+            color = colorTexto,
             fontSize = 20.sp
         )
         Slider(

@@ -153,7 +153,8 @@ fun GameScreen(Timed: Boolean){
                 text = "Instrucciones: Haz click en orden ${if (viewModel.ordenActual == "ASC") "Ascendente" else "Descendente"}",
                 modifier = Modifier
                     .wrapContentSize(Alignment.CenterStart),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.displayMedium,
+                color = Color.White,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -163,22 +164,24 @@ fun GameScreen(Timed: Boolean){
             ) {
                 if (Timed) {
                     Text(
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.displayMedium,
                         text = "Tiempo restante: ${viewModel.tiempoRestante.value / 1000}s",
                         modifier = Modifier
                             .wrapContentSize(Alignment.CenterStart)
                             .weight(1f),
                         fontFamily = MyFontFamily,
+                        color = Color.White,
                         textAlign = TextAlign.Center
                     )  // Muestra el tiempo restante
                 }
                 Text(
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.displayMedium,
                     text = "Puntaje más alto: ${if (Timed) viewModel.highScoreTimed.value else viewModel.highScoreNormal.value}",
                     modifier = Modifier
                         .wrapContentSize(Alignment.CenterStart)
                         .weight(1f),
                     fontFamily = MyFontFamily,
+                    color = Color.White,
                     textAlign = TextAlign.Center
                 )  // Muestra el puntaje más alto
             }
@@ -250,7 +253,7 @@ fun GameBox(viewModel: NumerosViewModel,Timed: Boolean) {
                     .clickable {
                         viewModel.addNumber(number)
                     },
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.displayLarge,
                 fontFamily = MyFontFamily,
                 textAlign = TextAlign.Center
             )

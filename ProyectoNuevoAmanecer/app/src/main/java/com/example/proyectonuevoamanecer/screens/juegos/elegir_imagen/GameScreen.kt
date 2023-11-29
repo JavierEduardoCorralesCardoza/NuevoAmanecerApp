@@ -81,7 +81,7 @@ fun EligirImagen(navController: NavController) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = Color.Transparent
     ) {
         when (currentScreen) {
             GameScreenState.SelectLevel -> SelectLevelScreen { level ->
@@ -138,7 +138,7 @@ fun SelectLevelScreen(onLevelSelected: (Int) -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Selecciona un Nivel", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text("Selecciona un Nivel", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
         Spacer(modifier = Modifier.height(20.dp))
         Button(onClick = { onLevelSelected(1) }) {
             Text("Nivel 1")
@@ -161,11 +161,11 @@ fun CongratulationsScreen(score: Int, onBackToMenu: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("¡Felicidades!", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Text("Tu puntaje: $score", fontSize = 20.sp)
+        Text("¡Felicidades!", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        Text("Tu puntaje: $score", fontSize = 20.sp, color = Color.White)
         Spacer(modifier = Modifier.height(20.dp))
         Button(onClick = onBackToMenu) {
-            Text("Volver al Menú Principal")
+            Text("Volver al Menú Principal", color = Color.White)
         }
     }
 }
@@ -204,7 +204,7 @@ fun GameScreen(
                 text = "¡Completaste la actividad con éxito!\nTu puntaje final es: $score",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = Color.White,
                 textAlign = TextAlign.Center
             )
             onGameFinish(score) // Llama al callback con el puntaje final
@@ -221,7 +221,8 @@ fun GameScreen(
                 text = "Puntaje: $score",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.End).padding(end = 16.dp)
+                modifier = Modifier.align(Alignment.End).padding(end = 16.dp),
+                color = Color.White
             )
 
             Text(
@@ -231,14 +232,16 @@ fun GameScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp)
+                    .padding(vertical = 24.dp),
+                color = Color.White
             )
 
             Text(
                 text = feedbackMessage,
                 fontSize = 16.sp,
                 color = Color.Red,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
+
             )
 
             currentOptions.forEach { option ->

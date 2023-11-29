@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -29,7 +30,7 @@ fun BotonBase(contenido: @Composable () -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
 
     IconButton(onClick = { showDialog = true }) {
-        Icon(Icons.Default.Settings, contentDescription = "Configuración")
+        Icon(Icons.Default.Settings, contentDescription = "Configuración", tint = Color.White)
     }
 
     if (showDialog) {

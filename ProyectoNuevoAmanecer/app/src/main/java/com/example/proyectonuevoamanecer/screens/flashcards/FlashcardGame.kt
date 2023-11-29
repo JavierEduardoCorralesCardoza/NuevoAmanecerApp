@@ -235,7 +235,7 @@ fun BodyGameContent(navController: NavController, mazo:MazoEntity, flashcards: L
             ) {
             Text(
                 text = if (selectedAnswer == correctAnswer) "¡Correcto! La Respuesta es $correctAnswer"
-                else "Incorrecto, la respuesta correcta es $correctAnswer"
+                else "Incorrecto, la respuesta correcta es $correctAnswer", color = Color.White
             )
            }
         }

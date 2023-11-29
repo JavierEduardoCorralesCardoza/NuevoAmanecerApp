@@ -122,7 +122,7 @@ fun PuzzleSelectionScreen(navController: androidx.navigation.NavController) {
             Text(
                 text = "Selecciona un rompecabezas",
                 style = typography.headlineMedium, // Using Material3 typography
-                color = MaterialTheme.colorScheme.onSurface, // Using Material3 color scheme
+                color = Color.White, // Using Material3 color scheme
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally) // Align text to the center horizontally
                     .padding(bottom = 16.dp)
@@ -231,7 +231,7 @@ fun PuzzleBoard(puzzleId: Int, navController: NavController) {
         if (gameComplete) {
             // Display the "You Win" message when the game is complete
             Column {
-                Text("¡Ganaste!", style = MaterialTheme.typography.headlineMedium)
+                Text("¡Ganaste!", style = MaterialTheme.typography.headlineMedium,color = Color.White)
                 Button(onClick = { navController.navigate(AppRoutes.HomeScreen.route) }) {
                     Text(text = "Inicio")
                 }
