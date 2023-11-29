@@ -86,6 +86,8 @@ fun ModalUi(navController: NavHostController) {
     val isAtLogin = currentRoute == AppRoutes.LoginScreen.route
     val appBarColor = when (currentRoute) {
         //AppRoutes.Numeros.route -> Color(0x0, 0x0, 0x0, 0x63)
+        AppRoutes.DiferenciasCard.route -> Color(0x0, 0x0, 0x0, 0x4D)
+        AppRoutes.EligirImagen.route -> Color.White
         AppRoutes.Rompecabezas.route -> Color.Black.copy(alpha = 0.6f)
         AppRoutes.MenuMemoramaScreen.route -> Color.Black.copy(alpha = 0.4f)
         //AppRoutes.EligirImagen.route -> Color.White
