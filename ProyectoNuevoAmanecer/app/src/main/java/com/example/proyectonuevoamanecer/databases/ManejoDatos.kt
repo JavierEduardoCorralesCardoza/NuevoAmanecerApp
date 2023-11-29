@@ -9,10 +9,13 @@ import com.example.proyectonuevoamanecer.api.MiembroAPI
 import com.example.proyectonuevoamanecer.api.UsuarioAPI
 import com.example.proyectonuevoamanecer.api.Variables
 import com.example.proyectonuevoamanecer.api.llamarApi
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.json.JSONArray
 import org.json.JSONObject
 
 suspend fun obtenerDatos(context: Context, nombreTabla: String, ids: Map<String, String?>? = null): JSONArray? {
+    val mutex = Mutex()
     val isConnected = Variables.isNetworkConnected
     if (isConnected) {
         // Si hay conexión a internet, llama a la API y actualiza la base de datos local
@@ -27,7 +30,9 @@ suspend fun obtenerDatos(context: Context, nombreTabla: String, ids: Map<String,
             "historial" -> {dataAPIArrray = dataApi.getJSONArray("Historiales")}
         }
         if (dataAPIArrray != null) {
-            actualizarBaseDeDatosLocal(context, nombreTabla, dataAPIArrray)
+            mutex.withLock {
+                actualizarBaseDeDatosLocal(context, nombreTabla, dataAPIArrray)
+            }
         }
         return dataAPIArrray ?: JSONArray()
     } else {
