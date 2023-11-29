@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.proyectonuevoamanecer.R
 import com.example.proyectonuevoamanecer.api.MiembroAPI
 import com.example.proyectonuevoamanecer.api.UsuarioAPI
@@ -43,7 +44,9 @@ import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.screens.config.findWindow
 import com.example.proyectonuevoamanecer.widgets.Gif
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
 @Composable
@@ -65,22 +68,31 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     val db = DbDatabase.getInstance(context)
     val sharedPreferences = context.getSharedPreferences("preferencias", Context.MODE_PRIVATE)
-    var mantenerSesion by remember { mutableStateOf(sharedPreferences.getBoolean("mantenerSesion", false)) }
+    var mantenerSesion by remember {
+        mutableStateOf(
+            sharedPreferences.getBoolean(
+                "mantenerSesion",
+                false
+            )
+        )
+    }
     val repositorio = Repositorio(db.dbDao())
     var usuarioActivo by remember { mutableStateOf<UsuarioActivo?>(null) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val isAtStartDestination = currentRoute == AppRoutes.LoginScreen.route
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(isAtStartDestination) {
         usuarioActivo = repositorio.getUsuarioActivo()
-        if (usuarioActivo != null && !mantenerSesion){
+        if (usuarioActivo != null && !mantenerSesion) {
             repositorio.deleteUsuarioActivo(usuarioActivo!!)
             usuarioActivo = null
-        }
-        else if (usuarioActivo != null && mantenerSesion) {
+        } else if (usuarioActivo != null && mantenerSesion) {
             navController.navigate(AppRoutes.HomeScreen.route)
         }
     }
 
-    if (usuarioActivo == null){
+    if (usuarioActivo == null) {
         val yOffset = with(LocalDensity.current) { (-500).toDp() }
         Gif(
             R.drawable.star,
@@ -96,7 +108,8 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             verticalArrangement = Arrangement.Center
         ) {
 
-            Text(text = "LogIn", modifier = Modifier.padding(top = 0.dp, bottom = 8.dp),
+            Text(
+                text = "LogIn", modifier = Modifier.padding(top = 0.dp, bottom = 8.dp),
                 style = MaterialTheme.typography.displayLarge,
                 color = Color.White
             )
@@ -113,7 +126,7 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
                     colors = CheckboxDefaults.colors(uncheckedColor = Color.White),
                     onCheckedChange = { checked ->
                         mantenerSesion = checked
-                        with (sharedPreferences.edit()) {
+                        with(sharedPreferences.edit()) {
                             putBoolean("mantenerSesion", checked)
                             apply()
                         }
@@ -124,45 +137,52 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             var isConnected = Variables.isNetworkConnected
             Button(
                 onClick = {
-                    println(isConnected)
-                    if (!isConnected){
+                    if (!isConnected) {
                         showDialog = true
                         return@Button
                     }
-                    var response = llamarApi("usuario", data, "GET",mapOf("id" to clave))
+                    var response = llamarApi("usuario", data, "GET", mapOf("id" to clave))
                     var usuarioAPI: UsuarioAPI? = null
                     val usuariosArray = response.getJSONArray("Usuarios")
-                    var usuario = Usuario("Invitado","Invitado",false)
+                    var usuario = Usuario("Invitado", "Invitado", false)
                     if (usuariosArray.length() > 0) {
                         usuarioAPI = UsuarioAPI(usuariosArray.getJSONObject(0))
                         usuario = Usuario(usuarioAPI.Id, usuarioAPI.Nombre, usuarioAPI.Admin)
-                        }
-                    else {
+                    } else {
                         showDialog = true
                         println("La respuesta no tiene el estado 'success'")
                     }
                     var miembrosArray = JSONArray()
                     if (usuarioAPI != null) {
-                        response = llamarApi("miembros", data, "GET", mapOf("id_usuario" to usuarioAPI.Id))
+                        response =
+                            llamarApi("miembros", data, "GET", mapOf("id_usuario" to usuarioAPI.Id))
                         miembrosArray = response.getJSONArray("Miembros")
                     }
-                    var miembroAPI: MiembroAPI? = null
-                    var miembro = Miembro("Invitados","Invitados",false)
-                    if (miembrosArray.length() > 0){
+                    var miembroAPI: MiembroAPI?
+                    var miembro = Miembro("Invitados", "Invitados", false)
+                    if (miembrosArray.length() > 0) {
                         miembroAPI = MiembroAPI(miembrosArray.getJSONObject(0))
-                        miembro = Miembro(miembroAPI.Id_Grupo,miembroAPI.Id_Usuario,miembroAPI.Configuracion)
+                        miembro = Miembro(
+                            miembroAPI.Id_Grupo,
+                            miembroAPI.Id_Usuario,
+                            miembroAPI.Configuracion
+                        )
                     }
-                    if (usuario.id == clave)
+                    if (usuario.id == clave) {
                         pase = true
-                    scope.launch {
-                        val existingUsuario = repositorio.getUsuario(mapOf("id" to usuario.id))
-                        if (existingUsuario == null) {
-                            repositorio.updateUsuario(usuario)
+                        scope.launch {
+                            val existingUsuario = repositorio.getUsuario(mapOf("id" to usuario.id))
+                            if (existingUsuario == null) {
+                                repositorio.insertUsuario(usuario)
+                            } else {
+                                repositorio.updateUsuario(usuario)
+                            }
+                            val usuarioActivo = UsuarioActivo(1, usuario.id, miembro.id_grupo.toString())
+                            println(repositorio.getUsuarioActivo())
+                            withContext(Dispatchers.IO){repositorio.setUsuarioActivo(usuarioActivo)}
+                            println(repositorio.getUsuarioActivo())
+
                         }
-                        else {
-                            repositorio.insertUsuario(usuario)
-                        }
-                        repositorio.setUsuarioActivo(UsuarioActivo(1,usuario.id,miembro.id_grupo))
                     }
                     if (pase) {
                         navController.navigate(AppRoutes.HomeScreen.route)
@@ -172,24 +192,47 @@ fun LoginBodyContent(navController: NavController, viewModel: LoginViewModel) {
             ) {
                 Text(text = "Iniciar Sesión")
             }
-            if(showDialog){AlertDialog(
-                onDismissRequest = {},
-                title = { Text(style = MaterialTheme.typography.displayMedium, text = "Error al iniciar Sesión:") },
-                text = { Text(style = MaterialTheme.typography.displaySmall, text = if (isConnected) "¡Clave inválida!" else "Sin Conexión!\nIngrese como Invitado") },
-                confirmButton = {
-                    Button(onClick = {showDialog = false}) {
-                        Text(style = MaterialTheme.typography.headlineSmall, text = "Intentar otra vez")
-                    }
-                })}
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = {},
+                    title = {
+                        Text(
+                            style = MaterialTheme.typography.displayMedium,
+                            text = "Error al iniciar Sesión:"
+                        )
+                    },
+                    text = {
+                        Text(
+                            style = MaterialTheme.typography.displaySmall,
+                            text = if (isConnected) "¡Clave inválida!" else "Sin Conexión!\nIngrese como Invitado"
+                        )
+                    },
+                    confirmButton = {
+                        Button(onClick = { showDialog = false }) {
+                            Text(
+                                style = MaterialTheme.typography.headlineSmall,
+                                text = "Intentar otra vez"
+                            )
+                        }
+                    })
+            }
             Button(onClick = {
-                scope.launch { repositorio.setUsuarioActivo(UsuarioActivo(1,"Invitado","Invitado")) }
-                navController.navigate(AppRoutes.HomeScreen.route) }) {
+                scope.launch {
+                    repositorio.setUsuarioActivo(
+                        UsuarioActivo(
+                            1,
+                            "Invitado",
+                            "Invitado"
+                        )
+                    )
+                }
+                navController.navigate(AppRoutes.HomeScreen.route)
+            }) {
                 Text(text = "Iniciar Sesion RAPIDO")
             }
         }
 
     }
-
 }
 
 
