@@ -1,9 +1,12 @@
 package com.example.proyectonuevoamanecer.screens.modalUI
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -13,6 +16,8 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -23,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -51,8 +57,10 @@ import com.example.proyectonuevoamanecer.databases.UsuarioActivo
 import com.example.proyectonuevoamanecer.databases.obtenerDatos
 import com.example.proyectonuevoamanecer.screens.AppRoutes
 import com.example.proyectonuevoamanecer.screens.Navegacion
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,32 +145,32 @@ fun ModalDrawerContent(currentScreen: String?, navController: NavHostController,
     val scope = rememberCoroutineScope()
     var usuarioActivo by remember { mutableStateOf<UsuarioActivo?>(null) }
     var administrador by remember { mutableStateOf<UsuarioAPI?>(null) }
-    var gruposMiembroUsuario by remember { mutableStateOf<MiembroAPI?>(null) }
     var grupoSeleccionado by remember { mutableStateOf<GrupoAPI?>(null) }
     var ids: Map<String, String?>?
-    if(drawerState.targetValue == DrawerValue.Open){
-        LaunchedEffect(key1 = true) {
-            usuarioActivo = repositorio.getUsuarioActivo()
-            administrador = obtenerDatos(context,"usuario",mapOf("id" to "${usuarioActivo?.id_usuario}"))?.getJSONObject(0)?.let { UsuarioAPI(it) }
-            ids = mapOf("id_grupo" to "${usuarioActivo?.id_grupo}", "id_usuario" to "${usuarioActivo?.id_usuario}")
-            gruposMiembroUsuario = obtenerDatos(context, "miembros",ids)?.getJSONObject(0)?.let { MiembroAPI(it) }
-            ids =  mapOf("id" to "${gruposMiembroUsuario?.Id_Grupo}")
-            grupoSeleccionado = obtenerDatos(context,"grupo",ids)?.getJSONObject(0)?.let { GrupoAPI(it) }
+    var activado by remember { mutableStateOf(false) }
+    var cambioDeGrupo by remember { mutableStateOf("Desactivado") }
+    val resultadoDialogo: (String) -> Unit = {resultado -> cambioDeGrupo = resultado}
+    println("Valor de Cambio")
+    println(cambioDeGrupo)
+    if ((drawerState.targetValue == DrawerValue.Open && drawerState.isClosed) || cambioDeGrupo == "Activado")
+    { activado = !activado; cambioDeGrupo = "Desactivado"}
+    LaunchedEffect(activado) {
+        if (drawerState.isOpen) {
+            launch {
+                withContext(Dispatchers.IO){
+                    usuarioActivo = repositorio.getUsuarioActivo()
+                    administrador = obtenerDatos(context,"usuario",mapOf("id" to "${usuarioActivo?.id_usuario}"))?.getJSONObject(0)?.let { UsuarioAPI(it) }
+                    ids =  mapOf("id" to "${usuarioActivo?.id_grupo}")
+                    grupoSeleccionado = obtenerDatos(context,"grupo",ids)?.getJSONObject(0)?.let { GrupoAPI(it) }
+                }
+            }
         }
     }
     Row(verticalAlignment = Alignment.CenterVertically,modifier = Modifier.padding(16.dp)) {
         Icon(Icons.Filled.AccountCircle , contentDescription = "Usuario")
-        Text(text = administrador?.Nombre ?: "Invitado")
+        Text(text = administrador?.Nombre ?: "Invitado", Modifier.padding(horizontal = 8.dp))
     }
-    NavigationDrawerItem(
-        label = { Text(text = grupoSeleccionado?.Nombre.toString() ?: "Grupo No seleccionado") },
-        selected = false,
-        onClick = {
-            scope.launch {
-                repositorio.setUsuarioActivo(UsuarioActivo(1,"Invitado","Invitado"))
-                drawerState.close() }},
-        icon = {Icon(Icons.Filled.Create, contentDescription = "Inicio")}
-    )
+    usuarioActivo?.let { SeleccionarGrupo(it, grupoSeleccionado,repositorio, resultadoDialogo) }
     Text("Menu", modifier = Modifier.padding(16.dp))
     Divider()
     NavigationDrawerItem(
@@ -171,7 +179,7 @@ fun ModalDrawerContent(currentScreen: String?, navController: NavHostController,
         onClick = {
         navController.navigate(AppRoutes.HomeScreen.route) {
             popUpTo(AppRoutes.HomeScreen.route) { inclusive = true } }
-            scope.launch { drawerState.close() }},
+            scope.launch { drawerState.close()}},
         icon = {Icon(Icons.Filled.Home, contentDescription = "Inicio")}
     )
 
@@ -196,10 +204,111 @@ fun ModalDrawerContent(currentScreen: String?, navController: NavHostController,
         label = { Text(text = "Cerrar Sesion") },
         selected = false,
         onClick = {
-        // Aquí puedes agregar la lógica para cerrar la sesión
         navController.navigate(AppRoutes.LoginScreen.route) {
             popUpTo(AppRoutes.LoginScreen.route) { inclusive = true }
-            scope.launch { drawerState.close() }}
+            scope.launch {
+                val sharedPreferences = context.getSharedPreferences("preferencias", Context.MODE_PRIVATE)
+                var mantenerSesion = sharedPreferences.getBoolean("mantenerSesion", false)
+                usuarioActivo?.let { repositorio.deleteUsuarioActivo(it) }
+                drawerState.close() }}
     },
         icon = {Icon(Icons.Filled.ExitToApp, contentDescription = "Inicio")})
+}
+@Composable
+fun SeleccionarGrupo(usuarioactivo: UsuarioActivo, grupoSeleccionado: GrupoAPI?, repositorio: Repositorio, onDialogResult: (String) -> Unit) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    var gruposMiembroUsuario by remember { mutableStateOf(JSONArray()) }
+    val miembroList = remember{ mutableStateOf<List<MiembroAPI?>>(emptyList())}
+    val grupoList = remember{ mutableStateOf<List<GrupoAPI?>>(emptyList())}
+    var usuarioActivo by remember { mutableStateOf(usuarioactivo)}
+    var dialogAbierto by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    if(showDialog && !dialogAbierto){dialogAbierto = true}
+    if (!showDialog && dialogAbierto){dialogAbierto = false}
+    LaunchedEffect(dialogAbierto) {
+        launch {
+            if(dialogAbierto){
+                usuarioActivo = repositorio.getUsuarioActivo()!!
+                val miembroListTemp = mutableListOf<MiembroAPI>()
+                val grupoListTemp = mutableListOf<GrupoAPI>()
+                withContext(Dispatchers.IO) {
+                    gruposMiembroUsuario = obtenerDatos(context,"Miembros", mapOf("id_usuario" to "${usuarioActivo.id_usuario}"))!!
+                    for (i in 0 until gruposMiembroUsuario.length()) {
+                        val item = gruposMiembroUsuario.getJSONObject(i)
+                        val miembro = MiembroAPI(item.getString("ID_Grupo"), item.getString("ID_Usuario"), item.optBoolean("Configuracion"))
+                        miembroListTemp.add(miembro)
+                    }
+                    miembroList.value = miembroListTemp
+                    // Obtiene los IDs de los grupos
+                    val ids = miembroList.value.map { it?.Id_Grupo }.toList()
+                    for (id in ids) {
+                        val grupoArray = obtenerDatos(context,"Grupo", mapOf("id" to id))!!
+                        for (i in 0 until grupoArray.length()) {
+                            val item = grupoArray.getJSONObject(i)
+                            val grupo = GrupoAPI(item.getString("ID"), item.getString("Nombre"), item.getString("Gamemaster"))
+                            grupoListTemp.add(grupo)
+                        }
+                    }
+                    grupoList.value = grupoListTemp
+                }
+            }
+        }
+    }
+    var selectedGrupo by remember { mutableStateOf(grupoList.value.find { it?.Id == "${usuarioActivo.id_grupo}" }) }
+    NavigationDrawerItem(
+        label = { Text(text = grupoSeleccionado?.Nombre.toString()) },
+        selected = false,
+        onClick = {
+            showDialog = true
+        },
+        icon = { Icon(Icons.Filled.Create, contentDescription = "Inicio") }
+    )
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false},
+            title = { Text("Selecciona grupo") },
+            text = {
+                Column {
+                    grupoList.value.forEach { grupo ->
+                        Row(
+                            Modifier
+                                .selectable(
+                                    selected = (grupo?.Id == selectedGrupo?.Id),
+                                    onClick = { selectedGrupo = grupo }
+                                )
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (grupo?.Id == selectedGrupo?.Id),
+                                onClick = { selectedGrupo = grupo }
+                            )
+                            grupo?.Nombre?.let {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.headlineSmall.merge(),
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    showDialog = false
+                    onDialogResult("Activado")
+                    usuarioActivo.id_grupo = selectedGrupo?.Id
+                    scope.launch { withContext(Dispatchers.IO){ repositorio.setUsuarioActivo(usuarioActivo) } }
+                }) { Text("Aceptar") }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 }
