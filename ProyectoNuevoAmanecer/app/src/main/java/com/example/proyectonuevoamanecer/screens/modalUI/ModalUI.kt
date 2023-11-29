@@ -88,6 +88,7 @@ fun ModalUi(navController: NavHostController) {
         //AppRoutes.Numeros.route -> Color(0x0, 0x0, 0x0, 0x63)
         AppRoutes.DiferenciasCard.route -> Color(0x0, 0x0, 0x0, 0x4D)
         AppRoutes.EligirImagen.route -> Color.White
+        AppRoutes.Administracion.route -> Color.White
         AppRoutes.Rompecabezas.route -> Color.Black.copy(alpha = 0.6f)
         AppRoutes.MenuMemoramaScreen.route -> Color.Black.copy(alpha = 0.4f)
         //AppRoutes.EligirImagen.route -> Color.White
@@ -252,7 +253,7 @@ fun ModalDrawerContent(currentScreen: String?, navController: NavHostController,
                 val sharedPreferences = context.getSharedPreferences("preferencias", Context.MODE_PRIVATE)
                 var mantenerSesion = sharedPreferences.getBoolean("mantenerSesion", false)
                 usuarioActivo?.let { repositorio.deleteUsuarioActivo(it) }
-                drawerState.close() }}
+                drawerState.close()}}
     },
         icon = {Icon(Icons.Filled.ExitToApp, contentDescription = "Inicio")})
 }
